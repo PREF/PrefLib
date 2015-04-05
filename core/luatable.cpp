@@ -125,7 +125,7 @@ void LuaTable::protectedCall(int nargs, int nres) const
 
     if(res)
     {
-        throw PrefException(lua_tostring(l, -1));
+        throw std::runtime_error(lua_tostring(l, -1));
         lua_pop(l, 1);
     }
 }

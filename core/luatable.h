@@ -3,7 +3,6 @@
 
 #include <stdexcept>
 #include "luareference.h"
-#include "../prefexception.h"
 
 #define SELF_FIELD "__self"
 

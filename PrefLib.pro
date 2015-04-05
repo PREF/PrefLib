@@ -25,7 +25,6 @@ SOURCES += \
     core/luax.cpp \
     format/elements/field.cpp \
     core/luatable.cpp \
-    prefexception.cpp \
     io/databuffer.cpp \
     core/luastate.cpp \
     format/elements/fieldarray.cpp
@@ -45,28 +44,11 @@ HEADERS += \
     core/luax.h \
     format/elements/field.h \
     core/luatable.h \
-    prefexception.h \
     preflib.h \
     io/databuffer.h \
     core/luastate.h \
     format/elements/fieldarray.h
 
-unix
-{
-    LIBS += -L$$PWD/lib/linux
-
-    target.path = /usr/lib
-    INSTALLS += target
-
-    LIBS += -ldl
-}
-
-win32
-{
-    LIBS += -L$$PWD/lib/windows
-}
-
 INCLUDEPATH += $$PWD/include/capstone \
                $$PWD/include/lua
 
-LIBS += -lcapstone -llua

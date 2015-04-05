@@ -8,7 +8,6 @@
 
 #include <lua.hpp>
 #include "prefcontext.h"
-#include "types/datavalue.h"
 
 #endif // PREFLIB_H
 
