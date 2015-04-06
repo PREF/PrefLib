@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <cmath>
+#include <limits>
 #include <stdexcept>
 #include <inttypes.h>
 #include <type_traits>
@@ -20,7 +21,10 @@ class DataValue: public Core::LuaReference
 
         struct UserData
         {
-            InternalType Type; bool IsSigned; char* StringBuffer;
+            InternalType Type;
+            bool IsOverflowed;
+            bool IsSigned;
+            char* StringBuffer;
 
             union
             {
@@ -62,6 +66,7 @@ class DataValue: public Core::LuaReference
         const char* toString(unsigned int base = 10, unsigned int width = 0);
         bool isNull() const;
         bool isZero() const;
+        bool isOverflowed() const;
 
         template<typename T> DataValue(T t, typename std::enable_if< std::is_signed<T>::value>::type* = 0);
         template<typename T> DataValue(T t, typename std::enable_if< std::is_unsigned<T>::value>::type* = 0);
@@ -92,6 +97,11 @@ class DataValue: public Core::LuaReference
         bool operator <(const DataValue &rhs) const;
         bool operator >=(const DataValue &rhs) const;
         bool operator <=(const DataValue &rhs) const;
+        DataValue operator &(const DataValue &rhs) const;
+        DataValue operator |(const DataValue &rhs) const;
+        DataValue operator ^(const DataValue &rhs) const;
+        DataValue operator <<(const DataValue &rhs) const;
+        DataValue operator >>(const DataValue &rhs) const;
 
         template<typename T> bool operator ==(const T& t) const;
         template<typename T> bool operator !=(const T& t) const;
@@ -99,13 +109,20 @@ class DataValue: public Core::LuaReference
         template<typename T> bool operator <(const T& t) const;
         template<typename T> bool operator >=(const T& t) const;
         template<typename T> bool operator <=(const T& t) const;
+        template<typename T> DataValue operator ~() const;
+        template<typename T> DataValue operator &(const T& t) const;
+        template<typename T> DataValue operator |(const T& t) const;
+        template<typename T> DataValue operator ^(const T& t) const;
+        template<typename T> DataValue operator <<(const T& t) const;
+        template<typename T> DataValue operator >>(const T& t) const;
 
     public:
         DataValue& operator =(const DataValue &rhs);
+        DataValue operator ~() const;
         DataValue& operator ++();
         DataValue& operator --();
-        DataValue operator ++(int);
-        DataValue operator --(int);
+        DataValue operator ++(int) const;
+        DataValue operator --(int) const;
         DataValue& operator +=(const DataValue &rhs);
         DataValue& operator -=(const DataValue &rhs);
         DataValue operator +(const DataValue &rhs) const;
@@ -217,6 +234,86 @@ template<typename T> bool DataValue::operator <=(const T& t) const
         return this->_valuestruct->Value.UInt64 <= static_cast<uint64_t>(t);
 
     return false;
+}
+
+template<typename T> DataValue DataValue::operator &(const T& t) const
+{
+    if(this->_valuestruct->Type == InternalType::Invalid)
+        return DataValue();
+
+    DataValue result = *this;
+
+    if(std::is_signed<T>::value)
+        result._valuestruct->Value.Int64 &= static_cast<int64_t>(t);
+
+    if(std::is_unsigned<T>::value)
+        result._valuestruct->Value.UInt64 &= static_cast<uint64_t>(t);
+
+    return result;
+}
+
+template<typename T> DataValue DataValue::operator |(const T& t) const
+{
+    if(this->_valuestruct->Type == InternalType::Invalid)
+        return DataValue();
+
+    DataValue result = *this;
+
+    if(std::is_signed<T>::value)
+        result._valuestruct->Value.Int64 |= static_cast<int64_t>(t);
+
+    if(std::is_unsigned<T>::value)
+        result._valuestruct->Value.UInt64 |= static_cast<uint64_t>(t);
+
+    return result;
+}
+
+template<typename T> DataValue DataValue::operator ^(const T& t) const
+{
+    if(this->_valuestruct->Type == InternalType::Invalid)
+        return DataValue();
+
+    DataValue result = *this;
+
+    if(std::is_signed<T>::value)
+        result._valuestruct->Value.Int64 ^= static_cast<int64_t>(t);
+
+    if(std::is_unsigned<T>::value)
+        result._valuestruct->Value.UInt64 ^= static_cast<uint64_t>(t);
+
+    return result;
+}
+
+template<typename T> DataValue DataValue::operator <<(const T& t) const
+{
+    if(this->_valuestruct->Type == InternalType::Invalid)
+        return DataValue();
+
+    DataValue result = *this;
+
+    if(std::is_signed<T>::value)
+        result._valuestruct->Value.Int64 <<= static_cast<int64_t>(t);
+
+    if(std::is_unsigned<T>::value)
+        result._valuestruct->Value.UInt64 <<= static_cast<uint64_t>(t);
+
+    return result;
+}
+
+template<typename T> DataValue DataValue::operator >>(const T& t) const
+{
+    if(this->_valuestruct->Type == InternalType::Invalid)
+        return DataValue();
+
+    DataValue result = *this;
+
+    if(std::is_signed<T>::value)
+        result._valuestruct->Value.Int64 >>= static_cast<int64_t>(t);
+
+    if(std::is_unsigned<T>::value)
+        result._valuestruct->Value.UInt64 >>= static_cast<uint64_t>(t);
+
+    return result;
 }
 
 } // namespace PrefLib

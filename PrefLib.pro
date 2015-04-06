@@ -27,7 +27,8 @@ SOURCES += \
     core/luatable.cpp \
     io/databuffer.cpp \
     core/luastate.cpp \
-    format/elements/fieldarray.cpp
+    format/elements/fieldarray.cpp \
+    format/elements/bitfield.cpp
 
 HEADERS += \
     prefcontext.h \
@@ -47,7 +48,8 @@ HEADERS += \
     preflib.h \
     io/databuffer.h \
     core/luastate.h \
-    format/elements/fieldarray.h
+    format/elements/fieldarray.h \
+    format/elements/bitfield.h
 
 INCLUDEPATH += $$PWD/include/capstone \
                $$PWD/include/lua

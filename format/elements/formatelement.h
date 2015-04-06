@@ -13,6 +13,12 @@ using namespace Core;
 
 class FormatTree;
 
+class ValuedField
+{
+    public:
+        virtual DataValue value() = 0;
+};
+
 class FormatElement: public Core::LuaTable
 {
     protected:

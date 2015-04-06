@@ -5,7 +5,11 @@ namespace Format {
 
 Field::Field(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, DataType::Type datatype, const char *name, FormatElement *parent): FieldElement(formattree, databuffer, offset, datatype, name, parent)
 {
+    lua_State* l = LuaState::instance();
 
+    this->push();
+    this->setFunction("setBitField", &Field::luaSetBitField);
+    lua_pop(l, 1);
 }
 
 Field::Field(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, DataType::Type datatype, const char* name, FormatElement* parent, DataValue& valid): FieldElement(formattree, databuffer, offset, datatype, name, parent, valid)
@@ -21,6 +25,30 @@ Field::Field(FormatTree* formattree, IO::DataBuffer *databuffer, uint64_t offset
 Field::~Field()
 {
 
+}
+
+BitField *Field::setBitField(const char *name, uint64_t bitstart, uint64_t bitend)
+{
+    BitField* bf = new BitField(this->tree(), this->_databuffer, this->offset(), this->dataType(), name, bitstart, bitend, this);
+    this->bindTable(name, bf);
+    return bf;
+}
+
+BitField *Field::setBitField(const char *name, uint64_t bitstart)
+{
+    return this->setBitField(name, bitstart, bitstart);
+}
+
+int Field::luaSetBitField(lua_State* l)
+{
+    int argc = lua_gettop(l);
+    luaX_expectminargc(l, argc, 3);
+
+    Field* thethis = reinterpret_cast<Field*>(checkThis(l, 1));
+    int bitstart = luaL_checkinteger(l, 3);
+    BitField* bf = thethis->setBitField(luaL_checkstring(l, 2), bitstart, luaL_optinteger(l, 4, bitstart));
+    bf->push();
+    return 1;
 }
 
 DataValue Field::value()
