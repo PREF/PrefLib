@@ -96,7 +96,7 @@ class DataType
         static size_t sizeOf(DataType::Type type);
         static size_t byteWidth(DataType::Type type);
         static size_t bitWidth(DataType::Type type);
-        static Endianness::Type byteOrder(DataType::Type type);
+        static Endianness::Type endianness(DataType::Type type);
         static DataType::Type adjust(DataType::Type type, Endianness::Type endianness);
         static DataType::Type bestType(int bytewidth, bool signedtype);
         static const char* stringValue(DataType::Type type);

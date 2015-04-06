@@ -445,6 +445,7 @@ DataValue::DataValue(): Core::LuaReference()
 {
     this->allocateUserData();
 
+    this->_valuestruct->Endian = Endianness::platformEndian();
     this->_valuestruct->IsOverflowed = false;
     this->_valuestruct->IsSigned = false;
     this->_valuestruct->StringBuffer = nullptr;
@@ -456,6 +457,7 @@ DataValue::DataValue(double d): Core::LuaReference()
 {
     this->allocateUserData();
 
+    this->_valuestruct->Endian = Endianness::platformEndian();
     this->_valuestruct->IsOverflowed = false;
     this->_valuestruct->IsSigned = true;
     this->_valuestruct->StringBuffer = nullptr;
@@ -467,6 +469,7 @@ DataValue::DataValue(const char *ch): Core::LuaReference()
 {
     this->allocateUserData();
 
+    this->_valuestruct->Endian = Endianness::platformEndian();
     this->_valuestruct->IsOverflowed = false;
     this->_valuestruct->IsSigned = false;
     this->_valuestruct->StringBuffer = nullptr;
@@ -478,6 +481,7 @@ DataValue::DataValue(const DataValue &dv): Core::LuaReference(dv)
 {
     this->allocateUserData();
 
+    this->_valuestruct->Endian = Endianness::platformEndian();
     this->_valuestruct->IsOverflowed = false;
     this->_valuestruct->IsSigned = false;
     this->_valuestruct->StringBuffer = nullptr;
@@ -513,7 +517,7 @@ void DataValue::push() const
 
 void DataValue::castTo(DataType::Type type)
 {
-    if(!DataType::isInteger(type)) //TODO: Floating Point?
+    if(!DataType::isInteger(type)) //TODO: Floating Point + Endianness?
         return;
 
     this->_valuestruct->IsSigned = DataType::isSigned(type);
@@ -524,25 +528,36 @@ void DataValue::castTo(DataType::Type type)
     if(this->_valuestruct->IsSigned)
     {
         if(bits == 8)
-        {
+        {            
             this->_valuestruct->Value.Int64 = this->_valuestruct->Value.Int8;
             this->_valuestruct->IsOverflowed = this->_valuestruct->Value.Int64 < std::numeric_limits<int8_t>::min() ||
                                                this->_valuestruct->Value.Int64 > std::numeric_limits<int8_t>::max();
         }
         else if(bits == 16)
         {
+            if(this->_valuestruct->Endian != DataType::endianness(type))
+                Endianness::swapEndianness(&this->_valuestruct->Value.Int16);
+
             this->_valuestruct->Value.Int64 = this->_valuestruct->Value.Int16;
             this->_valuestruct->IsOverflowed = this->_valuestruct->Value.Int64 < std::numeric_limits<int16_t>::min() ||
                                                this->_valuestruct->Value.Int64 > std::numeric_limits<int16_t>::max();
         }
         else if(bits == 32)
         {
+            if(this->_valuestruct->Endian != DataType::endianness(type))
+                Endianness::swapEndianness(&this->_valuestruct->Value.Int32);
+
             this->_valuestruct->Value.Int64 = this->_valuestruct->Value.Int32;
             this->_valuestruct->IsOverflowed = this->_valuestruct->Value.Int64 < std::numeric_limits<int32_t>::min() ||
                                                this->_valuestruct->Value.Int64 > std::numeric_limits<int32_t>::max();
         }
         else
+        {
+            if(this->_valuestruct->Endian != DataType::endianness(type))
+                Endianness::swapEndianness(&this->_valuestruct->Value.Int64);
+
             this->_valuestruct->IsOverflowed = false;
+        }
 
         return;
     }
@@ -555,18 +570,29 @@ void DataValue::castTo(DataType::Type type)
     }
     else if(bits == 16)
     {
+        if(this->_valuestruct->Endian != DataType::endianness(type))
+            Endianness::swapEndianness(&this->_valuestruct->Value.UInt16);
+
         this->_valuestruct->Value.UInt64 = this->_valuestruct->Value.UInt16;
         this->_valuestruct->IsOverflowed = this->_valuestruct->Value.UInt64 > std::numeric_limits<uint16_t>::min() ||
                                            this->_valuestruct->Value.UInt64 > std::numeric_limits<uint16_t>::max();
     }
     else if(bits == 32)
     {
+        if(this->_valuestruct->Endian != DataType::endianness(type))
+            Endianness::swapEndianness(&this->_valuestruct->Value.UInt32);
+
         this->_valuestruct->Value.UInt64 = this->_valuestruct->Value.UInt32;
         this->_valuestruct->IsOverflowed = this->_valuestruct->Value.UInt64 > std::numeric_limits<uint32_t>::min() ||
                                            this->_valuestruct->Value.UInt64 > std::numeric_limits<uint32_t>::max();
     }
     else
+    {
+        if(this->_valuestruct->Endian != DataType::endianness(type))
+            Endianness::swapEndianness(&this->_valuestruct->Value.UInt64);
+
         this->_valuestruct->IsOverflowed = false;
+    }
 }
 
 bool DataValue::isNull() const

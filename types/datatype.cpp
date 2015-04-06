@@ -66,7 +66,7 @@ size_t DataType::bitWidth(DataType::Type type)
     return 0;
 }
 
-Endianness::Type DataType::byteOrder(DataType::Type type)
+Endianness::Type DataType::endianness(DataType::Type type)
 {
     if(DataType::isInteger(type))
     {

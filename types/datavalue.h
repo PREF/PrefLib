@@ -22,6 +22,7 @@ class DataValue: public Core::LuaReference
         struct UserData
         {
             InternalType Type;
+            Endianness::Type Endian;
             bool IsOverflowed;
             bool IsSigned;
             char* StringBuffer;
@@ -138,6 +139,8 @@ template<typename T> DataValue::DataValue(T t, typename std::enable_if< std::is_
 
     this->_valuestruct->StringBuffer = nullptr;
     this->_valuestruct->Type = InternalType::Integer;
+    this->_valuestruct->Endian = Endianness::platformEndian();
+    this->_valuestruct->IsOverflowed = false;
     this->_valuestruct->IsSigned = true;
     this->_valuestruct->Value.Int64 = t;
 }
@@ -148,6 +151,8 @@ template<typename T> DataValue::DataValue(T t, typename std::enable_if< std::is_
 
     this->_valuestruct->StringBuffer = nullptr;
     this->_valuestruct->Type = InternalType::Integer;
+    this->_valuestruct->Endian = Endianness::platformEndian();
+    this->_valuestruct->IsOverflowed = false;
     this->_valuestruct->IsSigned = false;
     this->_valuestruct->Value.UInt64 = t;
 }
