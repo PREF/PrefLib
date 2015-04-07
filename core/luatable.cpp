@@ -152,7 +152,7 @@ const char *LuaTable::getString(const char *k) const
     lua_pushstring(l, k);
     lua_rawget(l, -2);
 
-    const char* res = lua_tostring(l, -1);
+    const char* res = luaL_checkstring(l, -1);
     lua_pop(l, 2);
     return res;
 }
@@ -165,7 +165,20 @@ lua_Integer LuaTable::getInteger(const char *k) const
     lua_pushstring(l, k);
     lua_rawget(l, -2);
 
-    lua_Integer res = lua_tointeger(l, -1);
+    lua_Integer res = luaL_checkinteger(l, -1);
+    lua_pop(l, 2);
+    return res;
+}
+
+bool LuaTable::getBoolean(const char *k) const
+{
+    lua_State* l = LuaState::instance();
+
+    this->push();
+    lua_pushstring(l, k);
+    lua_rawget(l, -2);
+
+    bool res = lua_toboolean(l, -1) != 0;
     lua_pop(l, 2);
     return res;
 }
@@ -203,7 +216,7 @@ template<> const char* LuaTable::getI<const char*>(int i) const
     this->push();
     lua_rawgeti(l, -1, i);
 
-    const char* res = lua_tostring(l, -1);
+    const char* res = luaL_checkstring(l, -1);
     lua_pop(l, 2);
     return res;
 }
@@ -215,7 +228,7 @@ template<> lua_Integer LuaTable::getI<lua_Integer>(int i) const
     this->push();
     lua_rawgeti(l, -1, i);
 
-    lua_Integer res = lua_tointeger(l, -1);
+    lua_Integer res = luaL_checkinteger(l, -1);
     lua_pop(l, 2);
     return res;
 }
@@ -272,6 +285,17 @@ void LuaTable::setInteger(const char *k, lua_Integer n)
     this->push();
     lua_pushstring(l, k);
     lua_pushinteger(l, n);
+    lua_rawset(l, -3);
+    lua_pop(l, 1);
+}
+
+void LuaTable::setBoolean(const char *k, bool b)
+{
+    lua_State* l = LuaState::instance();
+
+    this->push();
+    lua_pushstring(l, k);
+    lua_pushboolean(l, b);
     lua_rawset(l, -3);
     lua_pop(l, 1);
 }

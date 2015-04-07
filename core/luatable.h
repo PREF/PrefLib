@@ -30,12 +30,14 @@ class LuaTable: public LuaReference
         bool hasField(const char* k) const;
         const char* getString(const char* k) const;
         lua_Integer getInteger(const char* k) const;
+        bool getBoolean(const char* k) const;
         LuaTable* getTable(const char* k) const;
         lua_CFunction getFunction(const char* k) const;
         template<typename T> T getI(int i) const;
         void setValue(const char* k, int validx);
         void setString(const char* k, const char* s);
         void setInteger(const char* k, lua_Integer n);
+        void setBoolean(const char* k, bool b);
         void setTable(const char* k, LuaTable* t);
         void setFunction(const char* k, lua_CFunction f);
         void setI(int i, const LuaTable *t);
