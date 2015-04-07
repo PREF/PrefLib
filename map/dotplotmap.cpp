@@ -16,11 +16,11 @@ DotPlotMap::~DotPlotMap()
 void DotPlotMap::doElaborate()
 {
     IO::DataBuffer* databuffer = this->dataBuffer();
-    uint64_t s = std::min(500ul, databuffer->length()), start = this->startOffset();
+    uint64_t size = std::min(500ul, databuffer->length()), start = this->startOffset();
 
-    this->_matrix.resize(s);
+    this->_matrix.resize(size);
 
-    for(uint64_t i = 0; i < s; i++)
+    for(uint64_t i = 0; i < size; i++)
     {
         if((start + i) > databuffer->length())
             break;
@@ -28,9 +28,9 @@ void DotPlotMap::doElaborate()
         uint64_t ioffset = start + i;
         uint8_t ib = databuffer->at(ioffset);
 
-        this->_matrix[i].resize(s);
+        this->_matrix[i].resize(size);
 
-        for(uint64_t j = 0; j < s; j++)
+        for(uint64_t j = 0; j < size; j++)
         {
             uint64_t joffset = start + j;
 
