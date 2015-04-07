@@ -22,9 +22,9 @@ class LuaTable: public LuaReference
         LuaTable* firstBindedTable() const;
         LuaTable* lastBindedTable();
         void bindTable(const char* name, LuaTable* t);
-        static void* checkThis(lua_State* l, int idx);
 
     public:
+        static void* checkThis(lua_State* l, int idx);
         virtual size_t length() const;
         void protectedCall(int nargs, int nres) const;
         bool hasField(const char* k) const;
