@@ -53,6 +53,11 @@ void PrefContext::luaregister_datatype(lua_State *l)
     lua_pushinteger(l, DataType::Int64);
     lua_setfield(l, -2, "Int64");
 
+    lua_pushinteger(l, DataType::Float);
+    lua_setfield(l, -2, "Float");
+    lua_pushinteger(l, DataType::Double);
+    lua_setfield(l, -2, "Double");
+
     lua_pushinteger(l, DataType::UInt16_LE);
     lua_setfield(l, -2, "UInt16_LE");
     lua_pushinteger(l, DataType::UInt32_LE);
@@ -67,6 +72,11 @@ void PrefContext::luaregister_datatype(lua_State *l)
     lua_pushinteger(l, DataType::Int64_LE);
     lua_setfield(l, -2, "Int64_LE");
 
+    lua_pushinteger(l, DataType::Float_LE);
+    lua_setfield(l, -2, "Float_LE");
+    lua_pushinteger(l, DataType::Double_LE);
+    lua_setfield(l, -2, "Double_LE");
+
     lua_pushinteger(l, DataType::UInt16_BE);
     lua_setfield(l, -2, "UInt16_BE");
     lua_pushinteger(l, DataType::UInt32_BE);
@@ -80,6 +90,11 @@ void PrefContext::luaregister_datatype(lua_State *l)
     lua_setfield(l, -2, "Int32_BE");
     lua_pushinteger(l, DataType::Int64_BE);
     lua_setfield(l, -2, "Int64_BE");
+
+    lua_pushinteger(l, DataType::Float_BE);
+    lua_setfield(l, -2, "Float_BE");
+    lua_pushinteger(l, DataType::Double_BE);
+    lua_setfield(l, -2, "Double_BE");
 
     lua_pushinteger(l, DataType::AsciiCharacter);
     lua_setfield(l, -2, "AsciiCharacter");
