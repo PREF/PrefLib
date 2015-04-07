@@ -547,10 +547,10 @@ DataValue::DataValue(const DataValue &dv): Core::LuaReference(dv)
     this->allocateUserData();
 
     this->_valuestruct->Endian = Endianness::platformEndian();
-    this->_valuestruct->IsOverflowed = false;
-    this->_valuestruct->IsSigned = false;
-    this->_valuestruct->StringBuffer = nullptr;
     this->_valuestruct->Type = dv._valuestruct->Type;
+    this->_valuestruct->IsOverflowed = dv._valuestruct->IsOverflowed;
+    this->_valuestruct->IsSigned = dv._valuestruct->IsSigned;
+    this->_valuestruct->StringBuffer = nullptr;
 
     if(this->_valuestruct->Type == InternalType::String)
         this->_valuestruct->Value.AsciiString = strdup(dv._valuestruct->Value.AsciiString);
@@ -654,7 +654,7 @@ void DataValue::castTo(DataType::Type type)
     if(bits == 8)
     {
         this->_valuestruct->Value.UInt64 = this->_valuestruct->Value.UInt8;
-        this->_valuestruct->IsOverflowed = this->_valuestruct->Value.UInt64 > std::numeric_limits<uint8_t>::min() ||
+        this->_valuestruct->IsOverflowed = this->_valuestruct->Value.UInt64 < std::numeric_limits<uint8_t>::min() ||
                                            this->_valuestruct->Value.UInt64 > std::numeric_limits<uint8_t>::max();
     }
     else if(bits == 16)
@@ -663,7 +663,7 @@ void DataValue::castTo(DataType::Type type)
             Endianness::swap(&this->_valuestruct->Value.UInt16);
 
         this->_valuestruct->Value.UInt64 = this->_valuestruct->Value.UInt16;
-        this->_valuestruct->IsOverflowed = this->_valuestruct->Value.UInt64 > std::numeric_limits<uint16_t>::min() ||
+        this->_valuestruct->IsOverflowed = this->_valuestruct->Value.UInt64 < std::numeric_limits<uint16_t>::min() ||
                                            this->_valuestruct->Value.UInt64 > std::numeric_limits<uint16_t>::max();
     }
     else if(bits == 32)
@@ -672,7 +672,7 @@ void DataValue::castTo(DataType::Type type)
             Endianness::swap(&this->_valuestruct->Value.UInt32);
 
         this->_valuestruct->Value.UInt64 = this->_valuestruct->Value.UInt32;
-        this->_valuestruct->IsOverflowed = this->_valuestruct->Value.UInt64 > std::numeric_limits<uint32_t>::min() ||
+        this->_valuestruct->IsOverflowed = this->_valuestruct->Value.UInt64 < std::numeric_limits<uint32_t>::min() ||
                                            this->_valuestruct->Value.UInt64 > std::numeric_limits<uint32_t>::max();
     }
     else
