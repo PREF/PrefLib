@@ -2,30 +2,26 @@
 #define PREFLIB_CHART_HISTOGRAMCHART_H
 
 #include <vector>
+#include "../support/byteelaborator.h"
 #include "abstractchart.h"
 
 namespace PrefLib {
 namespace Chart {
 
+using namespace Support;
+
 class HistogramChart: public virtual AbstractChart
 {
     public:
-        typedef std::vector<uintmax_t> HistogramData;
-
-    public:
         HistogramChart();
         ~HistogramChart();
-        const HistogramData& data() const;
-        uint8_t maxByte() const;
-        uintmax_t maxCount() const;
+        const ByteElaborator::CountResult& result() const;
 
     public:
         virtual void elaborate(IO::DataBuffer *databuffer, uint64_t startoffset, uint64_t endoffset);
 
     private:
-        HistogramData _data;
-        uint8_t _maxbyte;
-        uint64_t _maxcount;
+        ByteElaborator::CountResult _result;
 };
 
 } // namespace Chart

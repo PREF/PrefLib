@@ -28,7 +28,13 @@ SOURCES += \
     io/databuffer.cpp \
     core/luastate.cpp \
     format/elements/fieldarray.cpp \
-    format/elements/bitfield.cpp
+    format/elements/bitfield.cpp \
+    exporter/exportercontext.cpp \
+    exporter/exporterdefinition.cpp \
+    chart/histogramchart.cpp \
+    chart/abstractchart.cpp \
+    support/math.cpp \
+    support/byteelaborator.cpp
 
 HEADERS += \
     prefcontext.h \
@@ -49,7 +55,13 @@ HEADERS += \
     io/databuffer.h \
     core/luastate.h \
     format/elements/fieldarray.h \
-    format/elements/bitfield.h
+    format/elements/bitfield.h \
+    exporter/exportercontext.h \
+    exporter/exporterdefinition.h \
+    chart/histogramchart.h \
+    chart/abstractchart.h \
+    support/math.h \
+    support/byteelaborator.h
 
 INCLUDEPATH += $$PWD/include/capstone \
                $$PWD/include/lua
