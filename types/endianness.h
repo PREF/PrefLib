@@ -21,12 +21,14 @@ class Endianness
 
     public:
         template<typename T> static void swapEndianness(T&) { }
-        static void swapEndianness(int16_t* val);
-        static void swapEndianness(int32_t* val);
-        static void swapEndianness(int64_t* val);
-        static void swapEndianness(uint16_t* val);
-        static void swapEndianness(uint32_t* val);
-        static void swapEndianness(uint64_t* val);
+        static void swap(int16_t* val);
+        static void swap(int32_t* val);
+        static void swap(int64_t* val);
+        static void swap(uint16_t* val);
+        static void swap(uint32_t* val);
+        static void swap(uint64_t* val);
+        static void swap(float* val);
+        static void swap(double* val);
 
     private:
         static const PlatformEndianU _platformendian;

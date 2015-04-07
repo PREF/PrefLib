@@ -2,14 +2,34 @@
 
 namespace PrefLib {
 
-bool DataType::isInteger(DataType::Type type)
+bool DataType::isArithmetic(DataType::Type type)
 {
-    return (type & DataType::Integer) != 0;
+    return type & DataType::Arithmetic;
+}
+
+bool DataType::isIntegral(DataType::Type type)
+{
+    return type & DataType::Integral;
+}
+
+bool DataType::isFloatingPoint(DataType::Type type)
+{
+    return type & DataType::FloatingPoint;
 }
 
 bool DataType::isSigned(DataType::Type type)
 {
-    return DataType::isInteger(type) && (type & DataType::Signed);
+    return DataType::isArithmetic(type) && (type & DataType::Signed);
+}
+
+bool DataType::isFloat(DataType::Type type)
+{
+    return DataType::isFloatingPoint(type) && (DataType::sizeOf(type) == sizeof(float));
+}
+
+bool DataType::isDouble(DataType::Type type)
+{
+    return DataType::isFloatingPoint(type) && (DataType::sizeOf(type) == sizeof(double));
 }
 
 bool DataType::isString(DataType::Type type)
@@ -34,12 +54,12 @@ bool DataType::isArray(DataType::Type type)
 
 bool DataType::isLittleEndian(DataType::Type type)
 {
-    return DataType::isInteger(type) && (type & DataType::LittleEndian);
+    return DataType::isArithmetic(type) && (type & DataType::LittleEndian);
 }
 
 bool DataType::isBigEndian(DataType::Type type)
 {
-    return DataType::isInteger(type) && (type & DataType::BigEndian);
+    return DataType::isArithmetic(type) && (type & DataType::BigEndian);
 }
 
 size_t DataType::sizeOf(DataType::Type type)
@@ -47,17 +67,12 @@ size_t DataType::sizeOf(DataType::Type type)
     return DataType::bitWidth(type) / 8;
 }
 
-size_t DataType::byteWidth(DataType::Type type)
-{
-    return DataType::sizeOf(type) * 2;
-}
-
 size_t DataType::bitWidth(DataType::Type type)
 {
-    if(DataType::isInteger(type))
+    if(DataType::isArithmetic(type))
         return type & 0xFF;
 
-    if((type == DataType::Blob) || (type == DataType::AsciiCharacter) || (type == DataType::UnicodeCharacter))
+    if((type == DataType::Blob) || (type == DataType::AsciiCharacter))
         return 8;
 
     if(type == DataType::UnicodeCharacter)
@@ -68,7 +83,7 @@ size_t DataType::bitWidth(DataType::Type type)
 
 Endianness::Type DataType::endianness(DataType::Type type)
 {
-    if(DataType::isInteger(type))
+    if(DataType::isArithmetic(type))
     {
         if(type & DataType::LittleEndian)
             return Endianness::LittleEndian;

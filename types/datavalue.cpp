@@ -20,10 +20,12 @@ int DataValue::luaMetaIndex(lua_State *l)
     UserData* userdata = reinterpret_cast<UserData*>(luaL_checkudata(l, 1, "datavalue"));
     const char* arg = lua_tostring(l, 2);
 
-    if(((userdata->Type == InternalType::Real) || (userdata->Type == InternalType::Integer)) && !strcmp(arg, "number"))
+    if(DataValue::isArithmetic(userdata->Type) && !strcmp(arg, "number"))
     {
-        if(userdata->Type == InternalType::Real)
-            lua_pushnumber(l, userdata->Value.Real);
+        if(userdata->Type == InternalType::Float)
+            lua_pushnumber(l, userdata->Value.Float);
+        else if(userdata->Type == InternalType::Double)
+            lua_pushnumber(l, userdata->Value.Double);
         if(userdata->IsSigned)
             lua_pushinteger(l, userdata->Value.Int64);
         else
@@ -42,11 +44,13 @@ int DataValue::luaMetaNewIndex(lua_State *l)
     UserData* userdata = reinterpret_cast<UserData*>(luaL_checkudata(l, 1, "datavalue"));
     const char* arg = lua_tostring(l, 2);
 
-    if(((userdata->Type == InternalType::Real) || (userdata->Type == InternalType::Integer)) && !strcmp(arg, "number"))
+    if(DataValue::isArithmetic(userdata->Type) && !strcmp(arg, "number"))
     {
-        if(userdata->Type == InternalType::Real)
-            userdata->Value.Real = luaL_checknumber(l, 3);
-        if(userdata->IsSigned)
+        if(userdata->Type == InternalType::Float)
+            userdata->Value.Float = luaL_checknumber(l, 3);
+        else if(userdata->Type == InternalType::Double)
+            userdata->Value.Double = luaL_checknumber(l, 3);
+        else if(userdata->IsSigned)
             userdata->Value.Int64 = luaL_checkinteger(l, 3);
         else
             userdata->Value.UInt64 = luaL_checkinteger(l, 3);
@@ -88,14 +92,20 @@ int DataValue::luaMetaAdd(lua_State *l)
 
     if(userdata->Type == InternalType::String)
         lua_pushnil(l);
-    else if((userdata->Type == InternalType::Real) || (userdata->Type == InternalType::Integer))
+    else if(DataValue::isArithmetic(userdata->Type))
     {
         int t = lua_type(l, 2);
 
-        if(userdata->Type == InternalType::Real)
+        if(userdata->Type == InternalType::Float)
         {
-            DataValue dv = userdata->Value.Real + ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
-                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Real);
+            DataValue dv = userdata->Value.Float + ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Float);
+            dv.push();
+        }
+        else if(userdata->Type == InternalType::Double)
+        {
+            DataValue dv = userdata->Value.Double + ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Double);
             dv.push();
         }
         else if(userdata->IsSigned)
@@ -121,14 +131,20 @@ int DataValue::luaMetaSub(lua_State *l)
 
     if(userdata->Type == InternalType::String)
         lua_pushnil(l);
-    else if((userdata->Type == InternalType::Real) || (userdata->Type == InternalType::Integer))
+    else if(DataValue::isArithmetic(userdata->Type))
     {
         int t = lua_type(l, 2);
 
-        if(userdata->Type == InternalType::Real)
+        if(userdata->Type == InternalType::Float)
         {
-            DataValue dv = userdata->Value.Real - ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
-                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Real);
+            DataValue dv = userdata->Value.Float - ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Float);
+            dv.push();
+        }
+        else if(userdata->Type == InternalType::Double)
+        {
+            DataValue dv = userdata->Value.Double - ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Double);
             dv.push();
         }
         else if(userdata->IsSigned)
@@ -154,14 +170,20 @@ int DataValue::luaMetaMul(lua_State *l)
 
     if(userdata->Type == InternalType::String)
         lua_pushnil(l);
-    else if((userdata->Type == InternalType::Real) || (userdata->Type == InternalType::Integer))
+    else if(DataValue::isArithmetic(userdata->Type))
     {
         int t = lua_type(l, 2);
 
-        if(userdata->Type == InternalType::Real)
+        if(userdata->Type == InternalType::Float)
         {
-            DataValue dv = userdata->Value.Real * ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
-                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Real);
+            DataValue dv = userdata->Value.Float * ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Float);
+            dv.push();
+        }
+        else if(userdata->Type == InternalType::Double)
+        {
+            DataValue dv = userdata->Value.Double * ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Double);
             dv.push();
         }
         else if(userdata->IsSigned)
@@ -187,14 +209,20 @@ int DataValue::luaMetaDiv(lua_State *l)
 
     if(userdata->Type == InternalType::String)
         lua_pushnil(l);
-    else if((userdata->Type == InternalType::Real) || (userdata->Type == InternalType::Integer))
+    else if(DataValue::isArithmetic(userdata->Type))
     {
         int t = lua_type(l, 2);
 
-        if(userdata->Type == InternalType::Real)
+        if(userdata->Type == InternalType::Float)
         {
-            DataValue dv = userdata->Value.Real / ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
-                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Real);
+            DataValue dv = userdata->Value.Float / ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Float);
+            dv.push();
+        }
+        else if(userdata->Type == InternalType::Double)
+        {
+            DataValue dv = userdata->Value.Double / ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Double);
             dv.push();
         }
         else if(userdata->IsSigned)
@@ -220,14 +248,20 @@ int DataValue::luaMetaMod(lua_State *l)
 
     if(userdata->Type == InternalType::String)
         lua_pushnil(l);
-    else if((userdata->Type == InternalType::Real) || (userdata->Type == InternalType::Integer))
+    else if(DataValue::isArithmetic(userdata->Type))
     {
         int t = lua_type(l, 2);
 
-        if(userdata->Type == InternalType::Real)
+        if(userdata->Type == InternalType::Float)
         {
-            DataValue dv = fmod(userdata->Value.Real, ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
-                                                                            reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Real));
+            DataValue dv = fmod(userdata->Value.Float, ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                            reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Float));
+            dv.push();
+        }
+        else if(userdata->Type == InternalType::Double)
+        {
+            DataValue dv = fmod(userdata->Value.Double, ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                            reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Double));
             dv.push();
         }
         else if(userdata->IsSigned)
@@ -253,14 +287,20 @@ int DataValue::luaMetaPow(lua_State *l)
 
     if(userdata->Type == InternalType::String)
         lua_pushnil(l);
-    else if((userdata->Type == InternalType::Real) || (userdata->Type == InternalType::Integer))
+    else if(DataValue::isArithmetic(userdata->Type))
     {
         int t = lua_type(l, 2);
 
-        if(userdata->Type == InternalType::Real)
+        if(userdata->Type == InternalType::Float)
         {
-            DataValue dv = pow(userdata->Value.Real, ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
-                                                                           reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Real));
+            DataValue dv = pow(userdata->Value.Float, ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                           reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Float));
+            dv.push();
+        }
+        else if(userdata->Type == InternalType::Double)
+        {
+            DataValue dv = pow(userdata->Value.Double, ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                           reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Double));
             dv.push();
         }
         else if(userdata->IsSigned)
@@ -286,7 +326,9 @@ int DataValue::luaMetaLen(lua_State *l)
 
     if(userdata->Type == InternalType::String)
         lua_pushinteger(l, strlen(userdata->Value.AsciiString));
-    else if(userdata->Type == InternalType::Real)
+    else if(userdata->Type == InternalType::Float)
+        lua_pushinteger(l, 4);
+    else if(userdata->Type == InternalType::Double)
         lua_pushinteger(l, 8);
     else if(userdata->Type == InternalType::Integer)
     {
@@ -325,8 +367,10 @@ int DataValue::luaMetaEq(lua_State *l)
         else
             lua_pushboolean(l, (userdata1->Value.UInt64 == userdata2->Value.UInt64));
     }
-    else if(userdata1->Type == InternalType::Real)
-        lua_pushboolean(l, (userdata1->Value.Real == userdata2->Value.Real));
+    else if(userdata1->Type == InternalType::Float)
+        lua_pushboolean(l, (userdata1->Value.Float == userdata2->Value.Float));
+    else if(userdata1->Type == InternalType::Double)
+        lua_pushboolean(l, (userdata1->Value.Double == userdata2->Value.Double));
     else if(userdata1->Type == InternalType::String)
         lua_pushboolean(l, !strcmp(userdata1->Value.AsciiString, userdata2->Value.AsciiString));
     else
@@ -353,8 +397,10 @@ int DataValue::luaMetaLt(lua_State *l)
         else
             lua_pushboolean(l, (userdata1->Value.UInt64 < userdata2->Value.UInt64));
     }
-    else if(userdata1->Type == InternalType::Real)
-        lua_pushboolean(l, (userdata1->Value.Real == userdata2->Value.Real));
+    else if(userdata1->Type == InternalType::Double)
+        lua_pushboolean(l, (userdata1->Value.Float == userdata2->Value.Float));
+    else if(userdata1->Type == InternalType::Double)
+        lua_pushboolean(l, (userdata1->Value.Double == userdata2->Value.Double));
     else
         lua_pushboolean(l, false);
 
@@ -379,8 +425,10 @@ int DataValue::luaMetaLe(lua_State *l)
         else
             lua_pushboolean(l, (userdata1->Value.UInt64 <= userdata2->Value.UInt64));
     }
-    else if(userdata1->Type == InternalType::Real)
-        lua_pushboolean(l, (userdata1->Value.Real == userdata2->Value.Real));
+    else if(userdata1->Type == InternalType::Float)
+        lua_pushboolean(l, (userdata1->Value.Float == userdata2->Value.Float));
+    else if(userdata1->Type == InternalType::Double)
+        lua_pushboolean(l, (userdata1->Value.Double == userdata2->Value.Double));
     else
         lua_pushboolean(l, false);
 
@@ -441,6 +489,11 @@ void DataValue::allocateUserData()
     this->_reference = luaL_ref(l, LUA_REGISTRYINDEX);
 }
 
+bool DataValue::isArithmetic(DataValue::InternalType type)
+{
+    return (type == InternalType::Integer) || (type == InternalType::Float) || (type == InternalType::Double);
+}
+
 DataValue::DataValue(): Core::LuaReference()
 {
     this->allocateUserData();
@@ -453,7 +506,7 @@ DataValue::DataValue(): Core::LuaReference()
     this->_valuestruct->Value.UInt64 = 0u;
 }
 
-DataValue::DataValue(double d): Core::LuaReference()
+DataValue::DataValue(float f): Core::LuaReference()
 {
     this->allocateUserData();
 
@@ -461,8 +514,20 @@ DataValue::DataValue(double d): Core::LuaReference()
     this->_valuestruct->IsOverflowed = false;
     this->_valuestruct->IsSigned = true;
     this->_valuestruct->StringBuffer = nullptr;
-    this->_valuestruct->Type = InternalType::Real;
-    this->_valuestruct->Value.Real = d;
+    this->_valuestruct->Type = InternalType::Float;
+    this->_valuestruct->Value.Float = f;
+}
+
+DataValue::DataValue(double d)
+{
+    this->allocateUserData();
+
+    this->_valuestruct->Endian = Endianness::platformEndian();
+    this->_valuestruct->IsOverflowed = false;
+    this->_valuestruct->IsSigned = true;
+    this->_valuestruct->StringBuffer = nullptr;
+    this->_valuestruct->Type = InternalType::Double;
+    this->_valuestruct->Value.Double = d;
 }
 
 DataValue::DataValue(const char *ch): Core::LuaReference()
@@ -500,8 +565,10 @@ void DataValue::push() const
 
     if(this->_valuestruct->Type == InternalType::String)
         lua_pushstring(l, this->_valuestruct->Value.AsciiString);
-    else if(this->_valuestruct->Type == InternalType::Real)
-        lua_pushnumber(l, this->_valuestruct->Value.Real);
+    else if(this->_valuestruct->Type == InternalType::Float)
+        lua_pushnumber(l, this->_valuestruct->Value.Float);
+    else if(this->_valuestruct->Type == InternalType::Double)
+        lua_pushnumber(l, this->_valuestruct->Value.Double);
     else if(this->_valuestruct->Type == InternalType::Integer)
     {
         if(this->_valuestruct->IsSigned)
@@ -517,12 +584,34 @@ void DataValue::push() const
 
 void DataValue::castTo(DataType::Type type)
 {
-    if(!DataType::isInteger(type)) //TODO: Floating Point + Endianness?
+    if(!DataType::isArithmetic(type))
         return;
 
     this->_valuestruct->IsSigned = DataType::isSigned(type);
 
     /* Let the compiler cast to the correct type */
+    if(DataType::isFloatingPoint(type))
+    {
+        if(DataType::isFloat(type))
+        {
+            if(this->_valuestruct->Endian != DataType::endianness(type))
+                Endianness::swap(&this->_valuestruct->Value.Float);
+
+            this->_valuestruct->IsOverflowed = this->_valuestruct->Value.Float < std::numeric_limits<float>::min() ||
+                                               this->_valuestruct->Value.Float > std::numeric_limits<float>::max();
+        }
+        else //if(DataType::isDouble(type))
+        {
+            if(this->_valuestruct->Endian != DataType::endianness(type))
+                Endianness::swap(&this->_valuestruct->Value.Double);
+
+            this->_valuestruct->IsOverflowed = this->_valuestruct->Value.Double < std::numeric_limits<double>::min() ||
+                                               this->_valuestruct->Value.Double > std::numeric_limits<double>::max();
+        }
+
+        return;
+    }
+
     size_t bits = DataType::bitWidth(type);
 
     if(this->_valuestruct->IsSigned)
@@ -536,7 +625,7 @@ void DataValue::castTo(DataType::Type type)
         else if(bits == 16)
         {
             if(this->_valuestruct->Endian != DataType::endianness(type))
-                Endianness::swapEndianness(&this->_valuestruct->Value.Int16);
+                Endianness::swap(&this->_valuestruct->Value.Int16);
 
             this->_valuestruct->Value.Int64 = this->_valuestruct->Value.Int16;
             this->_valuestruct->IsOverflowed = this->_valuestruct->Value.Int64 < std::numeric_limits<int16_t>::min() ||
@@ -545,7 +634,7 @@ void DataValue::castTo(DataType::Type type)
         else if(bits == 32)
         {
             if(this->_valuestruct->Endian != DataType::endianness(type))
-                Endianness::swapEndianness(&this->_valuestruct->Value.Int32);
+                Endianness::swap(&this->_valuestruct->Value.Int32);
 
             this->_valuestruct->Value.Int64 = this->_valuestruct->Value.Int32;
             this->_valuestruct->IsOverflowed = this->_valuestruct->Value.Int64 < std::numeric_limits<int32_t>::min() ||
@@ -554,7 +643,7 @@ void DataValue::castTo(DataType::Type type)
         else
         {
             if(this->_valuestruct->Endian != DataType::endianness(type))
-                Endianness::swapEndianness(&this->_valuestruct->Value.Int64);
+                Endianness::swap(&this->_valuestruct->Value.Int64);
 
             this->_valuestruct->IsOverflowed = false;
         }
@@ -571,7 +660,7 @@ void DataValue::castTo(DataType::Type type)
     else if(bits == 16)
     {
         if(this->_valuestruct->Endian != DataType::endianness(type))
-            Endianness::swapEndianness(&this->_valuestruct->Value.UInt16);
+            Endianness::swap(&this->_valuestruct->Value.UInt16);
 
         this->_valuestruct->Value.UInt64 = this->_valuestruct->Value.UInt16;
         this->_valuestruct->IsOverflowed = this->_valuestruct->Value.UInt64 > std::numeric_limits<uint16_t>::min() ||
@@ -580,7 +669,7 @@ void DataValue::castTo(DataType::Type type)
     else if(bits == 32)
     {
         if(this->_valuestruct->Endian != DataType::endianness(type))
-            Endianness::swapEndianness(&this->_valuestruct->Value.UInt32);
+            Endianness::swap(&this->_valuestruct->Value.UInt32);
 
         this->_valuestruct->Value.UInt64 = this->_valuestruct->Value.UInt32;
         this->_valuestruct->IsOverflowed = this->_valuestruct->Value.UInt64 > std::numeric_limits<uint32_t>::min() ||
@@ -589,7 +678,7 @@ void DataValue::castTo(DataType::Type type)
     else
     {
         if(this->_valuestruct->Endian != DataType::endianness(type))
-            Endianness::swapEndianness(&this->_valuestruct->Value.UInt64);
+            Endianness::swap(&this->_valuestruct->Value.UInt64);
 
         this->_valuestruct->IsOverflowed = false;
     }
@@ -610,6 +699,21 @@ bool DataValue::isOverflowed() const
     return this->_valuestruct->IsOverflowed;
 }
 
+bool DataValue::isArithmetic() const
+{
+    return DataValue::isArithmetic(this->_valuestruct->Type);
+}
+
+bool DataValue::isIntegral() const
+{
+    return this->_valuestruct->Type == InternalType::Integer;
+}
+
+bool DataValue::isFloatingPoint() const
+{
+    return (this->_valuestruct->Type == InternalType::Float) || (this->_valuestruct->Type == InternalType::Double);
+}
+
 DataValue::~DataValue()
 {
 
@@ -620,7 +724,7 @@ const char *DataValue::toString(unsigned int base, unsigned int width)
     if(this->_valuestruct->Type == InternalType::String)
         return this->_valuestruct->Value.AsciiString;
 
-    if((this->_valuestruct->Type == InternalType::Integer) || (this->_valuestruct->Type == InternalType::Real))
+    if(this->isArithmetic())
     {
         unsigned int sz = sizeof(uintmax_t) * 8; // Use the biggest type's size (in bits)
 
@@ -667,15 +771,10 @@ const char *DataValue::toString(unsigned int base, unsigned int width)
     return nullptr;
 }
 
-unsigned char *DataValue::operator &()
-{
-    return reinterpret_cast<unsigned char*>(&this->_valuestruct->Value);
-}
-
 DataValue DataValue::operator ~() const
 {
-    if((this->_valuestruct->Type != InternalType::Integer) && (this->_valuestruct->Type != InternalType::Real))
-        throw std::runtime_error("Only numeric types can be negated");
+    if(this->isArithmetic())
+        throw std::runtime_error("Only arithmetic types can be negated");
 
     DataValue result = *this;
     result._valuestruct->Value.UInt64 = ~result._valuestruct->Value.UInt64;
@@ -737,11 +836,6 @@ DataValue DataValue::operator >>(const DataValue &rhs) const
     return result;
 }
 
-PrefLib::DataValue::operator double()
-{
-    return this->_valuestruct->Value.Real;
-}
-
 bool DataValue::operator ==(const char *s) const
 {
     return strcmp(this->_valuestruct->Value.AsciiString, s) == 0;
@@ -752,9 +846,24 @@ bool DataValue::operator !=(const char *s) const
     return strcmp(this->_valuestruct->Value.AsciiString, s) != 0;
 }
 
+unsigned char *DataValue::operator &()
+{
+    return reinterpret_cast<unsigned char*>(&this->_valuestruct->Value);
+}
+
 PrefLib::DataValue::operator const char *()
 {
     return this->_valuestruct->Value.AsciiString;
+}
+
+PrefLib::DataValue::operator float()
+{
+    return this->_valuestruct->Value.Float;
+}
+
+PrefLib::DataValue::operator double()
+{
+    return this->_valuestruct->Value.Double;
 }
 
 PrefLib::DataValue::operator int8_t()
@@ -872,8 +981,10 @@ DataValue DataValue::operator +(const DataValue &rhs) const
         strcpy(dv._valuestruct->Value.AsciiString + len1, rhs._valuestruct->Value.AsciiString);
         dv._valuestruct->Value.AsciiString[len1 + len2] = '\0';
     }
-    else if(this->_valuestruct->Type == InternalType::Real)
-        dv._valuestruct->Value.Real = this->_valuestruct->Value.Real + rhs._valuestruct->Value.Real;
+    else if(this->_valuestruct->Type == InternalType::Float)
+        dv._valuestruct->Value.Float = this->_valuestruct->Value.Float + rhs._valuestruct->Value.Float;
+    else if(this->_valuestruct->Type == InternalType::Double)
+        dv._valuestruct->Value.Double = this->_valuestruct->Value.Double + rhs._valuestruct->Value.Double;
     else
         dv._valuestruct->Value.UInt64 = this->_valuestruct->Value.UInt64 + rhs._valuestruct->Value.UInt64;
 
@@ -894,8 +1005,10 @@ DataValue DataValue::operator -(const DataValue &rhs) const
     DataValue dv;
     dv._valuestruct->Type = this->_valuestruct->Type;
 
-    if(this->_valuestruct->Type == InternalType::Real)
-        dv._valuestruct->Value.Real = this->_valuestruct->Value.Real - rhs._valuestruct->Value.Real;
+    if(this->_valuestruct->Type == InternalType::Float)
+        dv._valuestruct->Value.Float = this->_valuestruct->Value.Float - rhs._valuestruct->Value.Float;
+    else if(this->_valuestruct->Type == InternalType::Double)
+        dv._valuestruct->Value.Double = this->_valuestruct->Value.Double - rhs._valuestruct->Value.Double;
     else
         dv._valuestruct->Value.UInt64 = this->_valuestruct->Value.UInt64 - rhs._valuestruct->Value.UInt64;
 
@@ -922,8 +1035,10 @@ DataValue& DataValue::operator +=(const DataValue &rhs)
         this->_valuestruct->Value.AsciiString[len1 + len2] = '\0';
         delete[] oldstring;
     }
-    else if(this->_valuestruct->Type == InternalType::Real)
-        this->_valuestruct->Value.Real += rhs._valuestruct->Value.Real;
+    else if(this->_valuestruct->Type == InternalType::Float)
+        this->_valuestruct->Value.Float += rhs._valuestruct->Value.Float;
+    else if(this->_valuestruct->Type == InternalType::Double)
+        this->_valuestruct->Value.Double += rhs._valuestruct->Value.Double;
     else
         this->_valuestruct->Value.UInt64 += rhs._valuestruct->Value.UInt64;
 
@@ -941,8 +1056,10 @@ DataValue& DataValue::operator -=(const DataValue &rhs)
     if(this->_valuestruct->Type == InternalType::Invalid)
         throw std::runtime_error("DataValue is null");
 
-    if(this->_valuestruct->Type == InternalType::Real)
-        this->_valuestruct->Value.Real -= rhs._valuestruct->Value.Real;
+    if(this->_valuestruct->Type == InternalType::Float)
+        this->_valuestruct->Value.Float -= rhs._valuestruct->Value.Float;
+    else if(this->_valuestruct->Type == InternalType::Double)
+        this->_valuestruct->Value.Double -= rhs._valuestruct->Value.Double;
     else
         this->_valuestruct->Value.UInt64 -= rhs._valuestruct->Value.UInt64;
 

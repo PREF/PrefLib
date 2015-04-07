@@ -17,7 +17,7 @@ namespace PrefLib {
 class DataValue: public Core::LuaReference
 {
     private:
-        enum InternalType { Invalid, Integer, Real, String };
+        enum InternalType { Invalid, Integer, Float, Double, String };
 
         struct UserData
         {
@@ -33,7 +33,8 @@ class DataValue: public Core::LuaReference
                 int16_t Int16; uint16_t UInt16;
                 int32_t Int32; uint32_t UInt32;
                 int64_t Int64; uint64_t UInt64;
-                double Real;
+                float Float;
+                double Double;
                 char* AsciiString;
             } Value;
         };
@@ -56,9 +57,11 @@ class DataValue: public Core::LuaReference
 
     private:
         void allocateUserData();
+        static bool isArithmetic(InternalType type);
 
     public:
         DataValue();
+        DataValue(float d);
         DataValue(double d);
         DataValue(const char* ch);
         DataValue(const DataValue& dv);
@@ -68,6 +71,9 @@ class DataValue: public Core::LuaReference
         bool isNull() const;
         bool isZero() const;
         bool isOverflowed() const;
+        bool isArithmetic() const;
+        bool isIntegral() const;
+        bool isFloatingPoint() const;
 
         template<typename T> DataValue(T t, typename std::enable_if< std::is_signed<T>::value>::type* = 0);
         template<typename T> DataValue(T t, typename std::enable_if< std::is_unsigned<T>::value>::type* = 0);
@@ -78,6 +84,7 @@ class DataValue: public Core::LuaReference
     public:
         unsigned char* operator &();
         operator const char*();
+        operator float();
         operator double();
         operator int8_t();
         operator int16_t();
@@ -160,7 +167,7 @@ template<typename T> DataValue::DataValue(T t, typename std::enable_if< std::is_
 template<typename T> bool DataValue::operator ==(const T& t) const
 {
     if(std::is_floating_point<T>::value)
-        return this->_valuestruct->Value.Real == static_cast<double>(t);
+        return this->_valuestruct->Value.Double == static_cast<double>(t);
 
     if(std::is_signed<T>::value)
         return this->_valuestruct->Value.Int64 == static_cast<int64_t>(t);
@@ -174,7 +181,7 @@ template<typename T> bool DataValue::operator ==(const T& t) const
 template<typename T> bool DataValue::operator !=(const T& t) const
 {
     if(std::is_floating_point<T>::value)
-        return this->_valuestruct->Value.Real != static_cast<double>(t);
+        return this->_valuestruct->Value.Double != static_cast<double>(t);
 
     if(std::is_signed<T>::value)
         return this->_valuestruct->Value.Int64 != static_cast<int64_t>(t);
@@ -188,7 +195,7 @@ template<typename T> bool DataValue::operator !=(const T& t) const
 template<typename T> bool DataValue::operator >(const T& t) const
 {
     if(std::is_floating_point<T>::value)
-        return this->_valuestruct->Value.Real > static_cast<double>(t);
+        return this->_valuestruct->Value.Double > static_cast<double>(t);
 
     if(std::is_signed<T>::value)
         return this->_valuestruct->Value.Int64 > static_cast<int64_t>(t);
@@ -202,7 +209,7 @@ template<typename T> bool DataValue::operator >(const T& t) const
 template<typename T> bool DataValue::operator <(const T& t) const
 {
     if(std::is_floating_point<T>::value)
-        return this->_valuestruct->Value.Real < static_cast<double>(t);
+        return this->_valuestruct->Value.Double < static_cast<double>(t);
 
     if(std::is_signed<T>::value)
         return this->_valuestruct->Value.Int64 < static_cast<int64_t>(t);
@@ -216,7 +223,7 @@ template<typename T> bool DataValue::operator <(const T& t) const
 template<typename T> bool DataValue::operator >=(const T& t) const
 {
     if(std::is_floating_point<T>::value)
-        return this->_valuestruct->Value.Real >= static_cast<double>(t);
+        return this->_valuestruct->Value.Double >= static_cast<double>(t);
 
     if(std::is_signed<T>::value)
         return this->_valuestruct->Value.Int64 >= static_cast<int64_t>(t);
@@ -230,7 +237,7 @@ template<typename T> bool DataValue::operator >=(const T& t) const
 template<typename T> bool DataValue::operator <=(const T& t) const
 {
     if(std::is_floating_point<T>::value)
-        return this->_valuestruct->Value.Real <= static_cast<double>(t);
+        return this->_valuestruct->Value.Double <= static_cast<double>(t);
 
     if(std::is_signed<T>::value)
         return this->_valuestruct->Value.Int64 <= static_cast<int64_t>(t);
