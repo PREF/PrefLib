@@ -22,14 +22,16 @@ class AbstractMap
     public:
         IO::DataBuffer* dataBuffer() const;
         uint64_t startOffset() const;
+        uint64_t endOffset() const;
         uint64_t width() const;
         virtual uint64_t length() const = 0;
         virtual uint64_t offset(const AbstractMap::Point& p) const = 0;
-        void elaborate(IO::DataBuffer* databuffer, uint64_t startoffset, uint64_t width);
+        void elaborate(IO::DataBuffer* databuffer, uint64_t startoffset, uint64_t endoffset, uint64_t width);
 
     protected:
         IO::DataBuffer* _databuffer;
         uint64_t _startoffset;
+        uint64_t _endoffset;
         uint64_t _width;
 };
 

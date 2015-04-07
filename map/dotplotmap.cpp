@@ -82,7 +82,7 @@ uint64_t DotPlotMap::offset(const AbstractMap::Point &p) const
 
 void DotPlotMap::elaborate(IO::DataBuffer *databuffer, uint64_t startoffset)
 {
-    AbstractMap::elaborate(databuffer, startoffset, 500);
+    AbstractMap::elaborate(databuffer, startoffset, databuffer->length(), 500);
 }
 
 } // namespace Map

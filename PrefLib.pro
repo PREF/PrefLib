@@ -38,7 +38,8 @@ SOURCES += \
     chart/entropychart.cpp \
     support/bytecolors.cpp \
     map/abstractmap.cpp \
-    map/dotplotmap.cpp
+    map/dotplotmap.cpp \
+    map/pixelviewmap.cpp
 
 HEADERS += \
     prefcontext.h \
@@ -69,7 +70,8 @@ HEADERS += \
     chart/entropychart.h \
     support/bytecolors.h \
     map/abstractmap.h \
-    map/dotplotmap.h
+    map/dotplotmap.h \
+    map/pixelviewmap.h
 
 INCLUDEPATH += $$PWD/include/capstone \
                $$PWD/include/lua

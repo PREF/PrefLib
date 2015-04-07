@@ -3,7 +3,7 @@
 namespace PrefLib {
 namespace Map {
 
-AbstractMap::AbstractMap(): _databuffer(nullptr), _startoffset(0ul), _width(0ul)
+AbstractMap::AbstractMap(): _databuffer(nullptr), _startoffset(0ul), _endoffset(0ul), _width(0ul)
 {
 
 }
@@ -23,15 +23,21 @@ uint64_t AbstractMap::startOffset() const
     return this->_startoffset;
 }
 
+uint64_t AbstractMap::endOffset() const
+{
+    return this->_endoffset;
+}
+
 uint64_t AbstractMap::width() const
 {
     return this->_width;
 }
 
-void AbstractMap::elaborate(IO::DataBuffer *databuffer, uint64_t startoffset, uint64_t width)
+void AbstractMap::elaborate(IO::DataBuffer *databuffer, uint64_t startoffset, uint64_t endoffset, uint64_t width)
 {
     this->_databuffer = databuffer;
     this->_startoffset = startoffset;
+    this->_endoffset = endoffset;
     this->_width = width;
 
     this->doElaborate();
