@@ -70,7 +70,7 @@ int DataBuffer::Buffer::luaMetaLength(lua_State *l)
     return 1;
 }
 
-DataBuffer::DataBuffer(): Core::LuaTable()
+DataBuffer::DataBuffer(OpenMode mode): Core::LuaTable()
 {
     lua_State* l = LuaState::instance();
     this->push();
@@ -82,7 +82,10 @@ DataBuffer::DataBuffer(): Core::LuaTable()
     }
 
     lua_setmetatable(l, -2);
+    this->setBoolean("readable", (mode & OpenMode::Read));
+    this->setBoolean("writable", (mode & OpenMode::Write));
     this->setFunction("at", &DataBuffer::luaAt);
+    this->setFunction("copyTo", &DataBuffer::luaCopyTo);
     this->setFunction("read", &DataBuffer::luaRead);
     this->setFunction("write", &DataBuffer::luaWrite);
     lua_pop(l, 1);
@@ -93,6 +96,16 @@ DataBuffer::~DataBuffer()
 
 }
 
+bool DataBuffer::isReadable() const
+{
+    return this->getBoolean("readable");
+}
+
+bool DataBuffer::isWritable() const
+{
+    return this->getBoolean("writable");
+}
+
 unsigned char DataBuffer::at(uint64_t offset)
 {
     unsigned char ch = '\0';
@@ -100,13 +113,38 @@ unsigned char DataBuffer::at(uint64_t offset)
     return ch;
 }
 
+void DataBuffer::copyTo(DataBuffer *destbuffer, uint64_t startoffset, uint64_t endoffset)
+{
+    if(!endoffset)
+        endoffset = this->length();
+
+    uint64_t len = endoffset - startoffset;
+    unsigned char* data = new unsigned char[len];
+
+    this->read(startoffset, data, len);
+    destbuffer->write(0, data, len);
+
+    delete[] data;
+}
+
 int DataBuffer::luaAt(lua_State *l)
 {
-    DataBuffer* thethis = reinterpret_cast<DataBuffer*>(checkThis(l, 1));
-    uint64_t offset = luaL_checkinteger(l, 2);
+    int argc = lua_gettop(l);
+    luaX_expectargc(l, argc, 2);
 
-    lua_pushinteger(l, thethis->at(offset));
+    DataBuffer* thethis = reinterpret_cast<DataBuffer*>(checkThis(l, 1));
+    lua_pushinteger(l, thethis->at(luaL_checkinteger(l, 2)));
     return 1;
+}
+
+int DataBuffer::luaCopyTo(lua_State *l)
+{
+    int argc = lua_gettop(l);
+    luaX_expectminargc(l, argc, 2);
+
+    DataBuffer* thethis = reinterpret_cast<DataBuffer*>(checkThis(l, 1));
+    thethis->copyTo(reinterpret_cast<DataBuffer*>(checkThis(l, 2)), luaL_optinteger(l, 3, 0), luaL_optinteger(l, 4, 0));
+    return 0;
 }
 
 int DataBuffer::luaMetaLength(lua_State *l)
