@@ -11,8 +11,7 @@ namespace Map {
 class DotPlotMap : public AbstractMap
 {
     public:
-        typedef std::vector<uint32_t> Row;
-        typedef std::vector<DotPlotMap::Row> Matrix;
+        typedef std::vector<uint8_t> DotMap;
 
     public:
         DotPlotMap();
@@ -22,13 +21,13 @@ class DotPlotMap : public AbstractMap
         virtual void doElaborate();
 
     public:
-        const DotPlotMap::Matrix& matrix() const;
+        const DotPlotMap::DotMap& dotPlot() const;
         virtual uint64_t length() const;
         virtual uint64_t offset(const Point &p) const;
         void elaborate(IO::DataBuffer *databuffer, uint64_t startoffset);
 
     private:
-        Matrix _matrix;
+        DotMap _dotmap;
 };
 
 } // namespace Map

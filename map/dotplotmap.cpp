@@ -16,9 +16,9 @@ DotPlotMap::~DotPlotMap()
 void DotPlotMap::doElaborate()
 {
     IO::DataBuffer* databuffer = this->dataBuffer();
-    uint64_t size = std::min(500ul, databuffer->length()), start = this->startOffset();
+    uint64_t size = this->width(), start = this->startOffset();
 
-    this->_matrix.resize(size);
+    this->_dotmap.resize(pow(size, 2));
 
     for(uint64_t i = 0; i < size; i++)
     {
@@ -27,8 +27,6 @@ void DotPlotMap::doElaborate()
 
         uint64_t ioffset = start + i;
         uint8_t ib = databuffer->at(ioffset);
-
-        this->_matrix[i].resize(size);
 
         for(uint64_t j = 0; j < size; j++)
         {
@@ -41,19 +39,19 @@ void DotPlotMap::doElaborate()
 
             if(ib != jb)
             {
-                this->_matrix[i][j] = 0x00;
+                this->_dotmap[i + j * size] = 0x00;
                 continue;
             }
 
             /* TODO: Reproduce Yellow Selection from PREF source code */
-            this->_matrix[i][j] = static_cast<uint8_t>((static_cast<double>(jb) * 0.75) + 64);;
+            this->_dotmap[i + j * size] = static_cast<uint8_t>((static_cast<double>(jb) * 0.75) + 64);
         }
     }
 }
 
-const DotPlotMap::Matrix &DotPlotMap::matrix() const
+const DotPlotMap::DotMap &DotPlotMap::dotPlot() const
 {
-    return this->_matrix;
+    return this->_dotmap;
 }
 
 uint64_t DotPlotMap::length() const
@@ -82,7 +80,7 @@ uint64_t DotPlotMap::offset(const AbstractMap::Point &p) const
 
 void DotPlotMap::elaborate(IO::DataBuffer *databuffer, uint64_t startoffset)
 {
-    AbstractMap::elaborate(databuffer, startoffset, databuffer->length(), 500);
+    AbstractMap::elaborate(databuffer, startoffset, databuffer->length(), std::min(500ul, databuffer->length() - startoffset));
 }
 
 } // namespace Map
