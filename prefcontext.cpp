@@ -9,6 +9,7 @@ PrefContext::PrefContext()
 {
     luaL_openlibs(Core::LuaState::instance());
     this->_formatctx = new Format::FormatContext();
+    this->_exporterctx = new Exporter::ExporterContext();
 }
 
 int PrefContext::luaopen_preflib(lua_State* l)
@@ -18,6 +19,9 @@ int PrefContext::luaopen_preflib(lua_State* l)
 
     instance->_formatctx->push();
     lua_setfield(l, -2, "format");
+
+    instance->_exporterctx->push();
+    lua_setfield(l, -2, "exporter");
 
     luaregister_datatype(l);
     lua_setfield(l, -2, "datatype");
@@ -97,10 +101,16 @@ void PrefContext::luaregister_datatype(lua_State *l)
 
 PrefContext::~PrefContext()
 {
-    if(PrefContext::_formatctx)
+    if(this->_formatctx)
     {
-        delete PrefContext::_formatctx;
-        PrefContext::_formatctx = nullptr;
+        delete this->_formatctx;
+        this->_formatctx = nullptr;
+    }
+
+    if(this->_exporterctx)
+    {
+        delete this->_exporterctx;
+        this->_exporterctx = nullptr;
     }
 
     Core::LuaState::instance().close();
@@ -114,6 +124,11 @@ const Core::LuaState &PrefContext::state() const
 Format::FormatContext *PrefContext::formats() const
 {
     return this->_formatctx;
+}
+
+Exporter::ExporterContext *PrefContext::exporters() const
+{
+    return this->_exporterctx;
 }
 
 void PrefContext::addSearchPath(const char *path)

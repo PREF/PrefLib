@@ -6,6 +6,7 @@
 #include <cstring>
 #include "core/luastate.h"
 #include "format/formatcontext.h"
+#include "exporter/exportercontext.h"
 
 namespace PrefLib {
 
@@ -22,6 +23,7 @@ class PrefContext
         ~PrefContext();
         const Core::LuaState& state() const;
         Format::FormatContext* formats() const;
+        Exporter::ExporterContext* exporters() const;
         void addSearchPath(const char* path);
         void executeScript(const char* script);
 
@@ -35,6 +37,7 @@ class PrefContext
     private:
         lua_State* _state;
         Format::FormatContext* _formatctx;
+        Exporter::ExporterContext* _exporterctx;
 };
 
 } // namespace PrefLib
