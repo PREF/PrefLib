@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <cstring>
 #include "core/luastate.h"
+#include "support/math.h"
 #include "format/formatcontext.h"
 #include "exporter/exportercontext.h"
 

@@ -17,14 +17,17 @@ int PrefContext::luaopen_preflib(lua_State* l)
     PrefContext* instance = PrefContext::instance();
     luaL_newlib(l, PrefContext::_functions);
 
+    luaregister_datatype(l);
+    lua_setfield(l, -2, "datatype");
+
+    Support::Math::pushTable(l);
+    lua_setfield(l, -2, "math");
+
     instance->_formatctx->push();
     lua_setfield(l, -2, "format");
 
     instance->_exporterctx->push();
     lua_setfield(l, -2, "exporter");
-
-    luaregister_datatype(l);
-    lua_setfield(l, -2, "datatype");
     return 1;
 }
 
