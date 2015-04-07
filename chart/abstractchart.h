@@ -9,6 +9,9 @@ namespace Chart {
 class AbstractChart
 {
     public:
+        template<typename T> struct PointT { T x; T y; };
+
+    public:
         AbstractChart();
         ~AbstractChart();
 

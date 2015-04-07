@@ -34,7 +34,8 @@ SOURCES += \
     chart/histogramchart.cpp \
     chart/abstractchart.cpp \
     support/math.cpp \
-    support/byteelaborator.cpp
+    support/byteelaborator.cpp \
+    chart/entropychart.cpp
 
 HEADERS += \
     prefcontext.h \
@@ -61,7 +62,8 @@ HEADERS += \
     chart/histogramchart.h \
     chart/abstractchart.h \
     support/math.h \
-    support/byteelaborator.h
+    support/byteelaborator.h \
+    chart/entropychart.h
 
 INCLUDEPATH += $$PWD/include/capstone \
                $$PWD/include/lua

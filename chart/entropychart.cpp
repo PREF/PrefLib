@@ -1,0 +1,67 @@
+#include "entropychart.h"
+
+namespace PrefLib {
+namespace Chart {
+
+const uint64_t EntropyChart::NUM_POINTS = 2048ul;
+const uint64_t EntropyChart::MIN_BLOCK_SIZE = 32ul;
+
+EntropyChart::EntropyChart()
+{
+
+}
+
+EntropyChart::~EntropyChart()
+{
+
+}
+
+const EntropyChart::EntropyPoints &EntropyChart::points() const
+{
+    return this->_points;
+}
+
+uint64_t EntropyChart::calculateBlockSize(uint64_t len)
+{
+    if(len < EntropyChart::MIN_BLOCK_SIZE)
+        return 0;
+
+    uint64_t blocksize = 0, numpoints = EntropyChart::NUM_POINTS, size = len / numpoints;
+
+    while(size < EntropyChart::MIN_BLOCK_SIZE)
+    {
+        numpoints /= 2u;
+        size = len / numpoints;
+    }
+
+    for(uint64_t i = 0; blocksize < size; i++)
+    {
+        uint64_t bs = (1u << i);
+
+        if(bs > size)
+            break;
+
+        blocksize = bs;
+    }
+
+    return blocksize;
+}
+
+void EntropyChart::elaborate(IO::DataBuffer *databuffer, uint64_t startoffset, uint64_t endoffset)
+{
+    uint64_t len = endoffset - startoffset, blocksize = this->calculateBlockSize(len);
+    this->_points.clear();
+
+    if(!blocksize)
+        return;
+
+    for(uint64_t i = 0; i < len; i += blocksize)
+    {
+        double e = Math::entropy(databuffer, i, blocksize);
+        this->_points.push_back({ static_cast<double>(i), e });
+    }
+}
+
+} // namespace Chart
+} // namespace PrefLib
+
