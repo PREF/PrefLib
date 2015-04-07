@@ -149,6 +149,16 @@ const char *DataType::stringValue(DataType::Type type)
         case DataType::UnicodeString:
             return "UnicodeString";
 
+        case DataType::Float:
+        case DataType::Float_LE:
+        case DataType::Float_BE:
+            return "Float";
+
+        case DataType::Double:
+        case DataType::Double_LE:
+        case DataType::Double_BE:
+            return "Double";
+
         case DataType::Array:
             return "Array";
 
