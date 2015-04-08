@@ -17,10 +17,10 @@ void PixelViewMap::doElaborate()
 {
     IO::DataBuffer* databuffer = this->dataBuffer();
     uint64_t height = this->length() / this->width();
-    this->_pixelmap.resize(std::min(this->length(), this->_width * height));
+    this->_pixelmap.resize(std::min(databuffer->length(), this->_width * height));
 
     for(uint64_t i = 0, offset = this->startOffset(); i < this->_pixelmap.size(); i++, offset++)
-        this->_pixelmap[i] = Support::ByteColors::classColor(databuffer->at(offset));
+        this->_pixelmap[i] = Support::ByteColors::info(databuffer->at(offset)).Color;
 }
 
 uint64_t PixelViewMap::length() const
