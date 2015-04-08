@@ -8,8 +8,10 @@ luaL_Reg PrefContext::_functions[] = { { nullptr, nullptr } };
 PrefContext::PrefContext()
 {
     luaL_openlibs(Core::LuaState::instance());
-    this->_formatctx = new Format::FormatContext();
+
     this->_exporterctx = new Exporter::ExporterContext();
+    this->_formatctx = new Format::FormatContext();
+    this->_disassemblerctx = new Disassembler::DisassemblerContext();
 }
 
 int PrefContext::luaopen_preflib(lua_State* l)
@@ -23,11 +25,15 @@ int PrefContext::luaopen_preflib(lua_State* l)
     Support::Math::pushTable(l);
     lua_setfield(l, -2, "math");
 
+    instance->_exporterctx->push();
+    lua_setfield(l, -2, "exporter");
+
     instance->_formatctx->push();
     lua_setfield(l, -2, "format");
 
-    instance->_exporterctx->push();
-    lua_setfield(l, -2, "exporter");
+    instance->_disassemblerctx->push();
+    lua_setfield(l, -2, "disassembler");
+
     return 1;
 }
 

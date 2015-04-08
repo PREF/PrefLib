@@ -40,7 +40,12 @@ SOURCES += \
     map/abstractmap.cpp \
     map/dotplotmap.cpp \
     map/pixelviewmap.cpp \
-    map/binarymap.cpp
+    map/binarymap.cpp \
+    disassembler/disassemblercontext.cpp \
+    disassembler/disassemblerdefinition.cpp \
+    disassembler/disassemblerlisting.cpp \
+    disassembler/blocks/block.cpp \
+    disassembler/blocks/segment.cpp
 
 HEADERS += \
     prefcontext.h \
@@ -73,7 +78,12 @@ HEADERS += \
     map/abstractmap.h \
     map/dotplotmap.h \
     map/pixelviewmap.h \
-    map/binarymap.h
+    map/binarymap.h \
+    disassembler/disassemblercontext.h \
+    disassembler/disassemblerdefinition.h \
+    disassembler/disassemblerlisting.h \
+    disassembler/blocks/block.h \
+    disassembler/blocks/segment.h
 
 INCLUDEPATH += $$PWD/include/capstone \
                $$PWD/include/lua

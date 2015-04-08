@@ -6,8 +6,9 @@
 #include <cstring>
 #include "core/luastate.h"
 #include "support/math.h"
-#include "format/formatcontext.h"
 #include "exporter/exportercontext.h"
+#include "format/formatcontext.h"
+#include "disassembler/disassemblercontext.h"
 
 namespace PrefLib {
 
@@ -37,8 +38,9 @@ class PrefContext
 
     private:
         lua_State* _state;
-        Format::FormatContext* _formatctx;
         Exporter::ExporterContext* _exporterctx;
+        Format::FormatContext* _formatctx;
+        Disassembler::DisassemblerContext* _disassemblerctx;
 };
 
 } // namespace PrefLib
