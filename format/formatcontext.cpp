@@ -38,8 +38,7 @@ int FormatContext::luaCreate(lua_State *l)
     FormatContext* thethis = reinterpret_cast<FormatContext*>(checkThis(l, 1));
     FormatDefinition* fd = new FormatDefinition(luaL_checkstring(l, 2), luaL_checkstring(l, 3), luaL_checkstring(l, 4), luaL_checkstring(l, 5));
 
-    fd->push();
-    lua_seti(l, 1, thethis->length() + 1);
+    thethis->bindTable(fd->name(), fd);
     fd->push();
     return 1;
 }
