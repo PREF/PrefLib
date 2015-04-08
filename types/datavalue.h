@@ -83,17 +83,17 @@ class DataValue: public Core::LuaReference
 
     public:
         unsigned char* operator &();
-        operator const char*();
-        operator float();
-        operator double();
-        operator int8_t();
-        operator int16_t();
-        operator int32_t();
-        operator int64_t();
-        operator uint8_t();
-        operator uint16_t();
-        operator uint32_t();
-        operator uint64_t();
+        operator const char*() const;
+        operator float() const;
+        operator double() const;
+        operator int8_t() const;
+        operator int16_t() const;
+        operator int32_t() const;
+        operator int64_t() const;
+        operator uint8_t() const;
+        operator uint16_t() const;
+        operator uint32_t() const;
+        operator uint64_t() const;
 
     public:
         bool operator ==(const char* s) const;

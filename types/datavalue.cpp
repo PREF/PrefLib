@@ -851,57 +851,57 @@ unsigned char *DataValue::operator &()
     return reinterpret_cast<unsigned char*>(&this->_valuestruct->Value);
 }
 
-PrefLib::DataValue::operator const char *()
+PrefLib::DataValue::operator const char *() const
 {
     return this->_valuestruct->Value.AsciiString;
 }
 
-PrefLib::DataValue::operator float()
+PrefLib::DataValue::operator float() const
 {
     return this->_valuestruct->Value.Float;
 }
 
-PrefLib::DataValue::operator double()
+PrefLib::DataValue::operator double() const
 {
     return this->_valuestruct->Value.Double;
 }
 
-PrefLib::DataValue::operator int8_t()
+PrefLib::DataValue::operator int8_t() const
 {
     return this->_valuestruct->Value.Int8;
 }
 
-PrefLib::DataValue::operator int16_t()
+PrefLib::DataValue::operator int16_t() const
 {
     return this->_valuestruct->Value.Int16;
 }
 
-PrefLib::DataValue::operator int32_t()
+PrefLib::DataValue::operator int32_t() const
 {
     return this->_valuestruct->Value.Int32;
 }
 
-PrefLib::DataValue::operator int64_t()
+PrefLib::DataValue::operator int64_t() const
 {
     return this->_valuestruct->Value.Int64;
 }
 
-PrefLib::DataValue::operator uint8_t()
+PrefLib::DataValue::operator uint8_t() const
 {
     return this->_valuestruct->Value.UInt8;
 }
 
-PrefLib::DataValue::operator uint16_t()
+PrefLib::DataValue::operator uint16_t() const
 {
     return this->_valuestruct->Value.UInt16;
 }
 
-PrefLib::DataValue::operator uint32_t()
+PrefLib::DataValue::operator uint32_t() const
 {
     return this->_valuestruct->Value.UInt32;
 }
 
-PrefLib::DataValue::operator uint64_t()
+PrefLib::DataValue::operator uint64_t() const
 {
     return this->_valuestruct->Value.UInt64;
 }
