@@ -39,7 +39,8 @@ SOURCES += \
     support/bytecolors.cpp \
     map/abstractmap.cpp \
     map/dotplotmap.cpp \
-    map/pixelviewmap.cpp
+    map/pixelviewmap.cpp \
+    map/binarymap.cpp
 
 HEADERS += \
     prefcontext.h \
@@ -71,7 +72,8 @@ HEADERS += \
     support/bytecolors.h \
     map/abstractmap.h \
     map/dotplotmap.h \
-    map/pixelviewmap.h
+    map/pixelviewmap.h \
+    map/binarymap.h
 
 INCLUDEPATH += $$PWD/include/capstone \
                $$PWD/include/lua
