@@ -3,6 +3,8 @@
 
 #include "../core/luax.h"
 #include "../core/luatable.h"
+#include "../core/luacontainer.h"
+#include "blocks/segment.h"
 
 namespace PrefLib {
 namespace Disassembler {
@@ -16,10 +18,14 @@ class DisassemblerListing: public LuaTable
         ~DisassemblerListing();
 
     public:
-        void createSegment(const char* name, int segmenttype, uint64_t startaddress, uint64_t size_t, uint64_t offset);
+        LuaContainer& segments();
+        void createSegment(const char* name, Segment::Type segmenttype, uint64_t startaddress, uint64_t size, uint64_t offset);
 
     lua_api:
         static int luaCreateSegment(lua_State* l);
+
+    private:
+        LuaContainer _segments;
 };
 
 } // namespace Disassembler
