@@ -45,7 +45,8 @@ SOURCES += \
     disassembler/disassemblerdefinition.cpp \
     disassembler/disassemblerlisting.cpp \
     disassembler/blocks/block.cpp \
-    disassembler/blocks/segment.cpp
+    disassembler/blocks/segment.cpp \
+    core/luacontainer.cpp
 
 HEADERS += \
     prefcontext.h \
@@ -83,7 +84,8 @@ HEADERS += \
     disassembler/disassemblerdefinition.h \
     disassembler/disassemblerlisting.h \
     disassembler/blocks/block.h \
-    disassembler/blocks/segment.h
+    disassembler/blocks/segment.h \
+    core/luacontainer.h
 
 INCLUDEPATH += $$PWD/include/capstone \
                $$PWD/include/lua
