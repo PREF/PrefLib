@@ -4,6 +4,7 @@
 #include "../core/luax.h"
 #include "../core/luatable.h"
 #include "disassemblerdefinition.h"
+#include "blocks/segment.h"
 
 namespace PrefLib {
 namespace Disassembler {
@@ -17,6 +18,7 @@ class DisassemblerContext: public LuaTable
         ~DisassemblerContext();
 
     public:
+        virtual void push() const;
         DisassemblerDefinition* get(int idx) const;
 
     lua_api:

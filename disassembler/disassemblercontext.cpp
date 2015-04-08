@@ -15,6 +15,22 @@ DisassemblerContext::~DisassemblerContext()
 
 }
 
+void DisassemblerContext::push() const
+{
+    lua_State* l = LuaState::instance();
+    LuaTable::push();
+
+    lua_newtable(l);
+
+    lua_pushinteger(l, Segment::Code);
+    lua_setfield(l, -2, "Code");
+
+    lua_pushinteger(l, Segment::Data);
+    lua_setfield(l, -2, "Data");
+
+    lua_setfield(l, -2, "segmenttype");
+}
+
 DisassemblerDefinition *DisassemblerContext::get(int idx) const
 {
     lua_State* l = LuaState::instance();
