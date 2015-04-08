@@ -24,8 +24,9 @@ class PrefContext
     public:
         ~PrefContext();
         const Core::LuaState& state() const;
-        Format::FormatContext* formats() const;
         Exporter::ExporterContext* exporters() const;
+        Format::FormatContext* formats() const;
+        Disassembler::DisassemblerContext* disassemblers() const;
         void addSearchPath(const char* path);
         void executeScript(const char* script);
 

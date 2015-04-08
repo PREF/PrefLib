@@ -150,6 +150,11 @@ Format::FormatContext *PrefContext::formats() const
     return this->_formatctx;
 }
 
+Disassembler::DisassemblerContext *PrefContext::disassemblers() const
+{
+    return this->_disassemblerctx;
+}
+
 Exporter::ExporterContext *PrefContext::exporters() const
 {
     return this->_exporterctx;
