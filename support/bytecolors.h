@@ -11,7 +11,9 @@ namespace Support {
 class ByteColors
 {
     public:
+        enum Category { Zero, FF, Punt, Digits, Alpha, Uncategorized };
         typedef uint32_t Rgb;
+        struct Info { ByteColors::Category Category; ByteColors::Rgb Color; };
 
     public:
         static const ByteColors::Rgb ZeroColor;
@@ -25,12 +27,12 @@ class ByteColors
         ByteColors();
 
     public:
-        static ByteColors::Rgb classColor(uint8_t b);
+        static const ByteColors::Info& info(uint8_t b);
         static ByteColors::Rgb entropyColor(double e);
-        static const std::vector<ByteColors::Rgb>& colorTable();
+        static const std::vector<Info>& colorTable();
 
     private:
-        static std::vector<ByteColors::Rgb> _colortable;
+        static std::vector<ByteColors::Info> _colortable;
 };
 
 } // namespace Support
