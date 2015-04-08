@@ -40,6 +40,10 @@ class LuaTable: public LuaReference
         void setBoolean(const char* k, bool b);
         void setTable(const char* k, LuaTable* t);
         void setFunction(const char* k, lua_CFunction f);
+        void setI(int i, bool b);
+        void setI(int i, const char *s);
+        void setI(int i, lua_Integer in);
+        void setI(int i, lua_CFunction f);
         void setI(int i, const LuaTable *t);
 };
 

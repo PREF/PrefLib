@@ -209,12 +209,24 @@ lua_CFunction LuaTable::getFunction(const char *k) const
     return res;
 }
 
+template<> bool LuaTable::getI<bool>(int i) const
+{
+    lua_State* l = LuaState::instance();
+
+    this->push();
+    lua_rawgeti(l, -1, i + 1);
+
+    bool res = lua_toboolean(l, -1) == true;
+    lua_pop(l, 2);
+    return res;
+}
+
 template<> const char* LuaTable::getI<const char*>(int i) const
 {
     lua_State* l = LuaState::instance();
 
     this->push();
-    lua_rawgeti(l, -1, i);
+    lua_rawgeti(l, -1, i + 1);
 
     const char* res = luaL_checkstring(l, -1);
     lua_pop(l, 2);
@@ -226,7 +238,7 @@ template<> lua_Integer LuaTable::getI<lua_Integer>(int i) const
     lua_State* l = LuaState::instance();
 
     this->push();
-    lua_rawgeti(l, -1, i);
+    lua_rawgeti(l, -1, i + 1);
 
     lua_Integer res = luaL_checkinteger(l, -1);
     lua_pop(l, 2);
@@ -238,7 +250,7 @@ template<> LuaTable* LuaTable::getI<LuaTable*>(int i) const
     lua_State* l = LuaState::instance();
 
     this->push();
-    lua_rawgeti(l, -1, i);
+    lua_rawgeti(l, -1, i + 1);
 
     LuaTable* res = reinterpret_cast<LuaTable*>(checkThis(l, -1));
     lua_pop(l, 2);
@@ -250,7 +262,7 @@ template<> lua_CFunction LuaTable::getI<lua_CFunction>(int i) const
     lua_State* l = LuaState::instance();
 
     this->push();
-    lua_rawgeti(l, -1, i);
+    lua_rawgeti(l, -1, i + 1);
 
     lua_CFunction res = lua_tocfunction(l, -1);
     lua_pop(l, 2);
@@ -319,6 +331,46 @@ void LuaTable::setFunction(const char *k, lua_CFunction f)
     lua_pushstring(l, k);
     lua_pushcfunction(l, f);
     lua_rawset(l, -3);
+    lua_pop(l, 1);
+}
+
+void LuaTable::setI(int i, bool b)
+{
+    lua_State* l = LuaState::instance();
+
+    this->push();
+    lua_pushboolean(l, b);
+    lua_rawseti(l, -2, i);
+    lua_pop(l, 1);
+}
+
+void LuaTable::setI(int i, const char *s)
+{
+    lua_State* l = LuaState::instance();
+
+    this->push();
+    lua_pushstring(l, s);
+    lua_rawseti(l, -2, i);
+    lua_pop(l, 1);
+}
+
+void LuaTable::setI(int i, lua_Integer in)
+{
+    lua_State* l = LuaState::instance();
+
+    this->push();
+    lua_pushinteger(l, in);
+    lua_rawseti(l, -2, i);
+    lua_pop(l, 1);
+}
+
+void LuaTable::setI(int i, lua_CFunction f)
+{
+    lua_State* l = LuaState::instance();
+
+    this->push();
+    lua_pushcfunction(l, f);
+    lua_rawseti(l, -2, i);
     lua_pop(l, 1);
 }
 
