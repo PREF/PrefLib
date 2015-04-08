@@ -4,6 +4,7 @@
 #include <lua.hpp>
 #include <cstdio>
 #include <cstring>
+#include "core/capstone/luacapstone.h"
 #include "core/luastate.h"
 #include "support/math.h"
 #include "exporter/exportercontext.h"

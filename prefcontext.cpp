@@ -8,6 +8,7 @@ luaL_Reg PrefContext::_functions[] = { { nullptr, nullptr } };
 PrefContext::PrefContext()
 {
     luaL_openlibs(Core::LuaState::instance());
+    luaopen_capstone(Core::LuaState::instance());
 
     this->_exporterctx = new Exporter::ExporterContext();
     this->_formatctx = new Format::FormatContext();
