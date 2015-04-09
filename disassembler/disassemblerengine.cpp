@@ -41,7 +41,10 @@ void DisassemblerEngine::prepareStack(DisassemblerListing *listing)
     LuaContainer& entrypoints = listing->entryPoints();
 
     for(size_t i = 0; i < entrypoints.length(); i++)
-        this->_stack.push(entrypoints.getI<lua_Integer>(i));
+    {
+        Block* b = dynamic_cast<Block*>(entrypoints.getI<LuaTable*>(i));
+        this->_stack.push(b->startAddress());
+    }
 }
 
 } // namespace Disassembler

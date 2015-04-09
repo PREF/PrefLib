@@ -52,6 +52,7 @@ class DisassemblerListing: public LuaTable
         LuaContainer& segments();
         LuaContainer& functions();
         LuaContainer& entryPoints();
+        LuaContainer& instructions();
         Segment* findSegment(uint64_t address);
         void createSegment(const char* name, Segment::Type segmenttype, uint64_t startaddress, uint64_t size, uint64_t offset);
         void createFunction(const char* name, Function::Type functiontype, uint64_t address);

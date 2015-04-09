@@ -55,6 +55,7 @@ DisassemblerListing::DisassemblerListing(IO::DataBuffer *databuffer): LuaTable()
     this->setFunction("createsegment", &DisassemblerListing::luaCreateSegment);
     this->setFunction("createfunction", &DisassemblerListing::luaCreateFunction);
     this->setFunction("createentrypoint", &DisassemblerListing::luaCreateEntryPoint);
+    this->setFunction("addinstruction", &DisassemblerListing::luaAddInstruction);
     lua_pop(l, 1);
 }
 
@@ -100,6 +101,11 @@ LuaContainer &DisassemblerListing::functions()
 LuaContainer &DisassemblerListing::entryPoints()
 {
     return this->_entrypoints.ByIndex;
+}
+
+LuaContainer &DisassemblerListing::instructions()
+{
+    return this->_instructions.ByIndex;
 }
 
 Segment *DisassemblerListing::findSegment(uint64_t address)
