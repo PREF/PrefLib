@@ -70,7 +70,8 @@ SOURCES += \
     disassembler/blocks/instruction.cpp \
     types/buffer.cpp \
     disassembler/blocks/capstoneinstruction.cpp \
-    disassembler/disassemblerengine.cpp
+    disassembler/disassemblerengine.cpp \
+    disassembler/listingprinter.cpp
 
 HEADERS += \
     prefcontext.h \
@@ -135,7 +136,8 @@ HEADERS += \
     disassembler/blocks/instruction.h \
     types/buffer.h \
     disassembler/blocks/capstoneinstruction.h \
-    disassembler/disassemblerengine.h
+    disassembler/disassemblerengine.h \
+    disassembler/listingprinter.h
 
 INCLUDEPATH += $$PWD/include/capstone \
                $$PWD/include/lua
