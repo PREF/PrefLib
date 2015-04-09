@@ -21,14 +21,22 @@ void DisassemblerContext::push() const
     LuaTable::push();
 
     lua_newtable(l);
-
     lua_pushinteger(l, Segment::Code);
     lua_setfield(l, -2, "Code");
-
     lua_pushinteger(l, Segment::Data);
     lua_setfield(l, -2, "Data");
-
     lua_setfield(l, -2, "segmenttype");
+
+    lua_newtable(l);
+    lua_pushinteger(l, Function::FunctionBlock);
+    lua_setfield(l, -2, "Function");
+    lua_pushinteger(l, Function::EntryPointBlock);
+    lua_setfield(l, -2, "EntryPoint");
+    lua_pushinteger(l, Function::ExportBlock);
+    lua_setfield(l, -2, "Export");
+    lua_pushinteger(l, Function::ImportBlock);
+    lua_setfield(l, -2, "Import");
+    lua_setfield(l, -2, "functiontype");
 }
 
 DisassemblerDefinition *DisassemblerContext::get(int idx) const
