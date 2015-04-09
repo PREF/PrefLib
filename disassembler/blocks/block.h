@@ -28,6 +28,7 @@ class Block : public LuaTable
         bool isEmpty() const;
         bool isBookmarked() const;
         bool contains(uint64_t address);
+        uint64_t address() const; /* Syntactic sugar */
         uint64_t startAddress() const;
         uint64_t endAddress() const;
         uint64_t size() const;

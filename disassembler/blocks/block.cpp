@@ -69,6 +69,11 @@ bool Block::contains(uint64_t address)
     return (address >= this->startAddress()) && (address < this->endAddress());
 }
 
+uint64_t Block::address() const
+{
+    return this->startAddress();
+}
+
 uint64_t Block::startAddress() const
 {
     return this->getInteger("startaddress");
@@ -95,7 +100,7 @@ int Block::metaIndex(lua_State *l)
 
     if(!strcmp(arg, "address")) /* Syntactic sugar */
     {
-        lua_pushinteger(l, this->startAddress());
+        lua_pushinteger(l, this->address());
         return 1;
     }
 
