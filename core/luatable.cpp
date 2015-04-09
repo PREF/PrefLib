@@ -144,6 +144,20 @@ bool LuaTable::hasField(const char *k) const
     return res;
 }
 
+bool LuaTable::hasField(lua_Integer i) const
+{
+    lua_State* l = LuaState::instance();
+    bool res = false;
+
+    this->push();
+    lua_pushinteger(l, i);
+    lua_rawget(l, -2);
+
+    res = !lua_isnoneornil(l, -1);
+    lua_pop(l, 2);
+    return res;
+}
+
 const char *LuaTable::getString(const char *k) const
 {
     lua_State* l = LuaState::instance();

@@ -45,8 +45,10 @@ class DisassemblerListing: public LuaTable
         ~DisassemblerListing();
 
     public:
+        bool isDisassembled(DataValue& address);
         uint64_t baseAddress() const;
         MemoryBuffer* memoryBuffer() const;
+        IO::DataBuffer* dataBuffer() const;
         LuaContainer& segments();
         LuaContainer& functions();
         LuaContainer& entryPoints();
@@ -64,6 +66,7 @@ class DisassemblerListing: public LuaTable
         static int luaAddInstruction(lua_State* l);
 
     private:
+        IO::DataBuffer* _databuffer;
         MemoryBuffer* _memorybuffer;
         BlockContainer _segments;
         BlockContainer _functions;

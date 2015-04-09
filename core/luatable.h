@@ -28,6 +28,7 @@ class LuaTable: public LuaReference
         virtual size_t length() const;
         void protectedCall(int nargs, int nres) const;
         bool hasField(const char* k) const;
+        bool hasField(lua_Integer i) const;
         const char* getString(const char* k) const;
         lua_Integer getInteger(const char* k) const;
         bool getBoolean(const char* k) const;

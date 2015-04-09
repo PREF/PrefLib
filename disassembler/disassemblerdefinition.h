@@ -22,7 +22,7 @@ class DisassemblerDefinition: public LuaTable
         void initialize();
         void finalize();
         void map(DisassemblerListing* listing);
-        void disassemble(DisassemblerListing *listing, DataValue &address);
+        DataValue disassemble(DisassemblerListing *listing, DataValue &address);
 
     public:
         const char *name() const;

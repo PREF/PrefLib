@@ -38,7 +38,7 @@ int DisassemblerListing::MemoryBuffer::luaRead(lua_State *l)
     return 1;
 }
 
-DisassemblerListing::DisassemblerListing(IO::DataBuffer *databuffer): LuaTable()
+DisassemblerListing::DisassemblerListing(IO::DataBuffer *databuffer): LuaTable(), _databuffer(databuffer)
 {
     this->_memorybuffer = new MemoryBuffer(this, databuffer);
     lua_State* l = LuaState::instance();
@@ -67,6 +67,11 @@ DisassemblerListing::~DisassemblerListing()
     }
 }
 
+bool DisassemblerListing::isDisassembled(DataValue& address)
+{
+    return this->_instructions.ByAddress.hasField(static_cast<uint64_t>(address));
+}
+
 uint64_t DisassemblerListing::baseAddress() const
 {
     return static_cast<uint64_t>(this->getInteger("baseaddress"));
@@ -75,6 +80,11 @@ uint64_t DisassemblerListing::baseAddress() const
 DisassemblerListing::MemoryBuffer *DisassemblerListing::memoryBuffer() const
 {
     return this->_memorybuffer;
+}
+
+IO::DataBuffer *DisassemblerListing::dataBuffer() const
+{
+    return this->_databuffer;
 }
 
 LuaContainer& DisassemblerListing::segments()

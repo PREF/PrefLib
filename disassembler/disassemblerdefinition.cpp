@@ -54,6 +54,9 @@ void DisassemblerDefinition::map(DisassemblerListing *listing)
     if(!this->hasField("map"))
         return;
 
+    Format::FormatTree* formattree = this->format()->build(listing->dataBuffer());
+    listing->setTable("formattree", formattree);
+
     lua_State* l = LuaState::instance();
 
     this->push();
@@ -64,10 +67,10 @@ void DisassemblerDefinition::map(DisassemblerListing *listing)
     lua_pop(l, 1);
 }
 
-void DisassemblerDefinition::disassemble(DisassemblerListing* listing, DataValue &address)
+DataValue DisassemblerDefinition::disassemble(DisassemblerListing* listing, DataValue &address)
 {
     if(!this->hasField("disassemble"))
-        return;
+        return DataValue();
 
     lua_State* l = LuaState::instance();
     address.castTo(this->addressType());
@@ -77,8 +80,13 @@ void DisassemblerDefinition::disassemble(DisassemblerListing* listing, DataValue
     this->push(); // Self
     listing->push();
     address.push();
-    this->protectedCall(3, 0);
-    lua_pop(l, 1);
+    this->protectedCall(3, 1);
+
+    DataValue next = luaL_checkinteger(l, -1);
+    next.castTo(this->addressType());
+
+    lua_pop(l, 2);
+    return next;
 }
 
 const char* DisassemblerDefinition::name() const

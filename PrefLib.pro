@@ -69,7 +69,8 @@ SOURCES += \
     disassembler/blocks/function.cpp \
     disassembler/blocks/instruction.cpp \
     types/buffer.cpp \
-    disassembler/blocks/capstoneinstruction.cpp
+    disassembler/blocks/capstoneinstruction.cpp \
+    disassembler/disassemblerengine.cpp
 
 HEADERS += \
     prefcontext.h \
@@ -133,7 +134,8 @@ HEADERS += \
     disassembler/blocks/function.h \
     disassembler/blocks/instruction.h \
     types/buffer.h \
-    disassembler/blocks/capstoneinstruction.h
+    disassembler/blocks/capstoneinstruction.h \
+    disassembler/disassemblerengine.h
 
 INCLUDEPATH += $$PWD/include/capstone \
                $$PWD/include/lua
