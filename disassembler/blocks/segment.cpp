@@ -34,6 +34,16 @@ const char *Segment::name() const
     return this->getString("name");
 }
 
+uint64_t Segment::baseOffset() const
+{
+    return this->getInteger("baseoffset");
+}
+
+uint64_t Segment::calculateOffset(uint64_t address)
+{
+    return (address - this->startAddress()) + this->baseOffset();
+}
+
 Block::Type Segment::type() const
 {
     return Block::SegmentBlock;

@@ -106,6 +106,25 @@ DataType::Type DisassemblerDefinition::addressType() const
     return static_cast<DataType::Type>(this->getInteger("addresstype"));
 }
 
+int DisassemblerDefinition::luaNext(lua_State *l)
+{
+    int argc = lua_gettop(l);
+    luaX_expectargc(l, argc, 2);
+
+    int t = lua_type(l, 2);
+
+    if(t == LUA_TTABLE) /* Custom Instruction */
+    {
+        Block* b = reinterpret_cast<Block*>(checkThis(l, 2));
+        lua_pushinteger(l, b->size());
+        return 1;
+    }
+
+    cs_insn* insn = (*(cs_insn**)luaL_checkudata(l, 1, "__insn"));
+    lua_pushinteger(l, insn->size);
+    return 1;
+}
+
 } // namespace Disassembler
 } // namespace PrefLib
 

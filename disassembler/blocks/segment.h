@@ -19,6 +19,8 @@ class Segment: public Block
         bool isCode() const;
         bool isData() const;
         const char* name() const;
+        uint64_t baseOffset() const;
+        uint64_t calculateOffset(uint64_t address);
 
     protected:
         virtual Block::Type type() const;

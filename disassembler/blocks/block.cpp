@@ -93,6 +93,12 @@ int Block::metaIndex(lua_State *l)
 {
     const char* arg = luaL_checkstring(l, 2);
 
+    if(!strcmp(arg, "address")) /* Syntactic sugar */
+    {
+        lua_pushinteger(l, this->startAddress());
+        return 1;
+    }
+
     if(!strcmp(arg, "endaddress"))
     {
         lua_pushinteger(l, this->endAddress());

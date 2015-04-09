@@ -1,8 +1,10 @@
 #ifndef PREFLIB_DISASSEMBLER_DISASSEMBLERDEFINITION_H
 #define PREFLIB_DISASSEMBLER_DISASSEMBLERDEFINITION_H
 
+#include <capstone.h>
 #include "../core/luatable.h"
 #include "../format/formatdefinition.h"
+#include "blocks/block.h"
 #include "disassemblerlisting.h"
 
 namespace PrefLib {
@@ -28,6 +30,9 @@ class DisassemblerDefinition: public LuaTable
         const char* version() const;
         const Format::FormatDefinition* format() const;
         DataType::Type addressType() const;
+
+    lua_api:
+        static int luaNext(lua_State* l);
 };
 
 } // namespace Disassembler

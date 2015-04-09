@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstdint>
 #include "../types/datavalue.h"
+#include "../types/buffer.h"
 #include "../core/luax.h"
 #include "../core/luatable.h"
 
@@ -14,22 +15,6 @@ using namespace Core;
 
 class DataBuffer : public Core::LuaTable
 {
-    private:
-        class Buffer: public Core::LuaReference
-        {
-            public:
-                Buffer(uint64_t len);
-                unsigned char* operator &();
-
-            private:
-                static int luaMetaIndex(lua_State* l);
-                static int luaMetaNewIndex(lua_State* l);
-                static int luaMetaLength(lua_State* l);
-
-            private:
-                unsigned char* _data;
-        };
-
     public:
         enum OpenMode { Read = 1, Write = 2, ReadWrite = Read | Write };
 
