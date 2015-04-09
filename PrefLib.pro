@@ -65,7 +65,8 @@ SOURCES += \
     core/capstone/tables/sparc_const.cpp \
     core/capstone/tables/sysz_const.cpp \
     core/capstone/tables/x86_const.cpp \
-    core/capstone/tables/xcore_const.cpp
+    core/capstone/tables/xcore_const.cpp \
+    disassembler/blocks/function.cpp
 
 HEADERS += \
     prefcontext.h \
@@ -125,7 +126,8 @@ HEADERS += \
     core/capstone/tables/sparc_const.h \
     core/capstone/tables/sysz_const.h \
     core/capstone/tables/x86_const.h \
-    core/capstone/tables/xcore_const.h
+    core/capstone/tables/xcore_const.h \
+    disassembler/blocks/function.h
 
 INCLUDEPATH += $$PWD/include/capstone \
                $$PWD/include/lua
