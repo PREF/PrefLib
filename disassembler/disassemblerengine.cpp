@@ -16,7 +16,7 @@ DisassemblerEngine::~DisassemblerEngine()
 void DisassemblerEngine::disassemble(DisassemblerListing *listing)
 {
     this->_definition->map(listing);
-    this->prepareQueue(listing);
+    this->prepareStack(listing);
 
     while(!this->_stack.empty())
     {
@@ -36,7 +36,7 @@ void DisassemblerEngine::disassemble(DisassemblerListing *listing)
     }
 }
 
-void DisassemblerEngine::prepareQueue(DisassemblerListing *listing)
+void DisassemblerEngine::prepareStack(DisassemblerListing *listing)
 {
     LuaContainer& entrypoints = listing->entryPoints();
 

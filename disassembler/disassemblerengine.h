@@ -16,7 +16,7 @@ class DisassemblerEngine
         void disassemble(DisassemblerListing* listing);
 
     private:
-        void prepareQueue(DisassemblerListing* listing);
+        void prepareStack(DisassemblerListing* listing);
 
     private:
         DisassemblerDefinition* _definition;
