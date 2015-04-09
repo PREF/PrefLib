@@ -30,6 +30,16 @@ LuaContainer& DisassemblerListing::segments()
     return this->_segments.ByIndex;
 }
 
+LuaContainer &DisassemblerListing::functions()
+{
+    return this->_functions.ByIndex;
+}
+
+LuaContainer &DisassemblerListing::entryPoints()
+{
+   return this->_entrypoints.ByIndex;
+}
+
 void DisassemblerListing::createSegment(const char *name, Segment::Type segmenttype, uint64_t startaddress, uint64_t size, uint64_t baseoffset)
 {
     Segment* segment = new Segment(name, segmenttype, startaddress, size, baseoffset);
