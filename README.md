@@ -2,7 +2,7 @@ PrefLib
 ====
 
 This project provides PREF's core source code in a lightweight static library.
-This library will be part of PREF 2.x series.
+PrefLib will be part of PREF 2.x series.
 
 Basically, this library is a rewrite of PREF 1.x core and provides a clean 
 Lua/Capstone core for Data/Format analysis and Disassembling.
@@ -20,11 +20,12 @@ the cleanest possible implementation:
 - Binary Maps (DotPlot, BinaryMap, and Byte as Pixel)
 - Support Library for common data operations
 - Platform Independent I/O classes
-- Type Independent data types (type/DataValue is basically a Variant)
+- Type Independent data types (DataValue is basically a Variant)
 - User Defined Exporters
 - Disassembler Engine (Custom or Capstone based disassembler, under development)
 
-Dependencies
+Dependencies and Requirements
 -----
+- C++11 compiler
 - Lua >= 5.2
 - Capstone Engine
