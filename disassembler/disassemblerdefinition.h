@@ -6,6 +6,7 @@
 #include "../format/formatdefinition.h"
 #include "blocks/block.h"
 #include "disassemblerlisting.h"
+#include "listingprinter.h"
 
 namespace PrefLib {
 namespace Disassembler {
@@ -23,6 +24,7 @@ class DisassemblerDefinition: public LuaTable
         void finalize();
         void map(DisassemblerListing* listing);
         DataValue disassemble(DisassemblerListing *listing, DataValue &address);
+        void output(ListingPrinter* printer, Instruction* instruction);
 
     public:
         const char *name() const;

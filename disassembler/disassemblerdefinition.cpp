@@ -89,6 +89,22 @@ DataValue DisassemblerDefinition::disassemble(DisassemblerListing* listing, Data
     return next;
 }
 
+void DisassemblerDefinition::output(ListingPrinter *printer, Instruction *instruction)
+{
+    if(!this->hasField("output"))
+        return;
+
+    lua_State* l = LuaState::instance();
+
+    this->push();
+    lua_getfield(l, -1, "output");
+    this->push(); // Self
+    printer->push();
+    instruction->push();
+    this->protectedCall(3, 0);
+    lua_pop(l, 1);
+}
+
 const char* DisassemblerDefinition::name() const
 {
     return this->getString("name");
