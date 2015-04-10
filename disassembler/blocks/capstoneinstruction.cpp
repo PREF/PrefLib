@@ -3,7 +3,7 @@
 namespace PrefLib {
 namespace Disassembler {
 
-CapstoneInstruction::CapstoneInstruction(csh handle, cs_insn *insn): Instruction(insn->address, insn->size, insn->mnemonic, cs_insn_group(handle, insn, CS_GRP_JUMP), cs_insn_group(handle, insn, CS_GRP_CALL), false), _handle(handle), _insn(insn)
+CapstoneInstruction::CapstoneInstruction(csh handle, cs_insn *insn, int csinsnref): Instruction(insn->address, insn->size, insn->mnemonic, cs_insn_group(handle, insn, CS_GRP_JUMP), cs_insn_group(handle, insn, CS_GRP_CALL), false), _handle(handle), _insn(insn), _csinsinref(csinsnref)
 {
 
 }
@@ -15,6 +15,29 @@ CapstoneInstruction::~CapstoneInstruction()
         cs_free(this->_insn, 1);
         this->_insn = nullptr;
     }
+
+    if(this->_csinsinref != LUA_REFNIL)
+    {
+        luaL_unref(LuaState::instance(), LUA_REGISTRYINDEX, this->_csinsinref);
+        this->_csinsinref = LUA_REFNIL;
+    }
+}
+
+int CapstoneInstruction::metaIndex(lua_State *l)
+{
+    int res = Instruction::metaIndex(l);
+
+    if(!res)
+    {
+        lua_rawgeti(l, LUA_REGISTRYINDEX, this->_csinsinref); /* Push cs_insn* */
+        lua_pushvalue(l, 2);
+        lua_gettable(l, -2);
+
+        lua_remove(l, -2); /* Pop cs_insn* */
+        return 1;
+    }
+
+    return res;
 }
 
 } // namespace Disassembler

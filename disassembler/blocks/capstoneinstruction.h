@@ -10,12 +10,16 @@ namespace Disassembler {
 class CapstoneInstruction: public Instruction
 {
     public:
-        CapstoneInstruction(csh handle, cs_insn* insn);
+        CapstoneInstruction(csh handle, cs_insn* insn, int csinsnref);
         ~CapstoneInstruction();
+
+    protected:
+        virtual int metaIndex(lua_State *l);
 
     private:
         csh _handle;
         cs_insn* _insn;
+        int _csinsinref;
 };
 
 } // namespace Disassembler

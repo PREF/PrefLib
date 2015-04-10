@@ -151,15 +151,13 @@ void DisassemblerListing::createEntryPoint(const char *name, uint64_t address)
 void DisassemblerListing::addInstruction(Instruction *instruction)
 {
     this->_instructions.ByIndex.append(instruction);
-    this->_instructions.ByAddress[instruction->startAddress()] = instruction;
+    this->_instructions.ByAddress[instruction->address()] = instruction;
 }
 
-void DisassemblerListing::addInstruction(csh handle, cs_insn *insn)
+void DisassemblerListing::addInstruction(CapstoneInstruction* csinstruction)
 {
-    CapstoneInstruction* csinstruction = new CapstoneInstruction(handle, insn);
-
     this->_instructions.ByIndex.append(csinstruction);
-    this->_instructions.ByAddress[insn->address] = csinstruction;
+    this->_instructions.ByAddress[csinstruction->address()] = csinstruction;
 }
 
 int DisassemblerListing::luaCreateSegment(lua_State *l)
@@ -201,7 +199,11 @@ int DisassemblerListing::luaAddInstruction(lua_State *l)
 
     if(argc == 3) /* Capstone Instruction */
     {
-        thethis->addInstruction(static_cast<csh>(luaL_checkinteger(l, 2)), *(reinterpret_cast<cs_insn**>(luaL_checkudata(l, 3, "__insn"))));
+        lua_pushvalue(l, 3);
+        int ref = luaL_ref(l, LUA_REGISTRYINDEX);
+
+        CapstoneInstruction* csinstruction = new CapstoneInstruction(static_cast<csh>(luaL_checkinteger(l, 2)), *(reinterpret_cast<cs_insn**>(luaL_checkudata(l, 3, "cs_insn"))), ref);
+        thethis->addInstruction(csinstruction);
         return 0;
     }
 

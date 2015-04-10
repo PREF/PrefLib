@@ -58,7 +58,7 @@ class DisassemblerListing: public LuaTable
         void createFunction(const char* name, Function::Type functiontype, uint64_t address);
         void createEntryPoint(const char* name, uint64_t address);
         void addInstruction(Instruction* instruction);
-        void addInstruction(csh handle, cs_insn* insn);
+        void addInstruction(CapstoneInstruction *csinstruction);
 
     lua_api:
         static int luaCreateSegment(lua_State* l);
