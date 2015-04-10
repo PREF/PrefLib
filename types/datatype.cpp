@@ -228,6 +228,9 @@ Endianness::Type DataType::endianness(DataType::Type type)
 {
     if(DataType::isArithmetic(type))
     {
+        if(type & DataType::PlatformEndian)
+            return Endianness::platformEndian();
+
         if(type & DataType::LittleEndian)
             return Endianness::LittleEndian;
 
