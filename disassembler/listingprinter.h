@@ -6,6 +6,8 @@
 #include "../core/luax.h"
 #include "../core/luatable.h"
 #include "../support/bytecolors.h"
+#include "../types/datatype.h"
+#include "../types/datavalue.h"
 
 namespace PrefLib {
 namespace Disassembler {
@@ -14,12 +16,29 @@ using namespace Core;
 
 class ListingPrinter: public LuaTable
 {
-    private:
+    public:
         typedef std::pair<const char*, Support::ByteColors::Rgb> Chunk;
+        typedef std::list<ListingPrinter::Chunk> ChunkList;
 
     public:
         ListingPrinter();
         ~ListingPrinter();
+
+    private:
+        char* allocate(size_t len);
+
+    public:
+        ListingPrinter* out(const char* s);
+        ListingPrinter* out(const char*, Support::ByteColors::Rgb rgb);
+        ListingPrinter* outWord(const char* s);
+        ListingPrinter* outWord(const char* s, Support::ByteColors::Rgb rgb);
+        ListingPrinter* outComment(const char* s);
+        ListingPrinter* outRegister(const char* s);
+        ListingPrinter* outValue(lua_Integer value, DataType::Type datatype);
+        ListingPrinter* outValue(lua_Integer value, DataType::Type datatype, lua_Integer base);
+        virtual size_t length() const;
+        const ChunkList& chunks() const;
+        const char* toString();
         void reset();
 
     lua_api:
@@ -30,7 +49,10 @@ class ListingPrinter: public LuaTable
         static int luaOutValue(lua_State* l);
 
     private:
-        std::list<ListingPrinter::Chunk> _chunks;
+        ChunkList _chunks;
+        size_t _length;
+        size_t _oldlength;
+        char* _mergedstring;
 };
 
 } // namespace Disassembler
