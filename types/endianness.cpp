@@ -9,6 +9,18 @@ Endianness::Type Endianness::platformEndian()
     return static_cast<Endianness::Type>(Endianness::_platformendian.value);
 }
 
+void Endianness::pushTable(lua_State *l)
+{
+    lua_newtable(l);
+
+    lua_pushinteger(l, Endianness::LittleEndian);
+    lua_setfield(l, -2, "LittleEndian");
+    lua_pushinteger(l, Endianness::BigEndian);
+    lua_setfield(l, -2, "BigEndian");
+    lua_pushinteger(l, Endianness::platformEndian());
+    lua_setfield(l, -2, "PlatformEndian");
+}
+
 void Endianness::swap(int16_t* val)
 {
     Endianness::swap(reinterpret_cast<uint16_t*>(val));

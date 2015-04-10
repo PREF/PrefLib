@@ -1,12 +1,13 @@
 #ifndef PREFLIB_ENDIANNESS_H
 #define PREFLIB_ENDIANNESS_H
 
+#include "../core/luax.h"
 #include <cstdint>
 #include <type_traits>
 
 namespace PrefLib {
 
-using namespace std;
+using namespace Core;
 
 class Endianness
 {
@@ -21,6 +22,7 @@ class Endianness
 
     public:
         template<typename T> static void swapEndianness(T&) { }
+        static void pushTable(lua_State* l);
         static void swap(int16_t* val);
         static void swap(int32_t* val);
         static void swap(int64_t* val);

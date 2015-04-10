@@ -35,7 +35,7 @@ double Math::entropy(IO::DataBuffer *databuffer, uint64_t startoffset, uint64_t 
     ByteElaborator::countBytes(cr, databuffer, startoffset, startoffset + size);
 
     double e = 0.0;
-    uint64_t base = min(size, 256ul);
+    uint64_t base = std::min(size, 256ul);
 
     for(uint64_t i = 0; i < cr.Counts.size(); i++)
     {

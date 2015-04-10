@@ -20,7 +20,6 @@ class PrefContext
 
     private:
         static int luaopen_preflib(lua_State *l);
-        static void luaregister_datatype(lua_State* l);
 
     public:
         ~PrefContext();

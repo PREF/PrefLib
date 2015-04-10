@@ -20,7 +20,10 @@ int PrefContext::luaopen_preflib(lua_State* l)
     PrefContext* instance = PrefContext::instance();
     luaL_newlib(l, PrefContext::_functions);
 
-    luaregister_datatype(l);
+    Endianness::pushTable(l);
+    lua_setfield(l, -2, "endianness");
+
+    DataType::pushTable(l);
     lua_setfield(l, -2, "datatype");
 
     Support::Math::pushTable(l);
@@ -36,92 +39,6 @@ int PrefContext::luaopen_preflib(lua_State* l)
     lua_setfield(l, -2, "disassembler");
 
     return 1;
-}
-
-void PrefContext::luaregister_datatype(lua_State *l)
-{
-    lua_newtable(l);
-
-    lua_pushinteger(l, DataType::Invalid);
-    lua_setfield(l, -2, "Invalid");
-
-    lua_pushinteger(l, DataType::UInt8);
-    lua_setfield(l, -2, "UInt8");
-    lua_pushinteger(l, DataType::UInt16);
-    lua_setfield(l, -2, "UInt16");
-    lua_pushinteger(l, DataType::UInt32);
-    lua_setfield(l, -2, "UInt32");
-    lua_pushinteger(l, DataType::UInt64);
-    lua_setfield(l, -2, "UInt64");
-
-    lua_pushinteger(l, DataType::Int8);
-    lua_setfield(l, -2, "Int8");
-    lua_pushinteger(l, DataType::Int16);
-    lua_setfield(l, -2, "Int16");
-    lua_pushinteger(l, DataType::Int32);
-    lua_setfield(l, -2, "Int32");
-    lua_pushinteger(l, DataType::Int64);
-    lua_setfield(l, -2, "Int64");
-
-    lua_pushinteger(l, DataType::Float);
-    lua_setfield(l, -2, "Float");
-    lua_pushinteger(l, DataType::Double);
-    lua_setfield(l, -2, "Double");
-
-    lua_pushinteger(l, DataType::UInt16_LE);
-    lua_setfield(l, -2, "UInt16_LE");
-    lua_pushinteger(l, DataType::UInt32_LE);
-    lua_setfield(l, -2, "UInt32_LE");
-    lua_pushinteger(l, DataType::UInt64_LE);
-    lua_setfield(l, -2, "UInt64_LE");
-
-    lua_pushinteger(l, DataType::Int16_LE);
-    lua_setfield(l, -2, "Int16_LE");
-    lua_pushinteger(l, DataType::Int32_LE);
-    lua_setfield(l, -2, "Int32_LE");
-    lua_pushinteger(l, DataType::Int64_LE);
-    lua_setfield(l, -2, "Int64_LE");
-
-    lua_pushinteger(l, DataType::Float_LE);
-    lua_setfield(l, -2, "Float_LE");
-    lua_pushinteger(l, DataType::Double_LE);
-    lua_setfield(l, -2, "Double_LE");
-
-    lua_pushinteger(l, DataType::UInt16_BE);
-    lua_setfield(l, -2, "UInt16_BE");
-    lua_pushinteger(l, DataType::UInt32_BE);
-    lua_setfield(l, -2, "UInt32_BE");
-    lua_pushinteger(l, DataType::UInt64_BE);
-    lua_setfield(l, -2, "UInt64_BE");
-
-    lua_pushinteger(l, DataType::Int16_BE);
-    lua_setfield(l, -2, "Int16_BE");
-    lua_pushinteger(l, DataType::Int32_BE);
-    lua_setfield(l, -2, "Int32_BE");
-    lua_pushinteger(l, DataType::Int64_BE);
-    lua_setfield(l, -2, "Int64_BE");
-
-    lua_pushinteger(l, DataType::Float_BE);
-    lua_setfield(l, -2, "Float_BE");
-    lua_pushinteger(l, DataType::Double_BE);
-    lua_setfield(l, -2, "Double_BE");
-
-    lua_pushinteger(l, DataType::AsciiCharacter);
-    lua_setfield(l, -2, "AsciiCharacter");
-    lua_pushinteger(l, DataType::UnicodeCharacter);
-    lua_setfield(l, -2, "UnicodeCharacter");
-    lua_pushinteger(l, DataType::Character);
-    lua_setfield(l, -2, "Character");
-
-    lua_pushinteger(l, DataType::Array);
-    lua_setfield(l, -2, "Array");
-    lua_pushinteger(l, DataType::AsciiString);
-    lua_setfield(l, -2, "AsciiString");
-    lua_pushinteger(l, DataType::UnicodeString);
-    lua_setfield(l, -2, "UnicodeString");
-
-    lua_pushinteger(l, DataType::Blob);
-    lua_setfield(l, -2, "Blob");
 }
 
 PrefContext::~PrefContext()

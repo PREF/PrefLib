@@ -2,6 +2,7 @@
 #define PREFLIB_DATATYPE_H
 
 #include <cstring>
+#include "../core/luax.h"
 #include "endianness.h"
 
 #define ReturnAdjustType(w) { if(DataType::isSigned(type)) { \
@@ -18,6 +19,8 @@
                                         return DataType::UInt ## w; }
 
 namespace PrefLib {
+
+using namespace Core;
 
 class DataType
 {
@@ -93,6 +96,7 @@ class DataType
         };
 
     public:
+        static void pushTable(lua_State* l);
         static bool isArithmetic(DataType::Type type);
         static bool isIntegral(DataType::Type type);
         static bool isFloatingPoint(DataType::Type type);
@@ -111,6 +115,26 @@ class DataType
         static DataType::Type adjust(DataType::Type type, Endianness::Type endianness);
         static DataType::Type bestType(int bytewidth, bool signedtype);
         static const char* stringValue(DataType::Type type);
+
+    lua_api:
+        static int luaIsArithmetic(lua_State* l);
+        static int luaIsIntegral(lua_State* l);
+        static int luaIsFloatingPoint(lua_State* l);
+        static int luaIsSigned(lua_State* l);
+        static int luaIsFloat(lua_State* l);
+        static int luaIsDouble(lua_State* l);
+        static int luaIsString(lua_State* l);
+        static int luaIsAscii(lua_State* l);
+        static int luaIsUnicode(lua_State* l);
+        static int luaIsArray(lua_State* l);
+        static int luaIsLittleEndian(lua_State* l);
+        static int luaIsBigEndian(lua_State* l);
+        static int luaSizeOf(lua_State* l);
+        static int luaBitWidth(lua_State* l);
+        static int luaEndianness(lua_State* l);
+        static int luaAdjust(lua_State* l);
+        static int luaBestType(lua_State* l);
+        static int luaStringValue(lua_State* l);
 };
 
 } // namespace PrefLib
