@@ -13,6 +13,7 @@ DisassemblerDefinition::DisassemblerDefinition(const char* name, Format::FormatD
     this->setInteger("addresstype", addresstype);
     this->setString("author", author);
     this->setString("version", version);
+    this->setFunction("next", &DisassemblerDefinition::luaNext);
     lua_pop(l, 1);
 }
 
@@ -140,12 +141,12 @@ int DisassemblerDefinition::luaNext(lua_State *l)
     if(t == LUA_TTABLE) /* Custom Instruction */
     {
         Block* b = reinterpret_cast<Block*>(checkThis(l, 2));
-        lua_pushinteger(l, b->size());
+        lua_pushinteger(l, b->address() + b->size());
         return 1;
     }
 
-    cs_insn* insn = (*(cs_insn**)luaL_checkudata(l, 1, "__insn"));
-    lua_pushinteger(l, insn->size);
+    cs_insn* insn = (*(cs_insn**)luaL_checkudata(l, 2, "cs_insn"));
+    lua_pushinteger(l, insn->address + insn->size);
     return 1;
 }
 
