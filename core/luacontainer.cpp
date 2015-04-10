@@ -65,7 +65,7 @@ void LuaContainer::append(LuaTable *val)
 
 LuaContainer::Entry LuaContainer::operator[](lua_Integer idx)
 {
-    return Entry(*this, idx + 1);
+    return Entry(*this, idx);
 }
 
 LuaContainer::Entry LuaContainer::operator[](const char *key)

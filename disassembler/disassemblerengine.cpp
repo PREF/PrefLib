@@ -34,9 +34,7 @@ void DisassemblerEngine::disassemble(DisassemblerListing *listing)
         if(listing->isDisassembled(dv))
             continue;
 
-        dv = this->_definition->disassemble(this, listing, dv);
-
-        if(dv.isZero()) /* if return 0 then stop */
+        if(!this->_definition->disassemble(this, listing, dv))
             break;
     }
 }

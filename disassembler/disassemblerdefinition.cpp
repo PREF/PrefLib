@@ -67,13 +67,12 @@ void DisassemblerDefinition::map(DisassemblerListing *listing)
     lua_pop(l, 1);
 }
 
-DataValue DisassemblerDefinition::disassemble(LuaTable *engine, DisassemblerListing* listing, DataValue &address)
+lua_Integer DisassemblerDefinition::disassemble(LuaTable *engine, DisassemblerListing* listing, const DataValue &address)
 {
     if(!this->hasField("disassemble"))
-        return DataValue();
+        return 0;
 
     lua_State* l = LuaState::instance();
-    address.castTo(this->addressType());
 
     this->push();
     lua_getfield(l, -1, "disassemble");
@@ -83,11 +82,9 @@ DataValue DisassemblerDefinition::disassemble(LuaTable *engine, DisassemblerList
     address.push();
     this->protectedCall(4, 1);
 
-    DataValue next = luaL_checkinteger(l, -1);
-    next.castTo(this->addressType());
-
+    lua_Integer res = luaL_checkinteger(l, -1);
     lua_pop(l, 2);
-    return next;
+    return res;
 }
 
 void DisassemblerDefinition::output(ListingPrinter *printer, Instruction *instruction)

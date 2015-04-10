@@ -23,7 +23,7 @@ class DisassemblerDefinition: public LuaTable
         void initialize();
         void finalize();
         void map(DisassemblerListing* listing);
-        DataValue disassemble(LuaTable* engine, DisassemblerListing *listing, DataValue &address);
+        lua_Integer disassemble(LuaTable* engine, DisassemblerListing *listing, const DataValue &address);
         void output(ListingPrinter* printer, Instruction* instruction);
 
     public:

@@ -6,7 +6,7 @@
 namespace PrefLib {
 namespace Core {
 
-class LuaContainer : public LuaTable
+class LuaContainer: public LuaTable
 {
     private:
         class Entry
