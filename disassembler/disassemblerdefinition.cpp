@@ -13,7 +13,6 @@ DisassemblerDefinition::DisassemblerDefinition(const char* name, Format::FormatD
     this->setInteger("addresstype", addresstype);
     this->setString("author", author);
     this->setString("version", version);
-    this->setFunction("next", &DisassemblerDefinition::luaNext);
     lua_pop(l, 1);
 }
 
@@ -68,7 +67,7 @@ void DisassemblerDefinition::map(DisassemblerListing *listing)
     lua_pop(l, 1);
 }
 
-DataValue DisassemblerDefinition::disassemble(DisassemblerListing* listing, DataValue &address)
+DataValue DisassemblerDefinition::disassemble(LuaTable *engine, DisassemblerListing* listing, DataValue &address)
 {
     if(!this->hasField("disassemble"))
         return DataValue();
@@ -79,9 +78,10 @@ DataValue DisassemblerDefinition::disassemble(DisassemblerListing* listing, Data
     this->push();
     lua_getfield(l, -1, "disassemble");
     this->push(); // Self
+    engine->push();
     listing->push();
     address.push();
-    this->protectedCall(3, 1);
+    this->protectedCall(4, 1);
 
     DataValue next = luaL_checkinteger(l, -1);
     next.castTo(this->addressType());
@@ -129,25 +129,6 @@ const Format::FormatDefinition *DisassemblerDefinition::format() const
 DataType::Type DisassemblerDefinition::addressType() const
 {
     return static_cast<DataType::Type>(this->getInteger("addresstype"));
-}
-
-int DisassemblerDefinition::luaNext(lua_State *l)
-{
-    int argc = lua_gettop(l);
-    luaX_expectargc(l, argc, 2);
-
-    int t = lua_type(l, 2);
-
-    if(t == LUA_TTABLE) /* Custom Instruction */
-    {
-        Block* b = reinterpret_cast<Block*>(checkThis(l, 2));
-        lua_pushinteger(l, b->address() + b->size());
-        return 1;
-    }
-
-    cs_insn* insn = (*(cs_insn**)luaL_checkudata(l, 2, "cs_insn"));
-    lua_pushinteger(l, insn->address + insn->size);
-    return 1;
 }
 
 } // namespace Disassembler
