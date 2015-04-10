@@ -12,8 +12,11 @@ class Instruction: public Block
         Instruction(uint64_t address);
         ~Instruction();
 
+    private:
+        static char* uppercase(char* s);
+
     protected:
-        Instruction(uint64_t address, uint64_t size, const char* mnemonic, bool isjump, bool iscall, bool isconditional);
+        Instruction(uint64_t address, uint64_t size, char *mnemonic, bool isjump, bool iscall, bool isconditional);
 
     public:
         const char* mnemonic() const;

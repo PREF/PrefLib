@@ -3,17 +3,17 @@
 namespace PrefLib {
 namespace Disassembler {
 
-Instruction::Instruction(uint64_t address): Instruction(address, 0, "???", false, false, false)
+Instruction::Instruction(uint64_t address): Instruction(address, 0, nullptr, false, false, false)
 {
 
 }
 
-Instruction::Instruction(uint64_t address, uint64_t size, const char *mnemonic, bool isjump, bool iscall, bool isconditional): Block(address, size)
+Instruction::Instruction(uint64_t address, uint64_t size, char *mnemonic, bool isjump, bool iscall, bool isconditional): Block(address, size)
 {
     lua_State* l = LuaState::instance();
 
     this->push();
-    this->setString("mnemonic", mnemonic);
+    this->setString("mnemonic", (!mnemonic ? "???" : uppercase(mnemonic)));
     this->setBoolean("isjump", isjump);
     this->setBoolean("iscall", iscall);
     this->setBoolean("isconditional", isconditional);
@@ -23,6 +23,19 @@ Instruction::Instruction(uint64_t address, uint64_t size, const char *mnemonic, 
 Instruction::~Instruction()
 {
 
+}
+
+char* Instruction::uppercase(char *s)
+{
+    char* p = s;
+
+    while(*p)
+    {
+        *p = toupper(*p);
+        p++;
+    }
+
+    return s;
 }
 
 const char *Instruction::mnemonic() const
