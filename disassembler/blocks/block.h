@@ -13,7 +13,7 @@ using namespace Core::Lua;
 class Block : public LuaTable
 {
     protected:
-        enum Type { InvalidBlock, InstructionBlock, FunctionBlock, SegmentBlock, LabelBlock, SymbolBlock };
+        enum Type { InvalidBlock = 0, SegmentBlock = 1, FunctionBlock = 2, LabelBlock = 3, InstructionBlock = 4};
 
     public:
         Block(uint64_t startaddress, uint64_t size);
@@ -24,15 +24,18 @@ class Block : public LuaTable
         bool isFunctionBlock() const;
         bool isSegmentBlock() const;
         bool isLabelBlock() const;
-        bool isSymbolBlock() const;
         bool isEmpty() const;
+        bool isCommented() const;
         bool isBookmarked() const;
         bool contains(uint64_t address);
         uint64_t address() const; /* Syntactic sugar */
         uint64_t startAddress() const;
         uint64_t endAddress() const;
         uint64_t size() const;
+        uint8_t weight() const;
+        const char* comment() const;
         void setBookmarked(bool b);
+        void setComment(const char* s);
 
     protected:
         virtual Block::Type type() const = 0;

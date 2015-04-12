@@ -1,6 +1,7 @@
 #ifndef PREFLIB_DISASSEMBLER_DISASSEMBLERLISTING_H
 #define PREFLIB_DISASSEMBLER_DISASSEMBLERLISTING_H
 
+#include <list>
 #include <capstone.h>
 #include "../core/lua/luax.h"
 #include "../core/lua/luatable.h"
@@ -38,6 +39,9 @@ class DisassemblerListing: public LuaTable
             friend class DisassemblerListing;
         };
 
+    public:
+        typedef std::list<Block*> Listing;
+
     private:
         struct BlockContainer { LuaContainer ByIndex; LuaContainer ByAddress; };
 
@@ -49,32 +53,37 @@ class DisassemblerListing: public LuaTable
         bool isDisassembled(DataValue& address);
         uint64_t baseAddress() const;
         MemoryBuffer* memoryBuffer() const;
+        DisassemblerDatabase* database() const;
         IO::DataBuffer* dataBuffer() const;
         LuaContainer& segments();
         LuaContainer& functions();
         LuaContainer& entryPoints();
         LuaContainer& instructions();
+        const Listing& listing();
         Segment* findSegment(uint64_t address);
         void createSegment(const char* name, Segment::Type segmenttype, uint64_t startaddress, uint64_t size, uint64_t offset);
         void createFunction(const char* name, Function::Type functiontype, uint64_t address);
         void createEntryPoint(const char* name, uint64_t address);
-        void addInstruction(Instruction* instruction);
-        void addInstruction(CapstoneInstruction *csinstruction);
+        void createInstruction(Instruction* instruction);
+        void createInstruction(CapstoneInstruction *csinstruction);
 
     lua_api:
         static int luaCreateSegment(lua_State* l);
         static int luaCreateFunction(lua_State* l);
         static int luaCreateEntryPoint(lua_State* l);
-        static int luaAddInstruction(lua_State* l);
+        static int luaCreateInstruction(lua_State* l);
 
     private:
         IO::DataBuffer* _databuffer;
         MemoryBuffer* _memorybuffer;
         DisassemblerDatabase* _database;
+        Listing _listing;
         BlockContainer _segments;
         BlockContainer _functions;
         BlockContainer _entrypoints;
         BlockContainer _instructions;
+
+    friend class DisassemblerEngine;
 };
 
 } // namespace Disassembler

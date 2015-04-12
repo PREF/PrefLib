@@ -49,14 +49,14 @@ bool Block::isLabelBlock() const
     return this->type() == Type::LabelBlock;
 }
 
-bool Block::isSymbolBlock() const
-{
-    return this->type() == Type::SymbolBlock;
-}
-
 bool Block::isEmpty() const
 {
     return this->size() == 0;
+}
+
+bool Block::isCommented() const
+{
+    return this->hasField("comment");
 }
 
 bool Block::isBookmarked() const
@@ -89,9 +89,24 @@ uint64_t Block::size() const
     return this->getInteger("size");
 }
 
+uint8_t Block::weight() const
+{
+    return this->type();
+}
+
+const char *Block::comment() const
+{
+    return this->getString("comment");
+}
+
 void Block::setBookmarked(bool b)
 {
     this->_bookmarked = b;
+}
+
+void Block::setComment(const char *s)
+{
+    this->setString("comment", s);
 }
 
 int Block::metaIndex(lua_State *l)

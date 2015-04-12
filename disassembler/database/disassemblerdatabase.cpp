@@ -13,28 +13,19 @@ DisassemblerDatabase::~DisassemblerDatabase()
 
 }
 
-void DisassemblerDatabase::set(SymbolType type, uint64_t address, const char *name)
+bool DisassemblerDatabase::contains(uint64_t address) const
 {
-    if(this->_symbols.find(type) == this->_symbols.end())
-        this->_symbols[type] = SymbolsMap();
-
-    Symbol s;
-    s.Type = type;
-    s.Address = address;
-    s.Length = strlen(name);
-    strcpy(s.Name, name);
-
-    this->_symbols[type][address] = s;
+    return this->_symbols.find(address) != this->_symbols.end();
 }
 
-const Symbol& DisassemblerDatabase::get(SymbolType type, uint64_t address)
+void DisassemblerDatabase::set(uint64_t address, const char *name)
 {
-    /*
-    if(this->_symbols.find(type) == this->_symbols.end())
+    this->_symbols[address] = name;
+}
 
-
-    return this->_symbols[type][address];
-    */
+const char *DisassemblerDatabase::get(uint64_t address)
+{    
+    return this->_symbols[address];
 }
 
 void DisassemblerDatabase::save()

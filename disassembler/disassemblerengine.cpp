@@ -37,6 +37,16 @@ void DisassemblerEngine::disassemble(DisassemblerListing *listing)
         if(!this->_definition->disassemble(this, listing, dv))
             break;
     }
+
+    listing->_listing.sort(&DisassemblerEngine::sortBlocks);
+}
+
+bool DisassemblerEngine::sortBlocks(Block *b1, Block *b2)
+{
+    if(b1->address() == b2->address())
+        return b1->weight() < b2->weight();
+
+    return b1->address() < b2->address();
 }
 
 void DisassemblerEngine::prepareStack(DisassemblerListing *listing)

@@ -4,6 +4,7 @@
 #define DATABASE_EXTENSION "db"
 
 #include <map>
+#include <cstring>
 #include "symbol.h"
 
 namespace PrefLib {
@@ -12,20 +13,20 @@ namespace Disassembler {
 class DisassemblerDatabase
 {
     public:
-        typedef std::map<uint64_t, Symbol> SymbolsMap;
-        typedef std::map<SymbolType, SymbolsMap> SymbolTypeMap;
+        typedef std::map<uint64_t, const char*> SymbolMap;
 
     public:
         DisassemblerDatabase();
         ~DisassemblerDatabase();
-        void set(SymbolType type, uint64_t address, const char* name);
-        const Symbol &get(SymbolType type, uint64_t address);
+        bool contains(uint64_t address) const;
+        void set(uint64_t address, const char* name);
+        const char* get(uint64_t address);
 
     public:
         void save();
 
     private:
-        SymbolTypeMap _symbols;
+        SymbolMap _symbols;
 };
 
 } // namespace Disassembler

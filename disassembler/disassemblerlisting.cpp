@@ -57,7 +57,7 @@ DisassemblerListing::DisassemblerListing(IO::DataBuffer *databuffer): LuaTable()
     this->setFunction("createsegment", &DisassemblerListing::luaCreateSegment);
     this->setFunction("createfunction", &DisassemblerListing::luaCreateFunction);
     this->setFunction("createentrypoint", &DisassemblerListing::luaCreateEntryPoint);
-    this->setFunction("addinstruction", &DisassemblerListing::luaAddInstruction);
+    this->setFunction("createinstruction", &DisassemblerListing::luaCreateInstruction);
     lua_pop(l, 1);
 }
 
@@ -91,6 +91,11 @@ DisassemblerListing::MemoryBuffer *DisassemblerListing::memoryBuffer() const
     return this->_memorybuffer;
 }
 
+DisassemblerDatabase *DisassemblerListing::database() const
+{
+    return this->_database;
+}
+
 IO::DataBuffer *DisassemblerListing::dataBuffer() const
 {
     return this->_databuffer;
@@ -116,6 +121,11 @@ LuaContainer &DisassemblerListing::instructions()
     return this->_instructions.ByIndex;
 }
 
+const DisassemblerListing::Listing &DisassemblerListing::listing()
+{
+    return this->_listing;
+}
+
 Segment *DisassemblerListing::findSegment(uint64_t address)
 {
     for(size_t i = 0; i < this->_segments.ByIndex.length(); i++)
@@ -135,11 +145,13 @@ void DisassemblerListing::createSegment(const char *name, Segment::Type segmentt
 
     this->_segments.ByIndex.append(segment);
     this->_segments.ByAddress[startaddress] = segment;
+
+    this->_listing.push_back(segment);
 }
 
 void DisassemblerListing::createFunction(const char *name, Function::Type functiontype, uint64_t address)
 {
-    Function* function = new Function(name, functiontype, address);
+    Function* function = new Function(functiontype, address);
 
     this->_functions.ByIndex.append(function);
     this->_functions.ByAddress[address] = function;
@@ -149,6 +161,9 @@ void DisassemblerListing::createFunction(const char *name, Function::Type functi
         this->_entrypoints.ByIndex.append(function);
         this->_entrypoints.ByAddress[address] = function;
     }
+
+    this->_database->set(address, name);
+    this->_listing.push_back(function);
 }
 
 void DisassemblerListing::createEntryPoint(const char *name, uint64_t address)
@@ -156,16 +171,18 @@ void DisassemblerListing::createEntryPoint(const char *name, uint64_t address)
     this->createFunction(name, Function::EntryPointBlock, address);
 }
 
-void DisassemblerListing::addInstruction(Instruction *instruction)
+void DisassemblerListing::createInstruction(Instruction *instruction)
 {
     this->_instructions.ByIndex.append(instruction);
     this->_instructions.ByAddress[instruction->address()] = instruction;
+    this->_listing.push_back(instruction);
 }
 
-void DisassemblerListing::addInstruction(CapstoneInstruction* csinstruction)
+void DisassemblerListing::createInstruction(CapstoneInstruction* csinstruction)
 {
     this->_instructions.ByIndex.append(csinstruction);
     this->_instructions.ByAddress[csinstruction->address()] = csinstruction;
+    this->_listing.push_back(csinstruction);
 }
 
 int DisassemblerListing::luaCreateSegment(lua_State *l)
@@ -198,7 +215,7 @@ int DisassemblerListing::luaCreateEntryPoint(lua_State *l)
     return 0;
 }
 
-int DisassemblerListing::luaAddInstruction(lua_State *l)
+int DisassemblerListing::luaCreateInstruction(lua_State *l)
 {
     int argc = lua_gettop(l);
     luaX_expectminargc(l, argc, 2);
@@ -211,11 +228,11 @@ int DisassemblerListing::luaAddInstruction(lua_State *l)
         int ref = luaL_ref(l, LUA_REGISTRYINDEX);
 
         CapstoneInstruction* csinstruction = new CapstoneInstruction(static_cast<csh>(luaL_checkinteger(l, 2)), *(reinterpret_cast<cs_insn**>(luaL_checkudata(l, 3, "cs_insn"))), ref);
-        thethis->addInstruction(csinstruction);
+        thethis->createInstruction(csinstruction);
         return 0;
     }
 
-    thethis->addInstruction(reinterpret_cast<Instruction*>(checkThis(l, 3)));
+    thethis->createInstruction(reinterpret_cast<Instruction*>(checkThis(l, 3)));
     return 0;
 }
 

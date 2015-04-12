@@ -3,12 +3,11 @@
 namespace PrefLib {
 namespace Disassembler {
 
-Function::Function(const char *name, Function::Type functiontype, uint64_t address): Block(address, 0)
+Function::Function(Function::Type functiontype, uint64_t address): Block(address, 0)
 {
     lua_State* l = LuaState::instance();
 
     this->push();
-    this->setString("name", name);
     this->setInteger("type", functiontype);
     lua_pop(l, 1);
 }

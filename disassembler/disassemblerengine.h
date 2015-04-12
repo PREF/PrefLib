@@ -18,6 +18,7 @@ class DisassemblerEngine: public LuaTable
         void disassemble(DisassemblerListing* listing);
 
     private:
+        static bool sortBlocks(Block* b1, Block* b2);
         void prepareStack(DisassemblerListing* listing);
 
     lua_api:
