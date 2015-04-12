@@ -2,6 +2,10 @@
 
 #include "arm_const.h"
 
+namespace PrefLib {
+namespace Core {
+namespace Capstone {
+
 void set_arm_const(lua_State* l)
 {
 	/* ARM shift type */
@@ -1492,3 +1496,7 @@ void set_arm_const(lua_State* l)
 	lua_pushinteger(l, 159);
 	lua_setfield(l, -2, "ARM_GRP_ENDING");
 }
+
+} // namespace Capstone
+} // namespace Core
+} // namespace PrefLib

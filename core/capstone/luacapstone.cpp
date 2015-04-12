@@ -8,6 +8,10 @@
 #include "arch/sysz.h"
 #include "arch/xcore.h"
 
+namespace PrefLib {
+namespace Core {
+namespace Capstone {
+
 /* Start Of CapstoneIterator Metadata */
 BeginStructureInfo(CapstoneIterator)
     StructureField(CapstoneIterator, cs_insn*, insn),
@@ -489,3 +493,7 @@ int luaopen_capstone(lua_State *l)
         return luaregister_capstone(l);
     #endif
 }
+
+} // namespace Capstone
+} // namespace Core
+} // namespace PrefLib

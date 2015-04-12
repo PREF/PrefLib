@@ -1,5 +1,9 @@
 #include "mips.h"
 
+namespace PrefLib {
+namespace Core {
+namespace Capstone {
+
 static int luacapstone_memoperand_metaIndex(lua_State* l)
 {
     mips_op_mem* memop = *((mips_op_mem**)lua_touserdata(l, 1));
@@ -69,3 +73,7 @@ void luaCS_pushmipsstruct(lua_State *l, cs_mips *mips)
 {
     lua_pushcstruct(l, mips, &luacapstone_mips_metaIndex, "__detail_mips");
 }
+
+} // namespace Capstone
+} // namespace Core
+} // namespace PrefLib

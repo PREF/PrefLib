@@ -2,6 +2,10 @@
 
 #include "xcore_const.h"
 
+namespace PrefLib {
+namespace Core {
+namespace Capstone {
+
 void set_xcore_const(lua_State* l)
 {
 	/* Operand type for instruction's operands */
@@ -332,3 +336,7 @@ void set_xcore_const(lua_State* l)
 	lua_pushinteger(l, 2);
 	lua_setfield(l, -2, "XCORE_GRP_ENDING");
 }
+
+} // namespace Capstone
+} // namespace Core
+} // namespace PrefLib

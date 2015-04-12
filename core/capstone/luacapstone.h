@@ -15,6 +15,10 @@
 #include "luacapstonemacros.h"
 #include "metadata.h"
 
+namespace PrefLib {
+namespace Core {
+namespace Capstone {
+
 typedef struct CapstoneIterator
 {
     cs_insn* insn;
@@ -29,6 +33,10 @@ typedef struct CapstoneIterator
 DeclareStructureInfo(CapstoneIterator)
 
 int luaopen_capstone(lua_State* l);
+
+} // namespace Capstone
+} // namespace Core
+} // namespace PrefLib
 
 #endif // LUACAPSTONE_H
 

@@ -22,30 +22,37 @@
                                lua_error(l); \
                                return 0;
 
-template<typename T> void lua_pushcstruct(lua_State* l, T* t, lua_CFunction metaindex, const char* metatable)
-{
-    T** pt = (T**)lua_newuserdata(l, sizeof(T**));
-    *pt = t;
-
-    if(luaL_newmetatable(l, metatable))
+namespace PrefLib {
+namespace Core {
+namespace Capstone {
+    template<typename T> void lua_pushcstruct(lua_State* l, T* t, lua_CFunction metaindex, const char* metatable)
     {
-        lua_pushcfunction(l, metaindex);
-        lua_setfield(l, -2, "__index");
+        T** pt = (T**)lua_newuserdata(l, sizeof(T**));
+        *pt = t;
+
+        if(luaL_newmetatable(l, metatable))
+        {
+            lua_pushcfunction(l, metaindex);
+            lua_setfield(l, -2, "__index");
+        }
+
+        lua_setmetatable(l, -2);
     }
 
-    lua_setmetatable(l, -2);
-}
-
-template<typename T> void lua_pushcarray(lua_State* l, T* array, lua_Integer size)
-{
-    lua_newtable(l);
-
-    for(int i = 0; i < size; i++)
+    template<typename T> void lua_pushcarray(lua_State* l, T* array, lua_Integer size)
     {
-        lua_pushinteger(l, array[i]);
-        lua_rawseti(l, -2, i);
+        lua_newtable(l);
+
+        for(int i = 0; i < size; i++)
+        {
+            lua_pushinteger(l, array[i]);
+            lua_rawseti(l, -2, i);
+        }
     }
-}
+
+} // namespace Core
+} // namespace PrefLib
+} // namespace Capstone
 
 #endif // LUACAPSTONEMACROS_H
 

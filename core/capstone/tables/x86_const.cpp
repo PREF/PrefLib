@@ -2,6 +2,10 @@
 
 #include "x86_const.h"
 
+namespace PrefLib {
+namespace Core {
+namespace Capstone {
+
 void set_x86_const(lua_State* l)
 {
 	/* X86 registers */
@@ -3344,3 +3348,7 @@ void set_x86_const(lua_State* l)
 	lua_pushinteger(l, 169);
 	lua_setfield(l, -2, "X86_GRP_ENDING");
 }
+
+} // namespace Capstone
+} // namespace Core
+} // namespace PrefLib

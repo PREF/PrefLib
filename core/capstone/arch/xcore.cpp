@@ -1,5 +1,9 @@
 #include "xcore.h"
 
+namespace PrefLib {
+namespace Core {
+namespace Capstone {
+
 static int luacapstone_memoperand_metaIndex(lua_State* l)
 {
     xcore_op_mem* memop = *((xcore_op_mem**)lua_touserdata(l, 1));
@@ -70,3 +74,6 @@ void luaCS_pushxcorestruct(lua_State *l, cs_xcore *xcore)
     lua_pushcstruct(l, xcore, &luacapstone_xcore_metaIndex, "__detail_xcore");
 }
 
+} // namespace Capstone
+} // namespace Core
+} // namespace PrefLib

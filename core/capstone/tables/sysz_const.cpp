@@ -2,6 +2,10 @@
 
 #include "sysz_const.h"
 
+namespace PrefLib {
+namespace Core {
+namespace Capstone {
+
 void set_sysz_const(lua_State* l)
 {
 	/* Enums corresponding to SystemZ condition codes */
@@ -1517,3 +1521,7 @@ void set_sysz_const(lua_State* l)
 	lua_pushinteger(l, 133);
 	lua_setfield(l, -2, "SYSZ_GRP_ENDING");
 }
+
+} // namespace Capstone
+} // namespace Core
+} // namespace PrefLib

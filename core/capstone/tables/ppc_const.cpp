@@ -2,6 +2,10 @@
 
 #include "ppc_const.h"
 
+namespace PrefLib {
+namespace Core {
+namespace Capstone {
+
 void set_ppc_const(lua_State* l)
 {
 	/* PPC branch codes for some branch instructions */
@@ -2318,3 +2322,7 @@ void set_ppc_const(lua_State* l)
 	lua_pushinteger(l, 138);
 	lua_setfield(l, -2, "PPC_GRP_ENDING");
 }
+
+} // namespace Capstone
+} // namespace Core
+} // namespace PrefLib

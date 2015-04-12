@@ -6,188 +6,198 @@
 #include <stdint.h>
 #include <string.h>
 
-namespace TypeTraits /* C++11's type_traits emulation */
+namespace PrefLib {
+namespace Core {
+namespace Capstone {
+namespace TypeTraits { /* C++11's type_traits emulation */
+
+template<bool COND, typename T = void> struct if_ { };
+template<typename T> struct if_<true, T> { typedef T type; };
+
+template<typename T, T v> struct typed_constant { typedef T value_type; static const T value = v; };
+typedef typed_constant<bool, false> false_type;
+typedef typed_constant<bool, true> true_type;
+
+template<typename T> struct is_pointer: public false_type { };
+template<typename T> struct is_pointer<T*>: public true_type { };
+
+template<typename T> struct is_boolean: public false_type { };
+template<> struct is_boolean<bool>: public true_type { };
+
+template<typename T> struct is_integral: public false_type { };
+template<> struct is_integral<bool>: public true_type { };
+template<> struct is_integral<char>: public true_type { };
+template<> struct is_integral<wchar_t>: public true_type { };
+template<> struct is_integral<long int>: public true_type { };
+template<> struct is_integral<long long int>: public true_type { };
+template<> struct is_integral<unsigned long int>: public true_type { };
+template<> struct is_integral<unsigned long long int>: public true_type { };
+template<> struct is_integral<int8_t>: public true_type { };
+template<> struct is_integral<int16_t>: public true_type { };
+template<> struct is_integral<int32_t>: public true_type { };
+template<> struct is_integral<uint8_t>: public true_type { };
+template<> struct is_integral<uint16_t>: public true_type { };
+template<> struct is_integral<uint32_t>: public true_type { };
+
+template<typename T> struct is_signed: public false_type { };
+template<> struct is_signed<char>: public true_type { };
+template<> struct is_signed<wchar_t>: public true_type { };
+template<> struct is_signed<long int>: public true_type { };
+template<> struct is_signed<long long int>: public true_type { };
+template<> struct is_signed<int8_t>: public true_type { };
+template<> struct is_signed<int16_t>: public true_type { };
+template<> struct is_signed<int32_t>: public true_type { };
+template<> struct is_signed<float>: public true_type { };
+template<> struct is_signed<double>: public true_type { };
+template<> struct is_signed<long double>: public true_type { };
+
+template<typename T> struct is_floating_point: public false_type { };
+template<> struct is_floating_point<float>: public true_type { };
+template<> struct is_floating_point<double>: public true_type { };
+template<> struct is_floating_point<long double>: public true_type { };
+
+template<typename T> struct is_array: public TypeTraits::false_type { static const bool valid = false; static const size_t size = 1; };
+template<typename T> struct is_array<T[]>: public TypeTraits::true_type { static const bool valid = false; static const size_t size = 1; };
+template<typename T, size_t S> struct is_array<T[S]>: public TypeTraits::true_type { static const bool valid = true; static const size_t size = S; };
+
+template<typename T> struct is_string: public false_type { };
+template<> struct is_string<char*>: public true_type { };
+template<> struct is_string<char[]>: public true_type { };
+template<size_t S> struct is_string<char[S]>: public true_type { };
+template<> struct is_string<const char*>: public true_type { };
+template<> struct is_string<const char[]>: public true_type { };
+template<size_t S> struct is_string<const char[S]>: public true_type { };
+
+template<typename T> struct is_void: public false_type { };
+template<> struct is_void<void>: public true_type { };
+
+template<typename T> struct is_enum: public typed_constant<bool, __is_enum(T)> { };
+template<typename T> struct is_union: public typed_constant<bool, __is_union(T)> { };
+template<typename T> struct is_class: public typed_constant<bool, __is_class(T)> { };
+
+template<typename T> struct is_struct: false_type { };
+
+template<int S> struct fit_to_signed_bytes { };
+template<> struct fit_to_signed_bytes<1> { typedef int8_t Type; };
+template<> struct fit_to_signed_bytes<2> { typedef int16_t Type; };
+template<> struct fit_to_signed_bytes<4> { typedef int32_t Type; };
+template<> struct fit_to_signed_bytes<8> { typedef int64_t Type; };
+
+template<int S> struct fit_to_unsigned_bytes { };
+template<> struct fit_to_unsigned_bytes<1> { typedef uint8_t Type; };
+template<> struct fit_to_unsigned_bytes<2> { typedef uint16_t Type; };
+template<> struct fit_to_unsigned_bytes<4> { typedef uint32_t Type; };
+template<> struct fit_to_unsigned_bytes<8> { typedef uint64_t Type; };
+
+} // namespace TypeTraits
+
+namespace TypeTemplates {
+
+template<typename T, typename S, typename FI, typename E = void> struct FieldValueT
 {
-    template<bool COND, typename T = void> struct if_ { };
-    template<typename T> struct if_<true, T> { typedef T type; };
+    static T value(S* s, const FI* fi)
+    {
+        return *((T*)((size_t)s + fi->Offset));
+    }
+};
 
-    template<typename T, T v> struct typed_constant { typedef T value_type; static const T value = v; };
-    typedef typed_constant<bool, false> false_type;
-    typedef typed_constant<bool, true> true_type;
-
-    template<typename T> struct is_pointer: public false_type { };
-    template<typename T> struct is_pointer<T*>: public true_type { };
-
-    template<typename T> struct is_boolean: public false_type { };
-    template<> struct is_boolean<bool>: public true_type { };
-
-    template<typename T> struct is_integral: public false_type { };
-    template<> struct is_integral<bool>: public true_type { };
-    template<> struct is_integral<char>: public true_type { };
-    template<> struct is_integral<wchar_t>: public true_type { };
-    template<> struct is_integral<long int>: public true_type { };
-    template<> struct is_integral<long long int>: public true_type { };
-    template<> struct is_integral<unsigned long int>: public true_type { };
-    template<> struct is_integral<unsigned long long int>: public true_type { };
-    template<> struct is_integral<int8_t>: public true_type { };
-    template<> struct is_integral<int16_t>: public true_type { };
-    template<> struct is_integral<int32_t>: public true_type { };
-    template<> struct is_integral<uint8_t>: public true_type { };
-    template<> struct is_integral<uint16_t>: public true_type { };
-    template<> struct is_integral<uint32_t>: public true_type { };
-
-    template<typename T> struct is_signed: public false_type { };
-    template<> struct is_signed<char>: public true_type { };
-    template<> struct is_signed<wchar_t>: public true_type { };
-    template<> struct is_signed<long int>: public true_type { };
-    template<> struct is_signed<long long int>: public true_type { };
-    template<> struct is_signed<int8_t>: public true_type { };
-    template<> struct is_signed<int16_t>: public true_type { };
-    template<> struct is_signed<int32_t>: public true_type { };
-    template<> struct is_signed<float>: public true_type { };
-    template<> struct is_signed<double>: public true_type { };
-    template<> struct is_signed<long double>: public true_type { };
-
-    template<typename T> struct is_floating_point: public false_type { };
-    template<> struct is_floating_point<float>: public true_type { };
-    template<> struct is_floating_point<double>: public true_type { };
-    template<> struct is_floating_point<long double>: public true_type { };
-
-    template<typename T> struct is_array: public TypeTraits::false_type { static const bool valid = false; static const size_t size = 1; };
-    template<typename T> struct is_array<T[]>: public TypeTraits::true_type { static const bool valid = false; static const size_t size = 1; };
-    template<typename T, size_t S> struct is_array<T[S]>: public TypeTraits::true_type { static const bool valid = true; static const size_t size = S; };
-
-    template<typename T> struct is_string: public false_type { };
-    template<> struct is_string<char*>: public true_type { };
-    template<> struct is_string<char[]>: public true_type { };
-    template<size_t S> struct is_string<char[S]>: public true_type { };
-    template<> struct is_string<const char*>: public true_type { };
-    template<> struct is_string<const char[]>: public true_type { };
-    template<size_t S> struct is_string<const char[S]>: public true_type { };
-
-    template<typename T> struct is_void: public false_type { };
-    template<> struct is_void<void>: public true_type { };
-
-    template<typename T> struct is_enum: public typed_constant<bool, __is_enum(T)> { };
-    template<typename T> struct is_union: public typed_constant<bool, __is_union(T)> { };
-    template<typename T> struct is_class: public typed_constant<bool, __is_class(T)> { };
-
-    template<typename T> struct is_struct: false_type { };
-
-    template<int S> struct fit_to_signed_bytes { };
-    template<> struct fit_to_signed_bytes<1> { typedef int8_t Type; };
-    template<> struct fit_to_signed_bytes<2> { typedef int16_t Type; };
-    template<> struct fit_to_signed_bytes<4> { typedef int32_t Type; };
-    template<> struct fit_to_signed_bytes<8> { typedef int64_t Type; };
-
-    template<int S> struct fit_to_unsigned_bytes { };
-    template<> struct fit_to_unsigned_bytes<1> { typedef uint8_t Type; };
-    template<> struct fit_to_unsigned_bytes<2> { typedef uint16_t Type; };
-    template<> struct fit_to_unsigned_bytes<4> { typedef uint32_t Type; };
-    template<> struct fit_to_unsigned_bytes<8> { typedef uint64_t Type; };
-}
-
-namespace TypeTemplates
+template<typename T, typename S, typename FI> struct FieldValueT<T, S, FI, typename TypeTraits::if_< TypeTraits::is_pointer<T>::value >::type >
 {
-    template<typename T, typename S, typename FI, typename E = void> struct FieldValueT
+    static T value(S* s, const FI* fi)
     {
-        static T value(S* s, const FI* fi)
-        {
-            return *((T*)((size_t)s + fi->Offset));
-        }
-    };
+        return (T)((size_t)s + fi->Offset);
+    }
+};
 
-    template<typename T, typename S, typename FI> struct FieldValueT<T, S, FI, typename TypeTraits::if_< TypeTraits::is_pointer<T>::value >::type >
+template<typename T, typename S, typename FI> struct FieldValueT<T, S, FI, typename TypeTraits::if_< TypeTraits::is_integral<T>::value >::type >
+{
+    static T value(S* s, const FI* fi)
     {
-        static T value(S* s, const FI* fi)
+        if(TypeTraits::is_signed<T>::value)
         {
-            return (T)((size_t)s + fi->Offset);
-        }
-    };
-
-    template<typename T, typename S, typename FI> struct FieldValueT<T, S, FI, typename TypeTraits::if_< TypeTraits::is_integral<T>::value >::type >
-    {
-        static T value(S* s, const FI* fi)
-        {
-            if(TypeTraits::is_signed<T>::value)
+            switch(fi->TypeSize)
             {
-                switch(fi->TypeSize)
-                {
-                    case 1:
-                        return *((TypeTraits::fit_to_signed_bytes<1>::Type*)(((size_t)s) + fi->Offset));
+                case 1:
+                    return *((TypeTraits::fit_to_signed_bytes<1>::Type*)(((size_t)s) + fi->Offset));
 
-                    case 2:
-                        return *((TypeTraits::fit_to_signed_bytes<2>::Type*)(((size_t)s) + fi->Offset));
+                case 2:
+                    return *((TypeTraits::fit_to_signed_bytes<2>::Type*)(((size_t)s) + fi->Offset));
 
-                    case 4:
-                        return *((TypeTraits::fit_to_signed_bytes<4>::Type*)(((size_t)s) + fi->Offset));
+                case 4:
+                    return *((TypeTraits::fit_to_signed_bytes<4>::Type*)(((size_t)s) + fi->Offset));
 
-                    case 8:
-                        return *((TypeTraits::fit_to_signed_bytes<8>::Type*)(((size_t)s) + fi->Offset));
+                case 8:
+                    return *((TypeTraits::fit_to_signed_bytes<8>::Type*)(((size_t)s) + fi->Offset));
 
-                    default:
-                        break;
-                }
+                default:
+                    break;
             }
-            else
-            {
-                switch(fi->TypeSize)
-                {
-                    case 1:
-                        return *((TypeTraits::fit_to_unsigned_bytes<1>::Type*)(((size_t)s) + fi->Offset));
-
-                    case 2:
-                        return *((TypeTraits::fit_to_unsigned_bytes<2>::Type*)(((size_t)s) + fi->Offset));
-
-                    case 4:
-                        return *((TypeTraits::fit_to_unsigned_bytes<4>::Type*)(((size_t)s) + fi->Offset));
-
-                    case 8:
-                        return *((TypeTraits::fit_to_unsigned_bytes<8>::Type*)(((size_t)s) + fi->Offset));
-
-                    default:
-                        break;
-                }
-            }
-
-            return *((T*)(((size_t)s) + fi->Offset));
         }
-    };
-}
-
-namespace TypeFunctions
-{
-    template<typename SI, typename FI> bool containsFieldT(const char* fieldname)
-    {
-        const FI* fi = SI::Fields;
-
-        for(size_t i = 0; i < SI::Count; i++)
+        else
         {
-            if(!strcmp(fi[i].Name, fieldname))
-                return true;
+            switch(fi->TypeSize)
+            {
+                case 1:
+                    return *((TypeTraits::fit_to_unsigned_bytes<1>::Type*)(((size_t)s) + fi->Offset));
+
+                case 2:
+                    return *((TypeTraits::fit_to_unsigned_bytes<2>::Type*)(((size_t)s) + fi->Offset));
+
+                case 4:
+                    return *((TypeTraits::fit_to_unsigned_bytes<4>::Type*)(((size_t)s) + fi->Offset));
+
+                case 8:
+                    return *((TypeTraits::fit_to_unsigned_bytes<8>::Type*)(((size_t)s) + fi->Offset));
+
+                default:
+                    break;
+            }
         }
 
-        return false;
+        return *((T*)(((size_t)s) + fi->Offset));
+    }
+};
+
+} // namespace TypeTemplates
+
+namespace TypeFunctions {
+
+template<typename SI, typename FI> bool containsFieldT(const char* fieldname)
+{
+    const FI* fi = SI::Fields;
+
+    for(size_t i = 0; i < SI::Count; i++)
+    {
+        if(!strcmp(fi[i].Name, fieldname))
+            return true;
     }
 
-    template<typename SI, typename FI> const FI* getFieldT(const char* fieldname)
-    {
-        const FI* fi = SI::Fields;
-
-        for(size_t i = 0; i < SI::Count; i++)
-        {
-            if(!strcmp(fi[i].Name, fieldname))
-                return &fi[i];
-        }
-
-        throw NULL;
-    }
+    return false;
 }
+
+template<typename SI, typename FI> const FI* getFieldT(const char* fieldname)
+{
+    const FI* fi = SI::Fields;
+
+    for(size_t i = 0; i < SI::Count; i++)
+    {
+        if(!strcmp(fi[i].Name, fieldname))
+            return &fi[i];
+    }
+
+    throw NULL;
+}
+
+} // namespace TypeFunctions
 
 template<typename T, typename S, typename FI> T fieldValue(S* s, const FI* fi)
 {
     return TypeTemplates::FieldValueT<T, S, FI>::value(s, fi);
 }
+
+} // namespace Capstone
+} // namespace Core
+} // namespace PrefLib
 
 #define ArraySize(array) sizeof(array) / sizeof(array[0])
 #define StructInfoType(name) name ## _StructureInfo
@@ -258,7 +268,6 @@ template<typename T, typename S, typename FI> T fieldValue(S* s, const FI* fi)
                                        TypeTraits::is_array<type>::valid, \
                                        TypeInfo(type) }
 
-//#define FieldValue(name, s, type, field) fieldValue<type>(s, offsetof(name, field))
 #define ContainsField(name, field) TypeFunctions::containsFieldT<StructInfoType(name), FieldInfoType(name)>(field)
 #define GetField(name, field) TypeFunctions::getFieldT<StructInfoType(name), FieldInfoType(name)>(field)
 #define IsField(field1, field2) !strcmp(field1->Name, field2)

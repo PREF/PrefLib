@@ -2,6 +2,10 @@
 
 #include "mips_const.h"
 
+namespace PrefLib {
+namespace Core {
+namespace Capstone {
+
 void set_mips_const(lua_State* l)
 {
 	/* Operand type for instruction's operands */
@@ -1646,3 +1650,7 @@ void set_mips_const(lua_State* l)
 	lua_pushinteger(l, 161);
 	lua_setfield(l, -2, "MIPS_GRP_ENDING");
 }
+
+} // namespace Capstone
+} // namespace Core
+} // namespace PrefLib

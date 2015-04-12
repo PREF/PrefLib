@@ -1,5 +1,9 @@
 #include "x86.h"
 
+namespace PrefLib {
+namespace Core {
+namespace Capstone {
+
 static int luacapstone_memoperand_metaIndex(lua_State* l)
 {
     x86_op_mem* memop = *((x86_op_mem**)lua_touserdata(l, 1));
@@ -84,3 +88,7 @@ void luaCS_pushx86struct(lua_State *l, cs_x86 *x86)
 {
     lua_pushcstruct(l, x86, &luacapstone_x86_metaIndex, "__detail_x86");
 }
+
+} // namespace Capstone
+} // namespace Core
+} // namespace PrefLib

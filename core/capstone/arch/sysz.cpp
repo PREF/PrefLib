@@ -1,5 +1,9 @@
 #include "sysz.h"
 
+namespace PrefLib {
+namespace Core {
+namespace Capstone {
+
 static int luacapstone_memoperand_metaIndex(lua_State* l)
 {
     sysz_op_mem* memop = *((sysz_op_mem**)lua_touserdata(l, 1));
@@ -70,3 +74,6 @@ void luaCS_pushsyszstruct(lua_State *l, cs_sysz *sysz)
     lua_pushcstruct(l, sysz, &luacapstone_sysz_metaIndex, "__detail_sysz");
 }
 
+} // namespace Capstone
+} // namespace Core
+} // namespace PrefLib

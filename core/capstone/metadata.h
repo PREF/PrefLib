@@ -4,49 +4,57 @@
 #include <capstone.h>
 #include "reflection.h"
 
-/* Arm64 Metadata */
-DeclareStructureInfo(arm64_op_mem)
-DeclareStructureInfo(cs_arm64_op)
-DeclareStructureInfo(cs_arm64)
+namespace PrefLib {
+namespace Core {
+namespace Capstone {
 
-/* Arm Metadata */
-DeclareStructureInfo(arm_op_mem)
-DeclareStructureInfo(cs_arm_op)
-DeclareStructureInfo(cs_arm)
+    /* Arm64 Metadata */
+    DeclareStructureInfo(arm64_op_mem)
+    DeclareStructureInfo(cs_arm64_op)
+    DeclareStructureInfo(cs_arm64)
 
-/* Mips Metadata */
-DeclareStructureInfo(mips_op_mem)
-DeclareStructureInfo(cs_mips_op)
-DeclareStructureInfo(cs_mips)
+    /* Arm Metadata */
+    DeclareStructureInfo(arm_op_mem)
+    DeclareStructureInfo(cs_arm_op)
+    DeclareStructureInfo(cs_arm)
 
-/* PPC Metaata */
-DeclareStructureInfo(ppc_op_crx)
-DeclareStructureInfo(ppc_op_mem)
-DeclareStructureInfo(cs_ppc_op)
-DeclareStructureInfo(cs_ppc)
+    /* Mips Metadata */
+    DeclareStructureInfo(mips_op_mem)
+    DeclareStructureInfo(cs_mips_op)
+    DeclareStructureInfo(cs_mips)
 
-/* SPARC Metadata */
-DeclareStructureInfo(sparc_op_mem)
-DeclareStructureInfo(cs_sparc_op)
-DeclareStructureInfo(cs_sparc)
+    /* PPC Metaata */
+    DeclareStructureInfo(ppc_op_crx)
+    DeclareStructureInfo(ppc_op_mem)
+    DeclareStructureInfo(cs_ppc_op)
+    DeclareStructureInfo(cs_ppc)
 
-/* SyzZ Metadata */
-DeclareStructureInfo(sysz_op_mem)
-DeclareStructureInfo(cs_sysz_op)
-DeclareStructureInfo(cs_sysz)
+    /* SPARC Metadata */
+    DeclareStructureInfo(sparc_op_mem)
+    DeclareStructureInfo(cs_sparc_op)
+    DeclareStructureInfo(cs_sparc)
 
-/* x86 Metadata */
-DeclareStructureInfo(x86_op_mem)
-DeclareStructureInfo(cs_x86_op)
-DeclareStructureInfo(cs_x86)
+    /* SyzZ Metadata */
+    DeclareStructureInfo(sysz_op_mem)
+    DeclareStructureInfo(cs_sysz_op)
+    DeclareStructureInfo(cs_sysz)
 
-/* XCore Metadata */
-DeclareStructureInfo(xcore_op_mem)
-DeclareStructureInfo(cs_xcore_op)
-DeclareStructureInfo(cs_xcore)
+    /* x86 Metadata */
+    DeclareStructureInfo(x86_op_mem)
+    DeclareStructureInfo(cs_x86_op)
+    DeclareStructureInfo(cs_x86)
 
-/* Capstone Metadata */
-DeclareStructureInfo(cs_detail)
-DeclareStructureInfo(cs_insn)
+    /* XCore Metadata */
+    DeclareStructureInfo(xcore_op_mem)
+    DeclareStructureInfo(cs_xcore_op)
+    DeclareStructureInfo(cs_xcore)
+
+    /* Capstone Metadata */
+    DeclareStructureInfo(cs_detail)
+    DeclareStructureInfo(cs_insn)
+
+} // namespace Capstone
+} // namespace Core
+} // namespace PrefLib
 
 #endif // METADATA_H

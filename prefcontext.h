@@ -13,6 +13,8 @@
 
 namespace PrefLib {
 
+using namespace Capstone;
+
 class PrefContext
 {
     private:

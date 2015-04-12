@@ -1,6 +1,10 @@
 #include "arm64.h"
 #include <string.h>
 
+namespace PrefLib {
+namespace Core {
+namespace Capstone {
+
 static int luacapstone_memoperand_metaIndex(lua_State* l)
 {
     arm64_op_mem* memop = *((arm64_op_mem**)lua_touserdata(l, 1));
@@ -102,3 +106,7 @@ void luaCS_pusharm64struct(lua_State *l, cs_arm64 *arm64)
 {
     lua_pushcstruct(l, arm64, &luacapstone_arm64_metaIndex, "__detail_arm64");
 }
+
+} // namespace Capstone
+} // namespace Core
+} // namespace PrefLib

@@ -1,5 +1,9 @@
 #include "arm.h"
 
+namespace PrefLib {
+namespace Core {
+namespace Capstone {
+
 static int luacapstone_memoperand_metaIndex(lua_State* l)
 {
     arm_op_mem* memop = *((arm_op_mem**)lua_touserdata(l, 1));
@@ -101,3 +105,7 @@ void luaCS_pusharmstruct(lua_State *l, cs_arm *arm)
 {
     lua_pushcstruct(l, arm, &luacapstone_arm_metaIndex, "__detail_arm");
 }
+
+} // namespace Capstone
+} // namespace Core
+} // namespace PrefLib

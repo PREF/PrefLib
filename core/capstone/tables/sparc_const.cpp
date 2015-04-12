@@ -2,6 +2,10 @@
 
 #include "sparc_const.h"
 
+namespace PrefLib {
+namespace Core {
+namespace Capstone {
+
 void set_sparc_const(lua_State* l)
 {
 	/* Enums corresponding to Sparc condition codes, both icc's and fcc's. */
@@ -874,3 +878,7 @@ void set_sparc_const(lua_State* l)
 	lua_pushinteger(l, 135);
 	lua_setfield(l, -2, "SPARC_GRP_ENDING");
 }
+
+} // namespace Capstone
+} // namespace Core
+} // namespace PrefLib

@@ -1,5 +1,9 @@
 #include "capstone_const.h"
 
+namespace PrefLib {
+namespace Core {
+namespace Capstone {
+
 void set_capstone_const(lua_State *l)
 {
     /* All type of errors encountered by Capstone API. */
@@ -149,3 +153,7 @@ void set_capstone_const(lua_State *l)
     lua_pushinteger(l, CS_GRP_IRET);
     lua_setfield(l, -2, "CS_GRP_IRET");
 }
+
+} // namespace Capstone
+} // namespace Core
+} // namespace PrefLib
