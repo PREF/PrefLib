@@ -10,6 +10,7 @@
 #include "blocks/function.h"
 #include "blocks/instruction.h"
 #include "blocks/capstoneinstruction.h"
+#include "database/disassemblerdatabase.h"
 
 namespace PrefLib {
 namespace Disassembler {
@@ -69,6 +70,7 @@ class DisassemblerListing: public LuaTable
     private:
         IO::DataBuffer* _databuffer;
         MemoryBuffer* _memorybuffer;
+        DisassemblerDatabase* _database;
         BlockContainer _segments;
         BlockContainer _functions;
         BlockContainer _entrypoints;
