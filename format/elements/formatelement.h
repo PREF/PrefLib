@@ -3,13 +3,13 @@
 
 #include <cstdint>
 #include <cstring>
-#include "core/luatable.h"
+#include "core/lua/luatable.h"
 #include "../../io/databuffer.h"
 
 namespace PrefLib {
 namespace Format {
 
-using namespace Core;
+using namespace Core::Lua;
 
 class FormatTree;
 
@@ -19,7 +19,7 @@ class ValuedField
         virtual DataValue value() = 0;
 };
 
-class FormatElement: public Core::LuaTable
+class FormatElement: public LuaTable
 {
     protected:
         enum Type { InvalidType, StructureType, FieldType, FieldArrayType, BitFieldType };

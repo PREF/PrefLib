@@ -7,6 +7,7 @@
 
 namespace PrefLib {
 namespace Core {
+namespace Lua {
 
 /* Error Handling Functions */
 inline void luaX_expectminargc(lua_State* l, int argc, int minexpected)
@@ -25,6 +26,7 @@ inline void luaX_expectargc(lua_State* l, int argc, int expected)
      luaL_error(l, "Expected '%d' arguments, '%d' given", expected, argc);
 }
 
+} // namespace Lua
 } // namespace Core
 } // namespace PrefLib
 

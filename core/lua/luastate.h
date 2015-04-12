@@ -5,6 +5,7 @@
 
 namespace PrefLib {
 namespace Core {
+namespace Lua {
 
 class LuaState
 {
@@ -21,6 +22,7 @@ class LuaState
         lua_State* _state;
 };
 
+} // namespace Lua
 } // namespace Core
 } // namespace PrefLib
 

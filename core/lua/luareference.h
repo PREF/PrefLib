@@ -5,6 +5,7 @@
 
 namespace PrefLib {
 namespace Core {
+namespace Lua {
 
 class LuaReference
 {
@@ -25,6 +26,7 @@ class LuaReference
         int _reference;
 };
 
+} // namespace Lua
 } // namespace Core
 } // namespace PrefLib
 

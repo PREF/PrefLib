@@ -2,9 +2,9 @@
 #define PREFLIB_DISASSEMBLER_DISASSEMBLERLISTING_H
 
 #include <capstone.h>
-#include "../core/luax.h"
-#include "../core/luatable.h"
-#include "../core/luacontainer.h"
+#include "../core/lua/luax.h"
+#include "../core/lua/luatable.h"
+#include "../core/lua/luacontainer.h"
 #include "../io/databuffer.h"
 #include "blocks/segment.h"
 #include "blocks/function.h"

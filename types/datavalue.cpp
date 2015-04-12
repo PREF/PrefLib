@@ -437,7 +437,7 @@ int DataValue::luaMetaLe(lua_State *l)
 
 void DataValue::allocateUserData()
 {
-    lua_State* l = Core::LuaState::instance();
+    lua_State* l = LuaState::instance();
     this->_valuestruct = reinterpret_cast<UserData*>(lua_newuserdata(l, sizeof(UserData)));
 
     if(luaL_newmetatable(l, "datavalue"))
@@ -494,7 +494,7 @@ bool DataValue::isArithmetic(DataValue::InternalType type)
     return (type == InternalType::Integer) || (type == InternalType::Float) || (type == InternalType::Double);
 }
 
-DataValue::DataValue(): Core::LuaReference()
+DataValue::DataValue(): LuaReference()
 {
     this->allocateUserData();
 
@@ -506,7 +506,7 @@ DataValue::DataValue(): Core::LuaReference()
     this->_valuestruct->Value.UInt64 = 0u;
 }
 
-DataValue::DataValue(float f): Core::LuaReference()
+DataValue::DataValue(float f): LuaReference()
 {
     this->allocateUserData();
 
@@ -530,7 +530,7 @@ DataValue::DataValue(double d)
     this->_valuestruct->Value.Double = d;
 }
 
-DataValue::DataValue(const char *ch): Core::LuaReference()
+DataValue::DataValue(const char *ch): LuaReference()
 {
     this->allocateUserData();
 
@@ -542,7 +542,7 @@ DataValue::DataValue(const char *ch): Core::LuaReference()
     this->_valuestruct->Value.AsciiString = ch ? strdup(ch) : nullptr;
 }
 
-DataValue::DataValue(const DataValue &dv): Core::LuaReference(dv)
+DataValue::DataValue(const DataValue &dv): LuaReference(dv)
 {
     this->allocateUserData();
 
@@ -560,7 +560,7 @@ DataValue::DataValue(const DataValue &dv): Core::LuaReference(dv)
 
 void DataValue::push() const
 {
-    lua_State* l = Core::LuaState::instance();
+    lua_State* l = LuaState::instance();
     LuaReference::push();
 
     if(this->_valuestruct->Type == InternalType::String)

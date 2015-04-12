@@ -3,7 +3,7 @@
 namespace PrefLib {
 namespace IO {
 
-DataBuffer::DataBuffer(OpenMode mode): Core::LuaTable()
+DataBuffer::DataBuffer(OpenMode mode): LuaTable()
 {
     lua_State* l = LuaState::instance();
     this->push();

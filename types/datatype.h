@@ -2,7 +2,7 @@
 #define PREFLIB_DATATYPE_H
 
 #include <cstring>
-#include "../core/luax.h"
+#include "../core/lua/luax.h"
 #include "endianness.h"
 
 #define ReturnAdjustType(w) { if(DataType::isSigned(type)) { \
@@ -20,7 +20,7 @@
 
 namespace PrefLib {
 
-using namespace Core;
+using namespace Core::Lua;
 
 class DataType
 {

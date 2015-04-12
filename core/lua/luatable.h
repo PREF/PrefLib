@@ -8,6 +8,7 @@
 
 namespace PrefLib {
 namespace Core {
+namespace Lua {
 
 class LuaTable: public LuaReference
 {
@@ -53,6 +54,7 @@ template<typename T> T LuaTable::getI(int) const
     throw std::runtime_error("LuaTable::getI(): Unsupported Type");
 }
 
+} // namespace Lua
 } // namespace Core
 } // namespace PrefLib
 

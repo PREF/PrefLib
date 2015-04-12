@@ -5,7 +5,7 @@
 #include <cstdio>
 #include <cstring>
 #include "core/capstone/luacapstone.h"
-#include "core/luastate.h"
+#include "core/lua/luastate.h"
 #include "support/math.h"
 #include "exporter/exportercontext.h"
 #include "format/formatcontext.h"
@@ -13,7 +13,8 @@
 
 namespace PrefLib {
 
-using namespace Capstone;
+using namespace Core::Lua;
+using namespace Core::Capstone;
 
 class PrefContext
 {
@@ -25,7 +26,7 @@ class PrefContext
 
     public:
         ~PrefContext();
-        const Core::LuaState& state() const;
+        const LuaState& state() const;
         Exporter::ExporterContext* exporters() const;
         Format::FormatContext* formats() const;
         Disassembler::DisassemblerContext* disassemblers() const;

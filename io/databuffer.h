@@ -5,15 +5,15 @@
 #include <cstdint>
 #include "../types/datavalue.h"
 #include "../types/buffer.h"
-#include "../core/luax.h"
-#include "../core/luatable.h"
+#include "../core/lua/luax.h"
+#include "../core/lua/luatable.h"
 
 namespace PrefLib {
 namespace IO {
 
-using namespace Core;
+using namespace Core::Lua;
 
-class DataBuffer : public Core::LuaTable
+class DataBuffer : public LuaTable
 {
     public:
         enum OpenMode { Read = 1, Write = 2, ReadWrite = Read | Write };

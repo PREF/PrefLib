@@ -1,7 +1,7 @@
 #ifndef PREFLIB_FORMAT_FORMATDEFINITION_H
 #define PREFLIB_FORMAT_FORMATDEFINITION_H
 
-#include "core/luatable.h"
+#include "core/lua/luatable.h"
 #include "elements/structure.h"
 #include "formattree.h"
 #include "../io/databuffer.h"

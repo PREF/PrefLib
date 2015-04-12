@@ -1,16 +1,16 @@
 #ifndef PREFLIB_EXPORTER_EXPORTERCONTEXT_H
 #define PREFLIB_EXPORTER_EXPORTERCONTEXT_H
 
-#include "../core/luax.h"
-#include "../core/luatable.h"
+#include "../core/lua/luax.h"
+#include "../core/lua/luatable.h"
 #include "exporterdefinition.h"
 
 namespace PrefLib {
 namespace Exporter {
 
-using namespace Core;
+using namespace Core::Lua;
 
-class ExporterContext : public Core::LuaTable
+class ExporterContext : public LuaTable
 {
     public:
         ExporterContext();

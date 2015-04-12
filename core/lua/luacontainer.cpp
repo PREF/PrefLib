@@ -2,6 +2,7 @@
 
 namespace PrefLib {
 namespace Core {
+namespace Lua {
 
 LuaContainer::LuaContainer()
 {
@@ -73,7 +74,7 @@ LuaContainer::Entry LuaContainer::operator[](const char *key)
     return Entry(*this, key);
 }
 
-
+} // namespace Lua
 } // namespace Core
 } // namespace PrefLib
 

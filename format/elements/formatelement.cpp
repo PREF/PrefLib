@@ -5,7 +5,7 @@ namespace Format {
 
 using namespace Core;
 
-FormatElement::FormatElement(FormatTree* formattree, IO::DataBuffer *databuffer, uint64_t offset, const char *name, FormatElement *parent): Core::LuaTable(), _databuffer(databuffer), _dynamic(false), _base(16), _infocallback({ false, 0 })
+FormatElement::FormatElement(FormatTree* formattree, IO::DataBuffer *databuffer, uint64_t offset, const char *name, FormatElement *parent): LuaTable(), _databuffer(databuffer), _dynamic(false), _base(16), _infocallback({ false, 0 })
 {
     lua_State* l = LuaState::instance();
     this->push();

@@ -2,7 +2,7 @@
 #define PREFLIB_SUPPORT_MATH_H
 
 #include <cmath>
-#include "core/luatable.h"
+#include "core/lua/luatable.h"
 #include "io/databuffer.h"
 #include "byteelaborator.h"
 

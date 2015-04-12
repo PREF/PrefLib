@@ -2,13 +2,13 @@
 #define PREFLIB_DISASSEMBLER_BLOCK_H
 
 #include <cstring>
-#include "../../core/luax.h"
-#include "../../core/luatable.h"
+#include "../../core/lua/luax.h"
+#include "../../core/lua/luatable.h"
 
 namespace PrefLib {
 namespace Disassembler {
 
-using namespace Core;
+using namespace Core::Lua;
 
 class Block : public LuaTable
 {

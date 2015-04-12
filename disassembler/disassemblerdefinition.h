@@ -2,7 +2,7 @@
 #define PREFLIB_DISASSEMBLER_DISASSEMBLERDEFINITION_H
 
 #include <capstone.h>
-#include "../core/luatable.h"
+#include "../core/lua/luatable.h"
 #include "../format/formatdefinition.h"
 #include "blocks/block.h"
 #include "disassemblerlisting.h"

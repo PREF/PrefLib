@@ -2,6 +2,7 @@
 
 namespace PrefLib {
 namespace Core {
+namespace Lua {
 
 LuaState LuaState::_instance;
 
@@ -24,11 +25,12 @@ void LuaState::close() const
         lua_close(this->_state);
 }
 
-PrefLib::Core::LuaState::operator lua_State *() const
+LuaState::operator lua_State *() const
 {
     return this->_state;
 }
 
+} // namespace Lua
 } // namespace Core
 } // namespace PrefLib
 

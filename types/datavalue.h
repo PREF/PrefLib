@@ -9,12 +9,14 @@
 #include <inttypes.h>
 #include <type_traits>
 #include "datatype.h"
-#include "core/luax.h"
-#include "core/luatable.h"
+#include "core/lua/luax.h"
+#include "core/lua/luatable.h"
 
 namespace PrefLib {
 
-class DataValue: public Core::LuaReference
+using namespace Lua;
+
+class DataValue: public LuaReference
 {
     private:
         enum InternalType { Invalid, Integer, Float, Double, String };

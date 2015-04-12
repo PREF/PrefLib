@@ -1,7 +1,7 @@
 #ifndef PREFLIB_ENDIANNESS_H
 #define PREFLIB_ENDIANNESS_H
 
-#include "../core/luax.h"
+#include "../core/lua/luax.h"
 #include <cstdint>
 #include <type_traits>
 

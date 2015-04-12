@@ -3,15 +3,15 @@
 
 #include <cstdint>
 #include <cstring>
-#include "../core/luax.h"
-#include "../core/luastate.h"
-#include "../core/luareference.h"
+#include "../core/lua/luax.h"
+#include "../core/lua/luastate.h"
+#include "../core/lua/luareference.h"
 
 namespace PrefLib {
 
-using namespace Core;
+using namespace Core::Lua;
 
-class Buffer: public Core::LuaReference
+class Buffer: public LuaReference
 {
     public:
         Buffer(uint64_t len);

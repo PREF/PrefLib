@@ -2,7 +2,7 @@
 #define PREFLIB_FORMAT_FORMATCONTEXT_H
 
 #include <lua.hpp>
-#include "core/luatable.h"
+#include "core/lua/luatable.h"
 #include "formatdefinition.h"
 
 namespace PrefLib {

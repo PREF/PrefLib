@@ -2,6 +2,7 @@
 
 namespace PrefLib {
 namespace Core {
+namespace Lua {
 
 LuaReference::LuaReference(): _reference(LUA_REFNIL)
 {
@@ -50,6 +51,7 @@ LuaReference &LuaReference::operator=(const LuaReference &rhs)
     return *this;
 }
 
+} // namespace Lua
 } // namespace Core
 } // namespace PrefLib
 

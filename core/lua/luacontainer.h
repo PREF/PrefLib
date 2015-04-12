@@ -5,6 +5,7 @@
 
 namespace PrefLib {
 namespace Core {
+namespace Lua {
 
 class LuaContainer: public LuaTable
 {
@@ -49,6 +50,7 @@ class LuaContainer: public LuaTable
         LuaContainer::Entry operator[](const char* key);
 };
 
+} // namespace Lua
 } // namespace Core
 } // namespace PrefLib
 

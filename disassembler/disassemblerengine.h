@@ -2,8 +2,8 @@
 #define PREFLIB_DISASSEMBLER_DISASSEMBLERENGINE_H
 
 #include <deque>
-#include "../core/luax.h"
-#include "../core/luatable.h"
+#include "../core/lua/luax.h"
+#include "../core/lua/luatable.h"
 #include "disassemblerdefinition.h"
 #include "disassemblerlisting.h"
 

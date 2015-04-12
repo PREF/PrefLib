@@ -3,8 +3,8 @@
 
 #include <utility>
 #include <list>
-#include "../core/luax.h"
-#include "../core/luatable.h"
+#include "../core/lua/luax.h"
+#include "../core/lua/luatable.h"
 #include "../support/bytecolors.h"
 #include "../types/datatype.h"
 #include "../types/datavalue.h"

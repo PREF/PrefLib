@@ -2,7 +2,7 @@
 
 namespace PrefLib {
 
-Buffer::Buffer(uint64_t len): Core::LuaReference()
+Buffer::Buffer(uint64_t len): LuaReference()
 {
     lua_State* l = LuaState::instance();
     this->_data = reinterpret_cast<unsigned char*>(lua_newuserdata(l, len * sizeof(unsigned char)));

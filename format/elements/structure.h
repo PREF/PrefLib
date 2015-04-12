@@ -1,7 +1,7 @@
 #ifndef PREFLIB_FORMAT_STRUCTURE_H
 #define PREFLIB_FORMAT_STRUCTURE_H
 
-#include "core/luax.h"
+#include "core/lua/luax.h"
 #include "formatelement.h"
 #include "field.h"
 #include "fieldarray.h"

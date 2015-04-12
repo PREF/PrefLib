@@ -7,8 +7,8 @@ luaL_Reg PrefContext::_functions[] = { { nullptr, nullptr } };
 
 PrefContext::PrefContext()
 {
-    luaL_openlibs(Core::LuaState::instance());
-    luaopen_capstone(Core::LuaState::instance());
+    luaL_openlibs(LuaState::instance());
+    luaopen_capstone(LuaState::instance());
 
     this->_exporterctx = new Exporter::ExporterContext();
     this->_formatctx = new Format::FormatContext();
@@ -55,12 +55,12 @@ PrefContext::~PrefContext()
         this->_exporterctx = nullptr;
     }
 
-    Core::LuaState::instance().close();
+    LuaState::instance().close();
 }
 
-const Core::LuaState &PrefContext::state() const
+const LuaState &PrefContext::state() const
 {
-    return Core::LuaState::instance();
+    return LuaState::instance();
 }
 
 Format::FormatContext *PrefContext::formats() const
@@ -80,7 +80,7 @@ Exporter::ExporterContext *PrefContext::exporters() const
 
 void PrefContext::addSearchPath(const char *path)
 {
-    lua_State* l = Core::LuaState::instance();
+    lua_State* l = LuaState::instance();
     lua_getglobal(l, "package");
     lua_getfield(l, -1, "path");
 
@@ -99,7 +99,7 @@ void PrefContext::addSearchPath(const char *path)
 
 void PrefContext::executeScript(const char *script)
 {
-    lua_State* l = Core::LuaState::instance();
+    lua_State* l = LuaState::instance();
     int res = luaL_dofile(l, script);
 
     if(res)
@@ -114,7 +114,7 @@ PrefContext *PrefContext::instance()
     if(!PrefContext::_instance)
     {
         PrefContext::_instance = new PrefContext();
-        luaL_requiref(Core::LuaState::instance(), "pref", &PrefContext::luaopen_preflib, false);
+        luaL_requiref(LuaState::instance(), "pref", &PrefContext::luaopen_preflib, false);
     }
 
     return PrefContext::_instance;

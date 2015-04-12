@@ -2,6 +2,7 @@
 
 namespace PrefLib {
 namespace Core {
+namespace Lua {
 
 LuaTable::LuaTable(): LuaReference()
 {
@@ -398,6 +399,7 @@ void LuaTable::setI(int i, const LuaTable *t)
     lua_pop(l, 1);
 }
 
+} // namespace Lua
 } // namespace Core
 } // namespace PrefLib
 

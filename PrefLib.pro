@@ -19,14 +19,14 @@ SOURCES += \
     types/datatype.cpp \
     types/endianness.cpp \
     format/formatdefinition.cpp \
-    core/luareference.cpp \
+    core/lua/luareference.cpp \
     types/datavalue.cpp \
     format/elements/structure.cpp \
-    core/luax.cpp \
+    core/lua/luax.cpp \
     format/elements/field.cpp \
-    core/luatable.cpp \
+    core/lua/luatable.cpp \
     io/databuffer.cpp \
-    core/luastate.cpp \
+    core/lua/luastate.cpp \
     format/elements/fieldarray.cpp \
     format/elements/bitfield.cpp \
     exporter/exportercontext.cpp \
@@ -46,7 +46,7 @@ SOURCES += \
     disassembler/disassemblerlisting.cpp \
     disassembler/blocks/block.cpp \
     disassembler/blocks/segment.cpp \
-    core/luacontainer.cpp \
+    core/lua/luacontainer.cpp \
     core/capstone/luacapstone.cpp \
     core/capstone/metadata.cpp \
     core/capstone/arch/arm.cpp \
@@ -86,15 +86,15 @@ HEADERS += \
     types/datatype.h \
     types/endianness.h \
     format/formatdefinition.h \
-    core/luareference.h \
+    core/lua/luareference.h \
     types/datavalue.h \
     format/elements/structure.h \
-    core/luax.h \
+    core/lua/luax.h \
     format/elements/field.h \
-    core/luatable.h \
+    core/lua/luatable.h \
     preflib.h \
     io/databuffer.h \
-    core/luastate.h \
+    core/lua/luastate.h \
     format/elements/fieldarray.h \
     format/elements/bitfield.h \
     exporter/exportercontext.h \
@@ -114,7 +114,7 @@ HEADERS += \
     disassembler/disassemblerlisting.h \
     disassembler/blocks/block.h \
     disassembler/blocks/segment.h \
-    core/luacontainer.h \
+    core/lua/luacontainer.h \
     core/capstone/luacapstone.h \
     core/capstone/luacapstonemacros.h \
     core/capstone/metadata.h \
