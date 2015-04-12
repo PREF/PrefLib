@@ -142,8 +142,7 @@ HEADERS += \
     disassembler/disassemblerengine.h \
     disassembler/listingprinter.h \
     disassembler/database/disassemblerdatabase.h \
-    core/containers/cachedmap.h \
-    disassembler/database/symbol.h
+    core/containers/cachedmap.h
 
 INCLUDEPATH += $$PWD/include/capstone \
                $$PWD/include/lua

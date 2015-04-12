@@ -5,7 +5,6 @@
 
 #include <map>
 #include <cstring>
-#include "symbol.h"
 
 namespace PrefLib {
 namespace Disassembler {
