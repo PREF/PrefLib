@@ -75,7 +75,8 @@ SOURCES += \
     disassembler/database/disassemblerdatabase.cpp \
     disassembler/database/abstractdatabase.cpp \
     disassembler/database/stringtabledatabase.cpp \
-    disassembler/database/abstractdatabasetree.cpp
+    disassembler/database/abstractdatabasetree.cpp \
+    core/containers/cachedmap.cpp
 
 HEADERS += \
     prefcontext.h \
@@ -146,7 +147,8 @@ HEADERS += \
     disassembler/database/disassemblerdatabase.h \
     disassembler/database/abstractdatabase.h \
     disassembler/database/stringtabledatabase.h \
-    disassembler/database/abstractdatabasetree.h
+    disassembler/database/abstractdatabasetree.h \
+    core/containers/cachedmap.h
 
 INCLUDEPATH += $$PWD/include/capstone \
                $$PWD/include/lua
