@@ -73,10 +73,8 @@ SOURCES += \
     disassembler/disassemblerengine.cpp \
     disassembler/listingprinter.cpp \
     disassembler/database/disassemblerdatabase.cpp \
-    disassembler/database/abstractdatabase.cpp \
-    disassembler/database/stringtabledatabase.cpp \
-    disassembler/database/abstractdatabasetree.cpp \
-    core/containers/cachedmap.cpp
+    core/containers/cachedmap.cpp \
+    disassembler/database/symbol.cpp
 
 HEADERS += \
     prefcontext.h \
@@ -143,12 +141,9 @@ HEADERS += \
     disassembler/blocks/capstoneinstruction.h \
     disassembler/disassemblerengine.h \
     disassembler/listingprinter.h \
-    disassembler/database/databaseformat.h \
     disassembler/database/disassemblerdatabase.h \
-    disassembler/database/abstractdatabase.h \
-    disassembler/database/stringtabledatabase.h \
-    disassembler/database/abstractdatabasetree.h \
-    core/containers/cachedmap.h
+    core/containers/cachedmap.h \
+    disassembler/database/symbol.h
 
 INCLUDEPATH += $$PWD/include/capstone \
                $$PWD/include/lua

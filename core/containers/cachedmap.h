@@ -51,6 +51,7 @@ template<typename K, typename V, typename W = cache<V>, typename C = std::less<K
 
     public:
         void insert(K &key, const V& value);
+        bool contains(K& key) const;
         const V &get(K &key);
         size_t size() const;
         bool empty() const;
@@ -104,6 +105,11 @@ template<typename K, typename V, typename W, typename C> uint64_t CachedMap<K,V,
 template<typename K, typename V, typename W, typename C> void CachedMap<K, V, W, C>::insert(K& key, const V& value)
 {
     this->_map[key] = this->cacheValue(value);
+}
+
+template<typename K, typename V, typename W, typename C> bool CachedMap<K, V, W, C>::contains(K &key) const
+{
+    return this->_map.find(key) != this->_map.end();
 }
 
 template<typename K, typename V, typename W, typename C> const V& CachedMap<K, V, W, C>::get(K& key)
