@@ -41,8 +41,6 @@ int DisassemblerListing::MemoryBuffer::luaRead(lua_State *l)
 DisassemblerListing::DisassemblerListing(IO::DataBuffer *databuffer): LuaTable(), _databuffer(databuffer)
 {
     this->_memorybuffer = new MemoryBuffer(this, databuffer);
-    this->_database = new DisassemblerDatabase();
-
     lua_State* l = LuaState::instance();
 
     this->push();
@@ -68,12 +66,6 @@ DisassemblerListing::~DisassemblerListing()
         delete this->_memorybuffer;
         this->_memorybuffer = nullptr;
     }
-
-    if(this->_database)
-    {
-        delete this->_database;
-        this->_database = nullptr;
-    }
 }
 
 bool DisassemblerListing::isDisassembled(DataValue& address)
@@ -91,7 +83,7 @@ DisassemblerListing::MemoryBuffer *DisassemblerListing::memoryBuffer() const
     return this->_memorybuffer;
 }
 
-DisassemblerDatabase *DisassemblerListing::database() const
+DisassemblerDatabase& DisassemblerListing::database()
 {
     return this->_database;
 }
@@ -162,7 +154,7 @@ void DisassemblerListing::createFunction(const char *name, Function::Type functi
         this->_entrypoints.ByAddress[address] = function;
     }
 
-    this->_database->set(address, name);
+    this->_database.set(address, name);
     this->_listing.push_back(function);
 }
 
