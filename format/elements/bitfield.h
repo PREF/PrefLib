@@ -29,7 +29,7 @@ class BitField: public FieldElement, public ValuedField
         int _lastbitend;
 };
 
-} // namespace Core
+} // namespace Format
 } // namespace PrefLib
 
 #endif // PREFLIB_FORMAT_BITFIELD_H
