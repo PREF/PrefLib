@@ -47,7 +47,6 @@ void BinaryMap::setMode(BinaryMap::MapMode mode)
         return;
 
     this->_mode = mode;
-    this->doElaborate();
 }
 
 uint64_t BinaryMap::length() const

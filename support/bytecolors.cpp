@@ -58,7 +58,7 @@ ByteColors::Rgb ByteColors::categoryColor(ByteColors::Category c)
             break;
     }
 
-    return ByteColors::Uncategorized;
+    return ByteColors::UncategorizedColor;
 }
 
 const std::vector<ByteColors::Info>& ByteColors::colorTable()
