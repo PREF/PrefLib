@@ -35,6 +35,32 @@ ByteColors::Rgb ByteColors::entropyColor(double e)
     return ((static_cast<uint32_t>((255u * f)) << 16u) | static_cast<uint32_t>((255u * pow(e, 2)))) & 0xFF00FF;
 }
 
+ByteColors::Rgb ByteColors::categoryColor(ByteColors::Category c)
+{
+    switch(c)
+    {
+        case Category::Zero:
+            return ByteColors::ZeroColor;
+
+        case Category::FF:
+            return ByteColors::FFColor;
+
+        case Category::Punct:
+            return ByteColors::PunctColor;
+
+        case Category::Alpha:
+            return ByteColors::AlphaColor;
+
+        case Category::Digits:
+            return ByteColors::DigitsColor;
+
+        default:
+            break;
+    }
+
+    return ByteColors::Uncategorized;
+}
+
 const std::vector<ByteColors::Info>& ByteColors::colorTable()
 {
     if(ByteColors::_colortable.empty())
@@ -48,7 +74,7 @@ const std::vector<ByteColors::Info>& ByteColors::colorTable()
             else if(b == 0xFF) /* 255 */
                 ByteColors::_colortable[b] = { Category::FF, ByteColors::FFColor };
             else if((b >= 0x21 && b <= 0x2F) || (b >= 0x3A && b <= 0x40) || (b >= 0x5B && b <= 0x60) || (b >= 0x7B && b <= 0x7E))
-                ByteColors::_colortable[b] = { Category::Punt, ByteColors::PunctColor };
+                ByteColors::_colortable[b] = { Category::Punct, ByteColors::PunctColor };
             else if((b >= 0x41 && b <= 0x5A) || (b >= 0x51 && b <= 0x7A))
                 ByteColors::_colortable[b] = { Category::Alpha, ByteColors::AlphaColor };
             else if(b >= 0x30 && b <= 0x38)
