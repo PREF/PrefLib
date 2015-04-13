@@ -29,11 +29,8 @@ double Math::logn(double n, unsigned int base)
     return log(n) / log(base);
 }
 
-double Math::entropy(IO::DataBuffer *databuffer, uint64_t startoffset, uint64_t size)
+double Math::entropy(const ByteElaborator::CountResult& cr, uint64_t size)
 {
-    ByteElaborator::CountResult cr;
-    ByteElaborator::countBytes(cr, databuffer, startoffset, startoffset + size);
-
     double e = 0.0;
     uint64_t base = std::min(size, 256ul);
 
@@ -49,6 +46,13 @@ double Math::entropy(IO::DataBuffer *databuffer, uint64_t startoffset, uint64_t 
     }
 
     return -e;
+}
+
+double Math::entropy(IO::DataBuffer *databuffer, uint64_t startoffset, uint64_t size)
+{
+    ByteElaborator::CountResult cr;
+    ByteElaborator::countBytes(cr, databuffer, startoffset, startoffset + size);
+    return Math::entropy(cr, size);
 }
 
 double Math::entropy(IO::DataBuffer *databuffer, uint64_t size)

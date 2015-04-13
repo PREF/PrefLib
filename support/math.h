@@ -20,6 +20,7 @@ class Math
 
     public:
         static double logn(double n, unsigned int base);
+        static double entropy(const ByteElaborator::CountResult&cr, uint64_t size);
         static double entropy(IO::DataBuffer* databuffer, uint64_t startoffset, uint64_t size);
         static double entropy(IO::DataBuffer* databuffer, uint64_t size);
         static double entropy(IO::DataBuffer* databuffer);
