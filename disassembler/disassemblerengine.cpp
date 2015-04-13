@@ -5,13 +5,8 @@ namespace Disassembler {
 
 DisassemblerEngine::DisassemblerEngine(DisassemblerDefinition *definition): LuaTable(), _definition(definition)
 {
-    lua_State* l = LuaState::instance();
-
-    this->push();
     this->setFunction("next", &DisassemblerEngine::luaNext);
     this->setFunction("enqueue", &DisassemblerEngine::luaEnqueue);
-    lua_pop(l, 1);
-
     definition->initialize();
 }
 

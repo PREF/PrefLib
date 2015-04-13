@@ -5,9 +5,7 @@ namespace Disassembler {
 
 DisassemblerContext::DisassemblerContext()
 {
-    this->push();
     this->setFunction("create", &DisassemblerContext::luaCreate);
-    lua_pop(LuaState::instance(), 1);
 }
 
 DisassemblerContext::~DisassemblerContext()

@@ -5,11 +5,9 @@ namespace Format {
 
 Structure::Structure(FormatTree* formattree, IO::DataBuffer *databuffer, uint64_t offset, const char* name, FormatElement* parent): FormatElement(formattree, databuffer, offset, name, parent)
 {
-    this->push();
     this->setFunction("addStructure", &Structure::luaAddStructure);
     this->setFunction("addField", &Structure::luaAddField);
     this->setFunction("addArray", &Structure::luaAddArray);
-    lua_pop(LuaState::instance(), 1);
 }
 
 Structure::~Structure()

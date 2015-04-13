@@ -5,9 +5,7 @@ namespace Exporter {
 
 ExporterContext::ExporterContext(): LuaTable()
 {
-    this->push();
     this->setFunction("create", &ExporterContext::luaCreate);
-    lua_pop(LuaState::instance(), 1);
 }
 
 ExporterContext::~ExporterContext()

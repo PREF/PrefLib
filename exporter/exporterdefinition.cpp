@@ -5,12 +5,10 @@ namespace Exporter {
 
 ExporterDefinition::ExporterDefinition(const char *name, const char *description, const char *author, const char *version): LuaTable()
 {
-    this->push();
     this->setString("name", name);
     this->setString("description", description);
     this->setString("author", author);
     this->setString("version", version);
-    lua_pop(LuaState::instance(), 1);
 }
 
 ExporterDefinition::~ExporterDefinition()

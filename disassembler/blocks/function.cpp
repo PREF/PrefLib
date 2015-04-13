@@ -5,11 +5,7 @@ namespace Disassembler {
 
 Function::Function(Function::Type functiontype, uint64_t address): Block(address, 0)
 {
-    lua_State* l = LuaState::instance();
-
-    this->push();
     this->setInteger("type", functiontype);
-    lua_pop(l, 1);
 }
 
 Function::~Function()

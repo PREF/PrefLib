@@ -5,11 +5,9 @@ namespace Format {
 
 FormatTree::FormatTree(IO::DataBuffer *databuffer, uint64_t baseoffset): LuaTable()
 {
-    this->push();
     this->setInteger("baseoffset", baseoffset);
     this->setTable("databuffer", databuffer);
     this->setFunction("addStructure", &FormatTree::luaAddStructure);
-    lua_pop(LuaState::instance(), 1);
 }
 
 FormatTree::~FormatTree()

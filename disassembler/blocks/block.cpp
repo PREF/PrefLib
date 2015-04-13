@@ -7,9 +7,10 @@ Block::Block(uint64_t startaddress, uint64_t size): LuaTable(), _bookmarked(fals
 {
     lua_State* l = LuaState::instance();
 
-    this->push();
     this->setInteger("startaddress", startaddress);
     this->setInteger("size", size);
+
+    this->push();
 
     if(luaL_newmetatable(l, "block"))
     {

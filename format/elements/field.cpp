@@ -5,11 +5,7 @@ namespace Format {
 
 Field::Field(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, DataType::Type datatype, const char *name, FormatElement *parent): FieldElement(formattree, databuffer, offset, datatype, name, parent)
 {
-    lua_State* l = LuaState::instance();
-
-    this->push();
     this->setFunction("setBitField", &Field::luaSetBitField);
-    lua_pop(l, 1);
 }
 
 Field::Field(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, DataType::Type datatype, const char* name, FormatElement* parent, DataValue& valid): FieldElement(formattree, databuffer, offset, datatype, name, parent, valid)

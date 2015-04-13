@@ -7,9 +7,7 @@ FieldArray::FieldArray(FormatTree* formattree, IO::DataBuffer* databuffer, uint6
 {
     this->_dynamic = true; /* FieldArray is always dynamic */
 
-    this->push();
     this->setInteger("elementtype", elementtype);
-    lua_pop(LuaState::instance(), 1);
 }
 
 FieldArray::~FieldArray()

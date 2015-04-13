@@ -4,10 +4,8 @@ namespace PrefLib {
 namespace Format {
 
 FormatContext::FormatContext(): LuaTable()
-{    
-    this->push();
+{
     this->setFunction("create", &FormatContext::luaCreate);
-    lua_pop(LuaState::instance(), 1);
 }
 
 FormatContext::~FormatContext()

@@ -5,15 +5,11 @@ namespace Disassembler {
 
 DisassemblerDefinition::DisassemblerDefinition(const char* name, Format::FormatDefinition* formatdefinition, DataType::Type addresstype, const char* author, const char* version): LuaTable()
 {
-    lua_State* l = LuaState::instance();
-
-    this->push();
     this->setString("name", name);
     this->setTable("format", formatdefinition);
     this->setInteger("addresstype", addresstype);
     this->setString("author", author);
     this->setString("version", version);
-    lua_pop(l, 1);
 }
 
 DisassemblerDefinition::~DisassemblerDefinition()
@@ -93,6 +89,7 @@ void DisassemblerDefinition::output(ListingPrinter *printer, Instruction *instru
         return;
 
     lua_State* l = LuaState::instance();
+    printer->reset();
 
     this->push();
     lua_getfield(l, -1, "output");

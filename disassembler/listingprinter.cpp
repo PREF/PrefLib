@@ -5,15 +5,11 @@ namespace Disassembler {
 
 ListingPrinter::ListingPrinter(): LuaTable(), _length(0), _oldlength(0), _mergedstring(nullptr)
 {
-    lua_State* l = LuaState::instance();
-
-    this->push();
     this->setFunction("out", &ListingPrinter::luaOut);
     this->setFunction("outword", &ListingPrinter::luaOutWord);
     this->setFunction("outcomment", &ListingPrinter::luaOutComment);
     this->setFunction("outregister", &ListingPrinter::luaOutRegister);
     this->setFunction("outvalue", &ListingPrinter::luaOutValue);
-    lua_pop(l, 1);
 }
 
 ListingPrinter::~ListingPrinter()

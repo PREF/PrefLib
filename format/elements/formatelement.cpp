@@ -7,8 +7,6 @@ using namespace Core;
 
 FormatElement::FormatElement(FormatTree* formattree, IO::DataBuffer *databuffer, uint64_t offset, const char *name, FormatElement *parent): LuaTable(), _databuffer(databuffer), _dynamic(false), _base(16), _infocallback({ false, 0 })
 {
-    lua_State* l = LuaState::instance();
-    this->push();
     this->setInteger("offset", offset);
     this->setString("name", name);
     this->setTable("tree", reinterpret_cast<LuaTable*>(formattree));
@@ -17,6 +15,9 @@ FormatElement::FormatElement(FormatTree* formattree, IO::DataBuffer *databuffer,
 
     if(parent)
         this->setTable("parent", parent);
+
+    lua_State* l = LuaState::instance();
+    this->push();
 
     if(luaL_newmetatable(l, "formatelement"))
     {
@@ -31,7 +32,7 @@ FormatElement::FormatElement(FormatTree* formattree, IO::DataBuffer *databuffer,
     }
 
     lua_setmetatable(l, -2);
-    lua_pop(LuaState::instance(), 1);
+    lua_pop(l, 1);
 }
 
 FormatElement::~FormatElement()

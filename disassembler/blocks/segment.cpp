@@ -5,13 +5,9 @@ namespace Disassembler {
 
 Segment::Segment(const char *name, Segment::Type segmenttype, uint64_t startaddress, uint64_t size, uint64_t baseoffset): Block(startaddress, size)
 {
-    lua_State* l = LuaState::instance();
-
-    this->push();
     this->setString("name", name);
     this->setInteger("type", segmenttype);
     this->setInteger("baseoffset", baseoffset);
-    lua_pop(l, 1);
 }
 
 Segment::~Segment()

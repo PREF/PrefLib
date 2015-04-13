@@ -5,6 +5,13 @@ namespace IO {
 
 DataBuffer::DataBuffer(OpenMode mode): LuaTable()
 {
+    this->setBoolean("readable", ((mode & OpenMode::Read) != 0));
+    this->setBoolean("writable", ((mode & OpenMode::Write) != 0));
+    this->setFunction("at", &DataBuffer::luaAt);
+    this->setFunction("copyTo", &DataBuffer::luaCopyTo);
+    this->setFunction("read", &DataBuffer::luaRead);
+    this->setFunction("write", &DataBuffer::luaWrite);
+
     lua_State* l = LuaState::instance();
     this->push();
 
@@ -15,12 +22,6 @@ DataBuffer::DataBuffer(OpenMode mode): LuaTable()
     }
 
     lua_setmetatable(l, -2);
-    this->setBoolean("readable", (mode & OpenMode::Read));
-    this->setBoolean("writable", (mode & OpenMode::Write));
-    this->setFunction("at", &DataBuffer::luaAt);
-    this->setFunction("copyTo", &DataBuffer::luaCopyTo);
-    this->setFunction("read", &DataBuffer::luaRead);
-    this->setFunction("write", &DataBuffer::luaWrite);
     lua_pop(l, 1);
 }
 

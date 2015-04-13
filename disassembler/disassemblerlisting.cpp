@@ -5,11 +5,7 @@ namespace Disassembler {
 
 DisassemblerListing::MemoryBuffer::MemoryBuffer(DisassemblerListing *listing, IO::DataBuffer *databuffer): _listing(listing), _databuffer(databuffer)
 {    
-    lua_State* l = LuaState::instance();
-
-    this->push();
     this->setFunction("read", &MemoryBuffer::luaRead);
-    lua_pop(l, 1);
 }
 
 int DisassemblerListing::MemoryBuffer::read(uint64_t address, unsigned char *data, uint64_t len)

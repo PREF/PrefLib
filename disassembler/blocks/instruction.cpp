@@ -10,14 +10,10 @@ Instruction::Instruction(uint64_t address): Instruction(address, 0, nullptr, fal
 
 Instruction::Instruction(uint64_t address, uint64_t size, char *mnemonic, bool isjump, bool iscall, bool isconditional): Block(address, size)
 {
-    lua_State* l = LuaState::instance();
-
-    this->push();
     this->setString("mnemonic", (!mnemonic ? "???" : uppercase(mnemonic)));
     this->setBoolean("isjump", isjump);
     this->setBoolean("iscall", iscall);
     this->setBoolean("isconditional", isconditional);
-    lua_pop(l, 1);
 }
 
 Instruction::~Instruction()

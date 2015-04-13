@@ -73,8 +73,7 @@ SOURCES += \
     disassembler/disassemblerengine.cpp \
     disassembler/listingprinter.cpp \
     disassembler/database/disassemblerdatabase.cpp \
-    core/containers/cachedmap.cpp \
-    disassembler/database/symbol.cpp
+    core/containers/cachedmap.cpp
 
 HEADERS += \
     prefcontext.h \

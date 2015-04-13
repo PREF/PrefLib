@@ -5,16 +5,11 @@ namespace Format {
 
 FormatDefinition::FormatDefinition(const char *category, const char* name, const char* version, const char* author): LuaTable()
 {
-    this->push();
-
     this->setString("category", category);
     this->setString("name", name);
     this->setString("version", version);
     this->setString("author", author);
-
     this->setFunction("createTree", &FormatDefinition::luaCreateTree);
-
-    lua_pop(LuaState::instance(), 1);
 }
 
 FormatDefinition::~FormatDefinition()
