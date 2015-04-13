@@ -1,9 +1,7 @@
 #ifndef PREFLIB_PREFCONTEXT_H
 #define PREFLIB_PREFCONTEXT_H
 
-#include <lua.hpp>
-#include <cstdio>
-#include <cstring>
+#include <iostream>
 #include "core/capstone/luacapstone.h"
 #include "core/lua/luastate.h"
 #include "support/math.h"
@@ -18,11 +16,22 @@ using namespace Core::Capstone;
 
 class PrefContext
 {
-    private:
-        PrefContext();
+    public:
+        enum LogLevel { Normal, NormalLine, Notice, Warning, Error };
+        typedef void (*LogCallback)(LogLevel level, const char* msg, void* userdata);
 
     private:
+        PrefContext();
+        static void logger(LogLevel level, lua_State* l);
+        static void defaultLogger(LogLevel level, const char* msg, void*);
+
+    lua_api:
         static int luaopen_preflib(lua_State *l);
+        static int luaLog(lua_State* l);
+        static int luaLogLine(lua_State* l);
+        static int luaNotice(lua_State* l);
+        static int luaWarning(lua_State* l);
+        static int luaError(lua_State* l);
 
     public:
         ~PrefContext();
@@ -32,6 +41,7 @@ class PrefContext
         Disassembler::DisassemblerContext* disassemblers() const;
         void addSearchPath(const char* path);
         void executeScript(const char* script);
+        void setLogger(LogCallback logger, void* userdata = nullptr);
 
     public:
         static PrefContext* instance();
@@ -45,6 +55,8 @@ class PrefContext
         Exporter::ExporterContext* _exporterctx;
         Format::FormatContext* _formatctx;
         Disassembler::DisassemblerContext* _disassemblerctx;
+        LogCallback _logger;
+        void* _loguserdata;
 };
 
 } // namespace PrefLib

@@ -3,9 +3,14 @@
 namespace PrefLib {
 
 PrefContext* PrefContext::_instance = nullptr;
-luaL_Reg PrefContext::_functions[] = { { nullptr, nullptr } };
+luaL_Reg PrefContext::_functions[] = { { "log", &PrefContext::luaLog },
+                                       { "logline", &PrefContext::luaLogLine },
+                                       { "notice", &PrefContext::luaNotice },
+                                       { "warning", &PrefContext::luaWarning },
+                                       { "error", &PrefContext::luaError },
+                                       { nullptr, nullptr } };
 
-PrefContext::PrefContext()
+PrefContext::PrefContext(): _logger(&PrefContext::defaultLogger), _loguserdata(nullptr)
 {
     luaL_openlibs(LuaState::instance());
     luaopen_capstone(LuaState::instance());
@@ -13,6 +18,44 @@ PrefContext::PrefContext()
     this->_exporterctx = new Exporter::ExporterContext();
     this->_formatctx = new Format::FormatContext();
     this->_disassemblerctx = new Disassembler::DisassemblerContext();
+}
+
+void PrefContext::logger(PrefContext::LogLevel level, lua_State *l)
+{
+    int argc = lua_gettop(l);
+    luaX_expectminargc(l, argc, 1);
+
+    lua_getglobal(l, "string");
+    lua_getfield(l, -1, "format");
+
+    for(int i = 1; i <= argc; i++)
+        lua_pushvalue(l, i);
+
+    lua_call(l, argc, 1);
+    PrefContext::_instance->_logger(level, lua_tostring(l, -1), PrefContext::_instance->_loguserdata);
+    lua_pop(l, 2);
+}
+
+void PrefContext::defaultLogger(PrefContext::LogLevel level, const char *msg, void*)
+{
+    switch(level)
+    {
+        case LogLevel::Notice:
+            std::cout << "NOTICE: " << msg << std::endl;
+            break;
+
+        case LogLevel::Warning:
+            std::cout << "WARNING: " << msg << std::endl;
+            break;
+
+        case LogLevel::Error:
+            std::cout << "ERROR: " << msg << std::endl;
+            break;
+
+        default:
+            std::cout << msg << std::endl;
+            break;
+    }
 }
 
 int PrefContext::luaopen_preflib(lua_State* l)
@@ -39,6 +82,36 @@ int PrefContext::luaopen_preflib(lua_State* l)
     lua_setfield(l, -2, "disassembler");
 
     return 1;
+}
+
+int PrefContext::luaLog(lua_State *l)
+{
+    PrefContext::logger(LogLevel::Normal, l);
+    return 0;
+}
+
+int PrefContext::luaLogLine(lua_State *l)
+{
+    PrefContext::logger(LogLevel::NormalLine, l);
+    return 0;
+}
+
+int PrefContext::luaNotice(lua_State *l)
+{
+    PrefContext::logger(LogLevel::Notice, l);
+    return 0;
+}
+
+int PrefContext::luaWarning(lua_State *l)
+{
+    PrefContext::logger(LogLevel::Warning, l);
+    return 0;
+}
+
+int PrefContext::luaError(lua_State *l)
+{
+    PrefContext::logger(LogLevel::Error, l);
+    return 0;
 }
 
 PrefContext::~PrefContext()
@@ -107,6 +180,12 @@ void PrefContext::executeScript(const char *script)
         throw std::runtime_error(lua_tostring(l, -1));
         lua_pop(l, 1);
     }
+}
+
+void PrefContext::setLogger(PrefContext::LogCallback logger, void *userdata)
+{
+    this->_logger = logger;
+    this->_loguserdata = userdata;
 }
 
 PrefContext *PrefContext::instance()
