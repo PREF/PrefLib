@@ -694,6 +694,11 @@ bool DataValue::isZero() const
     return this->_valuestruct->Value.UInt64 == 0;
 }
 
+bool DataValue::isSigned() const
+{
+    return this->_valuestruct->IsSigned;
+}
+
 bool DataValue::isOverflowed() const
 {
     return this->_valuestruct->IsOverflowed;
@@ -769,6 +774,11 @@ const char *DataValue::toString(unsigned int base, unsigned int width)
     }
 
     return nullptr;
+}
+
+Endianness::Type DataValue::endianness() const
+{
+    return this->_valuestruct->Endian;
 }
 
 DataValue DataValue::operator ~() const

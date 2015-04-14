@@ -70,8 +70,10 @@ class DataValue: public LuaReference
         virtual void push() const;
         void castTo(DataType::Type type);
         const char* toString(unsigned int base = 10, unsigned int width = 0);
+        Endianness::Type endianness() const;
         bool isNull() const;
         bool isZero() const;
+        bool isSigned() const;
         bool isOverflowed() const;
         bool isArithmetic() const;
         bool isIntegral() const;
