@@ -50,6 +50,7 @@ class FormatElement: public LuaTable
         const char* name() const;
         FormatTree* tree() const;
         FormatElement* parent() const;
+        IO::DataBuffer* dataBuffer() const;
         virtual void setBase(uint64_t base);
         void setInfoProvider(FieldCallback infocallback);
         void setDynamic(FieldCallback dynamiccallback);
@@ -63,7 +64,6 @@ class FormatElement: public LuaTable
         static int luaMetaLength(lua_State* l);
 
     protected:
-        IO::DataBuffer* dataBuffer() const;
         virtual FormatElement::Type type() const = 0;
         virtual int metaIndex(lua_State* l);
         virtual int metaNewIndex(lua_State* l);
