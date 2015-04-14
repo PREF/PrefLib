@@ -19,9 +19,9 @@ const ByteElaborator::CountResult &HistogramChart::result() const
     return this->_result;
 }
 
-void HistogramChart::elaborate(IO::DataBuffer *databuffer, uint64_t startoffset, uint64_t endoffset)
+void HistogramChart::elaborate(IO::DataBuffer *databuffer, uint64_t startoffset, uint64_t endoffset, volatile bool *cancontinue)
 {
-    ByteElaborator::countBytes(this->_result, databuffer, startoffset, endoffset);
+    ByteElaborator::countBytes(this->_result, databuffer, startoffset, endoffset, cancontinue);
 }
 
 } // namespace Chart

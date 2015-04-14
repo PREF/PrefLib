@@ -13,14 +13,14 @@ AbstractChart::~AbstractChart()
 
 }
 
-void AbstractChart::elaborate(IO::DataBuffer *databuffer, uint64_t startoffset)
+void AbstractChart::elaborate(IO::DataBuffer *databuffer, uint64_t startoffset, volatile bool* cancontinue)
 {
-    this->elaborate(databuffer, startoffset, databuffer->length());
+    this->elaborate(databuffer, startoffset, databuffer->length(), cancontinue);
 }
 
-void AbstractChart::elaborate(IO::DataBuffer *databuffer)
+void AbstractChart::elaborate(IO::DataBuffer *databuffer, volatile bool *cancontinue)
 {
-    this->elaborate(databuffer, 0);
+    this->elaborate(databuffer, 0, cancontinue);
 }
 
 } // namespace Chart

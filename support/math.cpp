@@ -48,21 +48,21 @@ double Math::entropy(const ByteElaborator::CountResult& cr, uint64_t size)
     return -e;
 }
 
-double Math::entropy(IO::DataBuffer *databuffer, uint64_t startoffset, uint64_t size)
+double Math::entropy(IO::DataBuffer *databuffer, uint64_t startoffset, uint64_t size, volatile bool *cancontinue)
 {
     ByteElaborator::CountResult cr;
-    ByteElaborator::countBytes(cr, databuffer, startoffset, startoffset + size);
+    ByteElaborator::countBytes(cr, databuffer, startoffset, startoffset + size, cancontinue);
     return Math::entropy(cr, size);
 }
 
-double Math::entropy(IO::DataBuffer *databuffer, uint64_t size)
+double Math::entropy(IO::DataBuffer *databuffer, uint64_t size, volatile bool *cancontinue)
 {
-    return Math::entropy(databuffer, 0, size);
+    return Math::entropy(databuffer, 0, size, cancontinue);
 }
 
-double Math::entropy(IO::DataBuffer *databuffer)
+double Math::entropy(IO::DataBuffer *databuffer, volatile bool *cancontinue)
 {
-    return Math::entropy(databuffer, databuffer->length());
+    return Math::entropy(databuffer, databuffer->length(), cancontinue);
 }
 
 int Math::luaLogn(lua_State *l)

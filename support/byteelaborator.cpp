@@ -20,7 +20,7 @@ void ByteElaborator::countBytes(CountResult &result, IO::DataBuffer *databuffer,
 {
     result.MaxByte = 0x00;
     result.MaxCount = 0x00;
-    result.Counts = CountList(0x100, 0x00);
+    result.Counts.assign(0x100, 0x00);
 
     for(uint64_t i = startoffset; i < endoffset; i++)
     {

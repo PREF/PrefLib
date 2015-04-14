@@ -44,20 +44,24 @@ uint64_t EntropyChart::calculateBlockSize(uint64_t len)
         blocksize = bs;
     }
 
+    this->_points.clear();
+    this->_points.reserve(numpoints);
     return blocksize;
 }
 
-void EntropyChart::elaborate(IO::DataBuffer *databuffer, uint64_t startoffset, uint64_t endoffset)
+void EntropyChart::elaborate(IO::DataBuffer *databuffer, uint64_t startoffset, uint64_t endoffset, volatile bool *cancontinue)
 {
     uint64_t len = endoffset - startoffset, blocksize = this->calculateBlockSize(len);
-    this->_points.clear();
 
     if(!blocksize)
         return;
 
     for(uint64_t i = 0; i < len; i += blocksize)
     {
-        double e = Math::entropy(databuffer, i, blocksize);
+        if(cancontinue && !(*cancontinue))
+            break;
+
+        double e = Math::entropy(databuffer, i, blocksize, cancontinue);
         this->_points.push_back({ static_cast<double>(i), e });
     }
 }

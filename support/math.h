@@ -21,9 +21,9 @@ class Math
     public:
         static double logn(double n, unsigned int base);
         static double entropy(const ByteElaborator::CountResult&cr, uint64_t size);
-        static double entropy(IO::DataBuffer* databuffer, uint64_t startoffset, uint64_t size);
-        static double entropy(IO::DataBuffer* databuffer, uint64_t size);
-        static double entropy(IO::DataBuffer* databuffer);
+        static double entropy(IO::DataBuffer* databuffer, uint64_t startoffset, uint64_t size, volatile bool* cancontinue = nullptr);
+        static double entropy(IO::DataBuffer* databuffer, uint64_t size, volatile bool* cancontinue = nullptr);
+        static double entropy(IO::DataBuffer* databuffer, volatile bool* cancontinue = nullptr);
 
     lua_api:
         static int luaLogn(lua_State* l);

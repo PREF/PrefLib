@@ -1,7 +1,7 @@
 #ifndef PREFLIB_CHART_ENTROPYCHART_H
 #define PREFLIB_CHART_ENTROPYCHART_H
 
-#include <deque>
+#include <vector>
 #include "abstractchart.h"
 #include "../support/math.h"
 
@@ -14,7 +14,7 @@ class EntropyChart : public AbstractChart
 {
     public:
         typedef EntropyChart::PointT<double> EntropyPoint;
-        typedef std::deque<EntropyPoint> EntropyPoints;
+        typedef std::vector<EntropyPoint> EntropyPoints;
 
     public:
         EntropyChart();
@@ -25,7 +25,7 @@ class EntropyChart : public AbstractChart
         uint64_t calculateBlockSize(uint64_t len);
 
     public:
-        virtual void elaborate(IO::DataBuffer *databuffer, uint64_t startoffset, uint64_t endoffset);
+        virtual void elaborate(IO::DataBuffer *databuffer, uint64_t startoffset, uint64_t endoffset, volatile bool* cancontinue = nullptr);
 
     private:
         EntropyPoints _points;

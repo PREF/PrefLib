@@ -18,7 +18,7 @@ class HistogramChart: public virtual AbstractChart
         const ByteElaborator::CountResult& result() const;
 
     public:
-        virtual void elaborate(IO::DataBuffer *databuffer, uint64_t startoffset, uint64_t endoffset);
+        virtual void elaborate(IO::DataBuffer *databuffer, uint64_t startoffset, uint64_t endoffset, volatile bool* cancontinue = nullptr);
 
     private:
         ByteElaborator::CountResult _result;
