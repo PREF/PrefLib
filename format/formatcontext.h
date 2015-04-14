@@ -3,6 +3,7 @@
 
 #include <lua.hpp>
 #include "core/lua/luatable.h"
+#include "categorycontext.h"
 #include "formatdefinition.h"
 
 namespace PrefLib {
@@ -18,9 +19,13 @@ class FormatContext: public LuaTable
 
     public:
         FormatDefinition* get(int idx) const;
+        const CategoryContext* categories() const;
 
     lua_api:
         static int luaCreate(lua_State *l);
+
+    private:
+        CategoryContext* _categoryctx;
 };
 
 } // namespace Format

@@ -73,7 +73,8 @@ SOURCES += \
     disassembler/disassemblerengine.cpp \
     disassembler/listingprinter.cpp \
     disassembler/database/disassemblerdatabase.cpp \
-    core/containers/cachedmap.cpp
+    core/containers/cachedmap.cpp \
+    format/categorycontext.cpp
 
 HEADERS += \
     prefcontext.h \
@@ -141,7 +142,8 @@ HEADERS += \
     disassembler/disassemblerengine.h \
     disassembler/listingprinter.h \
     disassembler/database/disassemblerdatabase.h \
-    core/containers/cachedmap.h
+    core/containers/cachedmap.h \
+    format/categorycontext.h
 
 INCLUDEPATH += $$PWD/include/capstone \
                $$PWD/include/lua

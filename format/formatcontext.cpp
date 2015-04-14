@@ -5,12 +5,15 @@ namespace Format {
 
 FormatContext::FormatContext(): LuaTable()
 {
+    this->_categoryctx = new CategoryContext();
+
     this->setFunction("create", &FormatContext::luaCreate);
 }
 
 FormatContext::~FormatContext()
 {
-
+    delete this->_categoryctx;
+    this->_categoryctx = nullptr;
 }
 
 FormatDefinition *FormatContext::get(int idx) const
@@ -28,6 +31,11 @@ FormatDefinition *FormatContext::get(int idx) const
     return formatdefinition;
 }
 
+const CategoryContext *FormatContext::categories() const
+{
+    return this->_categoryctx;
+}
+
 int FormatContext::luaCreate(lua_State *l)
 {
     int argc = lua_gettop(l);
@@ -37,6 +45,7 @@ int FormatContext::luaCreate(lua_State *l)
     FormatDefinition* fd = new FormatDefinition(luaL_checkstring(l, 2), luaL_checkstring(l, 3), luaL_checkstring(l, 4), luaL_checkstring(l, 5));
 
     thethis->bindTable(fd->name(), fd);
+    thethis->_categoryctx->add(fd);
     fd->push();
     return 1;
 }
