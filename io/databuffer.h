@@ -30,8 +30,8 @@ class DataBuffer : public LuaTable
 
     public: /* Abstract Methods */
         virtual uint64_t length() const = 0;
-        virtual int read(uint64_t offset, unsigned char* data, uint64_t len) = 0;
-        virtual int write(uint64_t offset, const unsigned char* data, uint64_t len) = 0;
+        virtual uint64_t read(uint64_t offset, unsigned char* data, uint64_t len) = 0;
+        virtual uint64_t write(uint64_t offset, const unsigned char* data, uint64_t len) = 0;
 
     lua_api:
         static int luaMetaLength(lua_State* l);
