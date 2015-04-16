@@ -51,12 +51,14 @@ class FormatElement: public LuaTable
         FormatTree* tree() const;
         FormatElement* parent() const;
         IO::DataBuffer* dataBuffer() const;
+        int64_t indexOf(FormatElement* element) const;
         virtual void setBase(uint64_t base);
         void setInfoProvider(FieldCallback infocallback);
         void setDynamic(FieldCallback dynamiccallback);
         void populate();
 
     lua_api:
+        static int luaIndexOf(lua_State* l);
         static int luaInfoProvider(lua_State* l);
         static int luaDynamic(lua_State* l);
         static int luaMetaIndex(lua_State* l);

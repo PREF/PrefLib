@@ -10,6 +10,7 @@ FormatElement::FormatElement(FormatTree* formattree, IO::DataBuffer *databuffer,
     this->setInteger("offset", offset);
     this->setString("name", name);
     this->setTable("tree", reinterpret_cast<LuaTable*>(formattree));
+    this->setFunction("indexOf", &FormatElement::luaIndexOf);
     this->setFunction("infoProvider", &FormatElement::luaInfoProvider);
     this->setFunction("dynamic", &FormatElement::luaDynamic);
 
@@ -61,6 +62,18 @@ int FormatElement::luaDynamic(lua_State *l)
     thethis->_dynamiccallback.IsLua = true;
 
     thethis->push(); /* For Chaining */
+    return 1;
+}
+
+int FormatElement::luaIndexOf(lua_State *l)
+{
+    int argc = lua_gettop(l);
+    luaX_expectargc(l, argc, 2);
+
+    FormatElement* thethis = reinterpret_cast<FormatElement*>(checkThis(l, 1));
+    int64_t idx = thethis->indexOf(reinterpret_cast<FormatElement*>(luaL_checkudata(l, 2, "formatelement")));
+
+    lua_pushinteger(l, idx);
     return 1;
 }
 
@@ -126,6 +139,19 @@ bool FormatElement::isBitField() const
 IO::DataBuffer *FormatElement::dataBuffer() const
 {
     return this->_databuffer;
+}
+
+int64_t FormatElement::indexOf(FormatElement *element) const
+{
+    for(size_t i = 0; i < this->length(); i++)
+    {
+        FormatElement* e = dynamic_cast<FormatElement*>(this->getI<LuaTable*>(i));
+
+        if(e == element)
+            return i;
+    }
+
+    return -1;
 }
 
 int FormatElement::metaIndex(lua_State *l)
