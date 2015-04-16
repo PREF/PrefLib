@@ -78,6 +78,7 @@ class DataValue: public LuaReference
         bool isArithmetic() const;
         bool isIntegral() const;
         bool isFloatingPoint() const;
+        bool isString() const;
 
         template<typename T> DataValue(T t, typename std::enable_if< std::is_signed<T>::value>::type* = 0);
         template<typename T> DataValue(T t, typename std::enable_if< std::is_unsigned<T>::value>::type* = 0);

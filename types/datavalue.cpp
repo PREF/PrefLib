@@ -719,6 +719,11 @@ bool DataValue::isFloatingPoint() const
     return (this->_valuestruct->Type == InternalType::Float) || (this->_valuestruct->Type == InternalType::Double);
 }
 
+bool DataValue::isString() const
+{
+    return this->_valuestruct->Type == InternalType::String;
+}
+
 DataValue::~DataValue()
 {
 
