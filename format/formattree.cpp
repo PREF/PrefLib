@@ -12,7 +12,13 @@ FormatTree::FormatTree(IO::DataBuffer *databuffer, uint64_t baseoffset): LuaTabl
 
 FormatTree::~FormatTree()
 {
+    IO::DataBuffer* databuffer = this->dataBuffer();
 
+    if(databuffer)
+    {
+        delete databuffer;
+        this->setTable("databuffer", nullptr);
+    }
 }
 
 Structure *FormatTree::addStructure(const char *name)
