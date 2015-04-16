@@ -123,7 +123,7 @@ bool FormatElement::isStructure() const
 
 bool FormatElement::isField() const
 {
-    return (this->type() == FormatElement::FieldType) || (this->type() == FormatElement::FieldArrayType);
+    return this->type() == FormatElement::FieldType;
 }
 
 bool FormatElement::isFieldArray() const
