@@ -1,6 +1,7 @@
 #ifndef PREFLIB_CORE_LUAREFERENCE_H
 #define PREFLIB_CORE_LUAREFERENCE_H
 
+#include <stdexcept>
 #include "luastate.h"
 
 namespace PrefLib {
@@ -10,10 +11,12 @@ namespace Lua {
 class LuaReference
 {
     public:
-        LuaReference();
+        LuaReference(lua_State* thread = nullptr);
         LuaReference(const LuaReference& lr);
         virtual ~LuaReference();
         virtual void push() const;
+        lua_State* moveTo(lua_State* to);
+        lua_State* thread() const;
 
     private:
         void deleteReference();
@@ -23,6 +26,7 @@ class LuaReference
         LuaReference& operator=(const LuaReference& rhs);
 
     protected:
+        lua_State* _thread;
         int _reference;
 };
 

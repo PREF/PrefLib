@@ -13,7 +13,7 @@ using namespace Core;
 class ExporterDefinition : public LuaTable
 {
     public:
-        ExporterDefinition(const char* name, const char* description, const char* author, const char* version);
+        ExporterDefinition(const char* name, const char* description, const char* author, const char* version, lua_State* thread = nullptr);
         ~ExporterDefinition();
 
     public:

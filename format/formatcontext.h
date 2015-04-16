@@ -14,7 +14,7 @@ using namespace Core;
 class FormatContext: public LuaTable
 {
     public:
-        FormatContext();
+        FormatContext(lua_State* thread = nullptr);
         ~FormatContext();
 
     public:

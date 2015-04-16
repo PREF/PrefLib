@@ -3,7 +3,7 @@
 namespace PrefLib {
 namespace Format {
 
-FormatContext::FormatContext(): LuaTable()
+FormatContext::FormatContext(lua_State *thread): LuaTable(thread)
 {
     this->_categoryctx = new CategoryContext();
 

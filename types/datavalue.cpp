@@ -79,7 +79,7 @@ int DataValue::luaMetaUnm(lua_State *l)
         lua_pushnil(l);
     else
     {
-        DataValue dv = -userdata->Value.Int32;
+        DataValue dv(-userdata->Value.Int32, l);
         dv.push();
     }
 
@@ -98,26 +98,26 @@ int DataValue::luaMetaAdd(lua_State *l)
 
         if(userdata->Type == InternalType::Float)
         {
-            DataValue dv = userdata->Value.Float + ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
-                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Float);
+            DataValue dv(userdata->Value.Float + ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Float), l);
             dv.push();
         }
         else if(userdata->Type == InternalType::Double)
         {
-            DataValue dv = userdata->Value.Double + ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
-                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Double);
+            DataValue dv(userdata->Value.Double + ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Double), l);
             dv.push();
         }
         else if(userdata->IsSigned)
         {
-            DataValue dv = userdata->Value.Int64 + ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
-                                                                         reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64);
+            DataValue dv(userdata->Value.Int64 + ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
+                                                                       reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64), l);
             dv.push();
         }
         else
         {
-            DataValue dv = userdata->Value.UInt64 + ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
-                                                                          reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64);
+            DataValue dv(userdata->Value.UInt64 + ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
+                                                                          reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64), l);
             dv.push();
         }
     }
@@ -137,26 +137,26 @@ int DataValue::luaMetaSub(lua_State *l)
 
         if(userdata->Type == InternalType::Float)
         {
-            DataValue dv = userdata->Value.Float - ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
-                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Float);
+            DataValue dv(userdata->Value.Float - ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                       reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Float), l);
             dv.push();
         }
         else if(userdata->Type == InternalType::Double)
         {
-            DataValue dv = userdata->Value.Double - ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
-                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Double);
+            DataValue dv(userdata->Value.Double - ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Double), l);
             dv.push();
         }
         else if(userdata->IsSigned)
         {
-            DataValue dv = userdata->Value.Int64 - ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
-                                                                         reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64);
+            DataValue dv(userdata->Value.Int64 - ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
+                                                                         reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64), l);
             dv.push();
         }
         else
         {
-            DataValue dv = userdata->Value.UInt64 - ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
-                                                                          reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64);
+            DataValue dv(userdata->Value.UInt64 - ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
+                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64), l);
             dv.push();
         }
     }
@@ -176,26 +176,26 @@ int DataValue::luaMetaMul(lua_State *l)
 
         if(userdata->Type == InternalType::Float)
         {
-            DataValue dv = userdata->Value.Float * ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
-                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Float);
+            DataValue dv(userdata->Value.Float * ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                       reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Float), l);
             dv.push();
         }
         else if(userdata->Type == InternalType::Double)
         {
-            DataValue dv = userdata->Value.Double * ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
-                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Double);
+            DataValue dv(userdata->Value.Double * ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Double), l);
             dv.push();
         }
         else if(userdata->IsSigned)
         {
-            DataValue dv = userdata->Value.Int64 * ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
-                                                                         reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64);
+            DataValue dv(userdata->Value.Int64 * ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
+                                                                         reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64), l);
             dv.push();
         }
         else
         {
-            DataValue dv = userdata->Value.UInt64 * ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
-                                                                          reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64);
+            DataValue dv(userdata->Value.UInt64 * ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
+                                                                          reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64), l);
             dv.push();
         }
     }
@@ -215,26 +215,26 @@ int DataValue::luaMetaDiv(lua_State *l)
 
         if(userdata->Type == InternalType::Float)
         {
-            DataValue dv = userdata->Value.Float / ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
-                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Float);
+            DataValue dv(userdata->Value.Float / ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                       reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Float), l);
             dv.push();
         }
         else if(userdata->Type == InternalType::Double)
         {
-            DataValue dv = userdata->Value.Double / ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
-                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Double);
+            DataValue dv(userdata->Value.Double / ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Double), l);
             dv.push();
         }
         else if(userdata->IsSigned)
         {
-            DataValue dv = userdata->Value.Int64 / ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
-                                                                         reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64);
+            DataValue dv(userdata->Value.Int64 / ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
+                                                                       reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64), l);
             dv.push();
         }
         else
         {
-            DataValue dv = userdata->Value.UInt64 / ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
-                                                                          reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64);
+            DataValue dv(userdata->Value.UInt64 / ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
+                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64), l);
             dv.push();
         }
     }
@@ -254,26 +254,26 @@ int DataValue::luaMetaMod(lua_State *l)
 
         if(userdata->Type == InternalType::Float)
         {
-            DataValue dv = fmod(userdata->Value.Float, ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
-                                                                            reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Float));
+            DataValue dv(fmod(userdata->Value.Float, ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                           reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Float)), l);
             dv.push();
         }
         else if(userdata->Type == InternalType::Double)
         {
-            DataValue dv = fmod(userdata->Value.Double, ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
-                                                                            reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Double));
+            DataValue dv(fmod(userdata->Value.Double, ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                            reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Double)), l);
             dv.push();
         }
         else if(userdata->IsSigned)
         {
-            DataValue dv = userdata->Value.Int64 % ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
-                                                                         reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64);
+            DataValue dv(userdata->Value.Int64 % ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
+                                                                       reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64), l);
             dv.push();
         }
         else
         {
-            DataValue dv = userdata->Value.UInt64 % ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
-                                                                          reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64);
+            DataValue dv(userdata->Value.UInt64 % ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
+                                                                        reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64), l);
             dv.push();
         }
     }
@@ -293,26 +293,26 @@ int DataValue::luaMetaPow(lua_State *l)
 
         if(userdata->Type == InternalType::Float)
         {
-            DataValue dv = pow(userdata->Value.Float, ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
-                                                                           reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Float));
+            DataValue dv(pow(userdata->Value.Float, ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                          reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Float)), l);
             dv.push();
         }
         else if(userdata->Type == InternalType::Double)
         {
-            DataValue dv = pow(userdata->Value.Double, ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
-                                                                           reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Double));
+            DataValue dv(pow(userdata->Value.Double, ((t == LUA_TNUMBER) ? lua_tonumber(l, 2) :
+                                                                           reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Double)), l);
             dv.push();
         }
         else if(userdata->IsSigned)
         {
-            DataValue dv = pow(userdata->Value.Int64, ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
-                                                                            reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64));
+            DataValue dv(pow(userdata->Value.Int64, ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
+                                                                          reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64)), l);
             dv.push();
         }
         else
         {
-            DataValue dv = pow(userdata->Value.UInt64, ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
-                                                                             reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64));
+            DataValue dv(pow(userdata->Value.UInt64, ((t == LUA_TNUMBER) ? lua_tointeger(l, 2) :
+                                                                           reinterpret_cast<UserData*>(luaL_checkudata(l, 2, "datavalue"))->Value.Int64)), l);
             dv.push();
         }
     }
@@ -437,56 +437,55 @@ int DataValue::luaMetaLe(lua_State *l)
 
 void DataValue::allocateUserData()
 {
-    lua_State* l = LuaState::instance();
-    this->_valuestruct = reinterpret_cast<UserData*>(lua_newuserdata(l, sizeof(UserData)));
+    this->_valuestruct = reinterpret_cast<UserData*>(lua_newuserdata(this->_thread, sizeof(UserData)));
 
-    if(luaL_newmetatable(l, "datavalue"))
+    if(luaL_newmetatable(this->_thread, "datavalue"))
     {
-        lua_pushcfunction(l, &DataValue::luaMetaGc);
-        lua_setfield(l, -2, "__gc");
+        lua_pushcfunction(this->_thread, &DataValue::luaMetaGc);
+        lua_setfield(this->_thread, -2, "__gc");
 
-        lua_pushcfunction(l, &DataValue::luaMetaIndex);
-        lua_setfield(l, -2, "__index");
+        lua_pushcfunction(this->_thread, &DataValue::luaMetaIndex);
+        lua_setfield(this->_thread, -2, "__index");
 
-        lua_pushcfunction(l, &DataValue::luaMetaNewIndex);
-        lua_setfield(l, -2, "__newindex");
+        lua_pushcfunction(this->_thread, &DataValue::luaMetaNewIndex);
+        lua_setfield(this->_thread, -2, "__newindex");
 
-        lua_pushcfunction(l, &DataValue::luaMetaUnm);
-        lua_setfield(l, -2, "__unm");
+        lua_pushcfunction(this->_thread, &DataValue::luaMetaUnm);
+        lua_setfield(this->_thread, -2, "__unm");
 
-        lua_pushcfunction(l, &DataValue::luaMetaAdd);
-        lua_setfield(l, -2, "__add");
+        lua_pushcfunction(this->_thread, &DataValue::luaMetaAdd);
+        lua_setfield(this->_thread, -2, "__add");
 
-        lua_pushcfunction(l, &DataValue::luaMetaSub);
-        lua_setfield(l, -2, "__sub");
+        lua_pushcfunction(this->_thread, &DataValue::luaMetaSub);
+        lua_setfield(this->_thread, -2, "__sub");
 
-        lua_pushcfunction(l, &DataValue::luaMetaMul);
-        lua_setfield(l, -2, "__mul");
+        lua_pushcfunction(this->_thread, &DataValue::luaMetaMul);
+        lua_setfield(this->_thread, -2, "__mul");
 
-        lua_pushcfunction(l, &DataValue::luaMetaDiv);
-        lua_setfield(l, -2, "__div");
+        lua_pushcfunction(this->_thread, &DataValue::luaMetaDiv);
+        lua_setfield(this->_thread, -2, "__div");
 
-        lua_pushcfunction(l, &DataValue::luaMetaMod);
-        lua_setfield(l, -2, "__mod");
+        lua_pushcfunction(this->_thread, &DataValue::luaMetaMod);
+        lua_setfield(this->_thread, -2, "__mod");
 
-        lua_pushcfunction(l, &DataValue::luaMetaPow);
-        lua_setfield(l, -2, "__pow");
+        lua_pushcfunction(this->_thread, &DataValue::luaMetaPow);
+        lua_setfield(this->_thread, -2, "__pow");
 
-        lua_pushcfunction(l, &DataValue::luaMetaLen);
-        lua_setfield(l, -2, "__len");
+        lua_pushcfunction(this->_thread, &DataValue::luaMetaLen);
+        lua_setfield(this->_thread, -2, "__len");
 
-        lua_pushcfunction(l, &DataValue::luaMetaEq);
-        lua_setfield(l, -2, "__eq");
+        lua_pushcfunction(this->_thread, &DataValue::luaMetaEq);
+        lua_setfield(this->_thread, -2, "__eq");
 
-        lua_pushcfunction(l, &DataValue::luaMetaLt);
-        lua_setfield(l, -2, "__lt");
+        lua_pushcfunction(this->_thread, &DataValue::luaMetaLt);
+        lua_setfield(this->_thread, -2, "__lt");
 
-        lua_pushcfunction(l, &DataValue::luaMetaLe);
-        lua_setfield(l, -2, "__le");
+        lua_pushcfunction(this->_thread, &DataValue::luaMetaLe);
+        lua_setfield(this->_thread, -2, "__le");
     }
 
-    lua_setmetatable(l, -2);
-    this->_reference = luaL_ref(l, LUA_REGISTRYINDEX);
+    lua_setmetatable(this->_thread, -2);
+    this->_reference = luaL_ref(this->_thread, LUA_REGISTRYINDEX);
 }
 
 bool DataValue::isArithmetic(DataValue::InternalType type)
@@ -494,7 +493,7 @@ bool DataValue::isArithmetic(DataValue::InternalType type)
     return (type == InternalType::Integer) || (type == InternalType::Float) || (type == InternalType::Double);
 }
 
-DataValue::DataValue(): LuaReference()
+DataValue::DataValue(lua_State *thread): LuaReference(thread)
 {
     this->allocateUserData();
 
@@ -506,7 +505,7 @@ DataValue::DataValue(): LuaReference()
     this->_valuestruct->Value.UInt64 = 0u;
 }
 
-DataValue::DataValue(float f): LuaReference()
+DataValue::DataValue(float f, lua_State* thread): LuaReference(thread)
 {
     this->allocateUserData();
 
@@ -518,7 +517,7 @@ DataValue::DataValue(float f): LuaReference()
     this->_valuestruct->Value.Float = f;
 }
 
-DataValue::DataValue(double d)
+DataValue::DataValue(double d, lua_State* thread): LuaReference(thread)
 {
     this->allocateUserData();
 
@@ -530,7 +529,7 @@ DataValue::DataValue(double d)
     this->_valuestruct->Value.Double = d;
 }
 
-DataValue::DataValue(const char *ch): LuaReference()
+DataValue::DataValue(const char *ch, lua_State* thread): LuaReference(thread)
 {
     this->allocateUserData();
 
@@ -546,6 +545,7 @@ DataValue::DataValue(const DataValue &dv): LuaReference(dv)
 {
     this->allocateUserData();
 
+    this->_thread = dv._thread;
     this->_valuestruct->Endian = Endianness::platformEndian();
     this->_valuestruct->Type = dv._valuestruct->Type;
     this->_valuestruct->IsOverflowed = dv._valuestruct->IsOverflowed;
@@ -560,26 +560,25 @@ DataValue::DataValue(const DataValue &dv): LuaReference(dv)
 
 void DataValue::push() const
 {
-    lua_State* l = LuaState::instance();
     LuaReference::push();
 
     if(this->_valuestruct->Type == InternalType::String)
-        lua_pushstring(l, this->_valuestruct->Value.AsciiString);
+        lua_pushstring(this->_thread, this->_valuestruct->Value.AsciiString);
     else if(this->_valuestruct->Type == InternalType::Float)
-        lua_pushnumber(l, this->_valuestruct->Value.Float);
+        lua_pushnumber(this->_thread, this->_valuestruct->Value.Float);
     else if(this->_valuestruct->Type == InternalType::Double)
-        lua_pushnumber(l, this->_valuestruct->Value.Double);
+        lua_pushnumber(this->_thread, this->_valuestruct->Value.Double);
     else if(this->_valuestruct->Type == InternalType::Integer)
     {
         if(this->_valuestruct->IsSigned)
-            lua_pushinteger(l, this->_valuestruct->Value.Int64);
+            lua_pushinteger(this->_thread, this->_valuestruct->Value.Int64);
         else
-            lua_pushinteger(l, this->_valuestruct->Value.UInt64);
+            lua_pushinteger(this->_thread, this->_valuestruct->Value.UInt64);
     }
     else
-        lua_pushnil(l);
+        lua_pushnil(this->_thread);
 
-    lua_remove(l, -2);
+    lua_remove(this->_thread, -2);
 }
 
 void DataValue::castTo(DataType::Type type)
@@ -983,9 +982,9 @@ DataValue DataValue::operator +(const DataValue &rhs) const
         throw std::runtime_error("Cannot add DataValues with different types");
 
     if(this->_valuestruct->Type == InternalType::Invalid)
-        return DataValue();
+        return DataValue(this->_thread);
 
-    DataValue dv;
+    DataValue dv(this->_thread);
     dv._valuestruct->Type = this->_valuestruct->Type;
 
     if(this->_valuestruct->Type == InternalType::String)
@@ -1015,9 +1014,9 @@ DataValue DataValue::operator -(const DataValue &rhs) const
         throw std::runtime_error("Cannot use '-' operator with strings");
 
     if(this->_valuestruct->Type == InternalType::Invalid)
-        return DataValue();
+        return DataValue(this->_thread);
 
-    DataValue dv;
+    DataValue dv(this->_thread);
     dv._valuestruct->Type = this->_valuestruct->Type;
 
     if(this->_valuestruct->Type == InternalType::Float)

@@ -3,7 +3,7 @@
 namespace PrefLib {
 namespace IO {
 
-DataBuffer::DataBuffer(OpenMode mode): LuaTable()
+DataBuffer::DataBuffer(OpenMode mode, lua_State *thread): LuaTable(thread)
 {
     this->setBoolean("readable", ((mode & OpenMode::Read) != 0));
     this->setBoolean("writable", ((mode & OpenMode::Write) != 0));

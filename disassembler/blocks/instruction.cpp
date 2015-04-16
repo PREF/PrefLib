@@ -3,12 +3,12 @@
 namespace PrefLib {
 namespace Disassembler {
 
-Instruction::Instruction(uint64_t address): Instruction(address, 0, nullptr, false, false, false)
+Instruction::Instruction(uint64_t address, lua_State *thread): Instruction(address, 0, nullptr, false, false, false, thread)
 {
 
 }
 
-Instruction::Instruction(uint64_t address, uint64_t size, char *mnemonic, bool isjump, bool iscall, bool isconditional): Block(address, size)
+Instruction::Instruction(uint64_t address, uint64_t size, char *mnemonic, bool isjump, bool iscall, bool isconditional, lua_State *thread): Block(address, size, thread)
 {
     this->setString("mnemonic", (!mnemonic ? "???" : uppercase(mnemonic)));
     this->setBoolean("isjump", isjump);

@@ -2,6 +2,7 @@
 #define PREFLIB_FORMAT_FORMATDEFINITION_H
 
 #include "core/lua/luatable.h"
+#include "core/lua/luathread.h"
 #include "elements/structure.h"
 #include "formattree.h"
 #include "../io/databuffer.h"
@@ -14,7 +15,7 @@ using namespace Core;
 class FormatDefinition: public LuaTable
 {
     public:
-        FormatDefinition(const char* category, const char *name, const char *version, const char *author);
+        FormatDefinition(const char* category, const char *name, const char *version, const char *author, lua_State* thread = nullptr);
         virtual ~FormatDefinition();
 
     public:

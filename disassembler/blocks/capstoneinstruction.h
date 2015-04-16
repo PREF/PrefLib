@@ -10,7 +10,7 @@ namespace Disassembler {
 class CapstoneInstruction: public Instruction
 {
     public:
-        CapstoneInstruction(csh handle, cs_insn* insn, int csinsnref);
+        CapstoneInstruction(csh handle, cs_insn* insn, int csinsnref, lua_State* thread = nullptr);
         ~CapstoneInstruction();
 
     protected:

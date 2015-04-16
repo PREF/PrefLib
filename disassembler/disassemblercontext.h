@@ -14,7 +14,7 @@ using namespace Core;
 class DisassemblerContext: public LuaTable
 {
     public:
-        DisassemblerContext();
+        DisassemblerContext(lua_State* thread = nullptr);
         ~DisassemblerContext();
 
     public:

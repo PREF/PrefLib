@@ -21,7 +21,7 @@ class ListingPrinter: public LuaTable
         typedef std::list<ListingPrinter::Chunk> ChunkList;
 
     public:
-        ListingPrinter();
+        ListingPrinter(lua_State* thread = nullptr);
         ~ListingPrinter();
 
     private:

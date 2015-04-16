@@ -3,7 +3,7 @@
 namespace PrefLib {
 namespace Exporter {
 
-ExporterDefinition::ExporterDefinition(const char *name, const char *description, const char *author, const char *version): LuaTable()
+ExporterDefinition::ExporterDefinition(const char *name, const char *description, const char *author, const char *version, lua_State *thread): LuaTable(thread)
 {
     this->setString("name", name);
     this->setString("description", description);

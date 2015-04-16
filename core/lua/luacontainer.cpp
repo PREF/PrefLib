@@ -4,7 +4,7 @@ namespace PrefLib {
 namespace Core {
 namespace Lua {
 
-LuaContainer::LuaContainer()
+LuaContainer::LuaContainer(lua_State *thread): LuaTable(thread)
 {
 
 }

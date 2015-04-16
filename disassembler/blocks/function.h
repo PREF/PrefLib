@@ -12,7 +12,7 @@ class Function : public Block
         enum Type { FunctionBlock = 0x00000000, EntryPointBlock = 0x10000000, ExportBlock = 0x00001000, ImportBlock = 0x00002000 };
 
     public:
-        Function(Function::Type functiontype, uint64_t address);
+        Function(Function::Type functiontype, uint64_t address, lua_State* thread = nullptr);
         ~Function();
 
     public:

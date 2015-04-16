@@ -3,7 +3,7 @@
 namespace PrefLib {
 namespace Disassembler {
 
-DisassemblerEngine::DisassemblerEngine(DisassemblerDefinition *definition): LuaTable(), _definition(definition)
+DisassemblerEngine::DisassemblerEngine(DisassemblerDefinition *definition, lua_State *thread): LuaTable(thread), _definition(definition)
 {
     this->setFunction("next", &DisassemblerEngine::luaNext);
     this->setFunction("enqueue", &DisassemblerEngine::luaEnqueue);
@@ -81,7 +81,7 @@ int DisassemblerEngine::luaEnqueue(lua_State *l)
     luaX_expectargc(l, argc, 2);
 
     DisassemblerEngine* engine = reinterpret_cast<DisassemblerEngine*>(checkThis(l, 1));
-    DataValue address = luaL_checkinteger(l, 2);
+    DataValue address(luaL_checkinteger(l, 2), l);
 
     address.castTo(engine->_definition->addressType());
     engine->_queue.push_back(address);

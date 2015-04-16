@@ -3,7 +3,7 @@
 namespace PrefLib {
 namespace Format {
 
-BitField::BitField(FormatTree *formattree, IO::DataBuffer *databuffer, uint64_t offset, DataType::Type datatype, const char *name, int bitstart, int bitend, FormatElement *parent): FieldElement(formattree, databuffer, offset, datatype, name, parent)
+BitField::BitField(FormatTree *formattree, IO::DataBuffer *databuffer, uint64_t offset, DataType::Type datatype, const char *name, int bitstart, int bitend, FormatElement *parent, lua_State *thread): FieldElement(formattree, databuffer, offset, datatype, name, parent, thread)
 {
     this->setInteger("bitstart", bitstart);
     this->setInteger("bitend", bitend);

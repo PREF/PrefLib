@@ -3,7 +3,7 @@
 namespace PrefLib {
 namespace Disassembler {
 
-DisassemblerListing::MemoryBuffer::MemoryBuffer(DisassemblerListing *listing, IO::DataBuffer *databuffer): _listing(listing), _databuffer(databuffer)
+DisassemblerListing::MemoryBuffer::MemoryBuffer(DisassemblerListing *listing, IO::DataBuffer *databuffer, lua_State *thread): LuaTable(thread), _listing(listing), _databuffer(databuffer)
 {    
     this->setFunction("read", &MemoryBuffer::luaRead);
 }
@@ -34,7 +34,7 @@ int DisassemblerListing::MemoryBuffer::luaRead(lua_State *l)
     return 1;
 }
 
-DisassemblerListing::DisassemblerListing(IO::DataBuffer *databuffer): LuaTable(), _databuffer(databuffer)
+DisassemblerListing::DisassemblerListing(IO::DataBuffer *databuffer, lua_State *thread): LuaTable(thread), _databuffer(databuffer)
 {
     this->_memorybuffer = new MemoryBuffer(this, databuffer);
     lua_State* l = LuaState::instance();

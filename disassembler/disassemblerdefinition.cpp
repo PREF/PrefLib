@@ -3,7 +3,7 @@
 namespace PrefLib {
 namespace Disassembler {
 
-DisassemblerDefinition::DisassemblerDefinition(const char* name, Format::FormatDefinition* formatdefinition, DataType::Type addresstype, const char* author, const char* version): LuaTable()
+DisassemblerDefinition::DisassemblerDefinition(const char* name, Format::FormatDefinition* formatdefinition, DataType::Type addresstype, const char* author, const char* version, lua_State *thread): LuaTable(thread)
 {
     this->setString("name", name);
     this->setTable("format", formatdefinition);

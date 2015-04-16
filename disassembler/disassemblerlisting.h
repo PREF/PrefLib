@@ -24,7 +24,7 @@ class DisassemblerListing: public LuaTable
         class MemoryBuffer: public LuaTable
         {
             private:
-                MemoryBuffer(DisassemblerListing* listing, IO::DataBuffer* databuffer);
+                MemoryBuffer(DisassemblerListing* listing, IO::DataBuffer* databuffer, lua_State* thread = nullptr);
 
             public:
                 int read(uint64_t address, unsigned char* data, uint64_t len);
@@ -46,7 +46,7 @@ class DisassemblerListing: public LuaTable
         struct BlockContainer { LuaContainer ByIndex; LuaContainer ByAddress; };
 
     public:
-        DisassemblerListing(IO::DataBuffer* databuffer);
+        DisassemblerListing(IO::DataBuffer* databuffer, lua_State* thread = nullptr);
         ~DisassemblerListing();
 
     public:

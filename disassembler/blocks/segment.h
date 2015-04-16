@@ -12,7 +12,7 @@ class Segment: public Block
         enum Type { Code, Data };
 
     public:
-        Segment(const char* name, Segment::Type segmenttype, uint64_t startaddress, uint64_t size, uint64_t baseoffset);
+        Segment(const char* name, Segment::Type segmenttype, uint64_t startaddress, uint64_t size, uint64_t baseoffset, lua_State* thread = nullptr);
         ~Segment();
 
     public:

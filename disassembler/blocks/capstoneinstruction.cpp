@@ -3,7 +3,7 @@
 namespace PrefLib {
 namespace Disassembler {
 
-CapstoneInstruction::CapstoneInstruction(csh handle, cs_insn *insn, int csinsnref): Instruction(insn->address, insn->size, insn->mnemonic, cs_insn_group(handle, insn, CS_GRP_JUMP), cs_insn_group(handle, insn, CS_GRP_CALL), false), _handle(handle), _insn(insn), _csinsinref(csinsnref)
+CapstoneInstruction::CapstoneInstruction(csh handle, cs_insn *insn, int csinsnref, lua_State *thread): Instruction(insn->address, insn->size, insn->mnemonic, cs_insn_group(handle, insn, CS_GRP_JUMP), cs_insn_group(handle, insn, CS_GRP_CALL), false, thread), _handle(handle), _insn(insn), _csinsinref(csinsnref)
 {
 
 }

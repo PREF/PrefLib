@@ -3,7 +3,7 @@
 namespace PrefLib {
 namespace Disassembler {
 
-ListingPrinter::ListingPrinter(): LuaTable(), _length(0), _oldlength(0), _mergedstring(nullptr)
+ListingPrinter::ListingPrinter(lua_State *thread): LuaTable(thread), _length(0), _oldlength(0), _mergedstring(nullptr)
 {
     this->setFunction("out", &ListingPrinter::luaOut);
     this->setFunction("outword", &ListingPrinter::luaOutWord);

@@ -14,7 +14,7 @@ using namespace Core::Lua;
 class Buffer: public LuaReference
 {
     public:
-        Buffer(uint64_t len);
+        Buffer(uint64_t len, lua_State* thread = nullptr);
         unsigned char* operator &();
 
     lua_api:

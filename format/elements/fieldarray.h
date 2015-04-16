@@ -10,7 +10,7 @@ namespace Format {
 class FieldArray : public FieldElement
 {
     public:
-        FieldArray(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, DataType::Type elementtype, const char* name, uint64_t userlength, FormatElement* parent);
+        FieldArray(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, DataType::Type elementtype, const char* name, uint64_t userlength, FormatElement* parent, lua_State* thread = nullptr);
         ~FieldArray();
         Field* item(int i);
         Field* firstItem();

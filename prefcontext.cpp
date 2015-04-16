@@ -167,6 +167,7 @@ void PrefContext::addSearchPath(const char *path)
     std::snprintf(newpath, len, "%s;%s/?.lua", origpath, path);
     lua_pushstring(l, newpath);
     lua_setfield(l, -2, "path");
+    lua_pop(l, 1); // Pop "package"
     delete[] newpath;
 }
 
@@ -192,8 +193,11 @@ PrefContext *PrefContext::instance()
 {
     if(!PrefContext::_instance)
     {
+        lua_State* l = LuaState::instance();
         PrefContext::_instance = new PrefContext();
-        luaL_requiref(LuaState::instance(), "pref", &PrefContext::luaopen_preflib, false);
+
+        luaL_requiref(l, "pref", &PrefContext::luaopen_preflib, false);
+        lua_pop(l, 1);
     }
 
     return PrefContext::_instance;

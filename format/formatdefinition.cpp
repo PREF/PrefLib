@@ -3,7 +3,7 @@
 namespace PrefLib {
 namespace Format {
 
-FormatDefinition::FormatDefinition(const char *category, const char* name, const char* version, const char* author): LuaTable()
+FormatDefinition::FormatDefinition(const char *category, const char* name, const char* version, const char* author, lua_State *thread): LuaTable(thread)
 {
     this->setString("category", category);
     this->setString("name", name);
@@ -22,14 +22,15 @@ FormatTree* FormatDefinition::build(IO::DataBuffer *databuffer, uint64_t baseoff
     if(!this->hasField("build"))
         return nullptr;
 
-    lua_State* l = LuaState::instance();
+    LuaThread thread;
+    lua_State* l = thread; //LuaState::instance();
     this->push();
 
     lua_getfield(l, -1, "build");
-    this->push(); /* Self */
+    this->push(); // Self
     databuffer->push();
     lua_pushinteger(l, baseoffset);
-    this->protectedCall(3, 1);
+    thread.resume(3);
 
     FormatTree* formattree = nullptr;
 
@@ -65,7 +66,7 @@ int FormatDefinition::luaCreateTree(lua_State *l)
     int argc = lua_gettop(l);
     luaX_expectargc(l, argc, 3);
 
-    FormatTree* formattree = new FormatTree(reinterpret_cast<IO::DataBuffer*>(checkThis(l, 2)), luaL_checkinteger(l, 3));
+    FormatTree* formattree = new FormatTree(reinterpret_cast<IO::DataBuffer*>(checkThis(l, 2)), luaL_checkinteger(l, 3), l);
     formattree->push();
     return 1;
 }

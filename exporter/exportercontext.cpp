@@ -3,7 +3,7 @@
 namespace PrefLib {
 namespace Exporter {
 
-ExporterContext::ExporterContext(): LuaTable()
+ExporterContext::ExporterContext(lua_State *thread): LuaTable(thread)
 {
     this->setFunction("create", &ExporterContext::luaCreate);
 }

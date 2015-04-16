@@ -3,7 +3,7 @@
 namespace PrefLib {
 namespace Format {
 
-Structure::Structure(FormatTree* formattree, IO::DataBuffer *databuffer, uint64_t offset, const char* name, FormatElement* parent): FormatElement(formattree, databuffer, offset, name, parent)
+Structure::Structure(FormatTree* formattree, IO::DataBuffer *databuffer, uint64_t offset, const char* name, FormatElement* parent, lua_State *thread): FormatElement(formattree, databuffer, offset, name, parent, thread)
 {
     this->setFunction("addStructure", &Structure::luaAddStructure);
     this->setFunction("addField", &Structure::luaAddField);
@@ -30,35 +30,36 @@ uint64_t Structure::size()
 
 Structure *Structure::addStructure(const char *name)
 {
-    Structure* s = new Structure(this->tree(), this->_databuffer, this->endOffset(), name, this);
+    Structure* s = new Structure(this->tree(), this->_databuffer, this->endOffset(), name, this, this->thread());
+
     this->bindTable(name, s);
     return s;
 }
 
 Field *Structure::addField(DataType::Type datatype, const char *name)
 {
-    Field* f = new Field(this->tree(), this->_databuffer, this->endOffset(), datatype, name, this);
+    Field* f = new Field(this->tree(), this->_databuffer, this->endOffset(), datatype, name, this, this->thread());
     this->bindTable(name, f);
     return f;
 }
 
 Field *Structure::addField(DataType::Type datatype, const char *name, DataValue& valid)
 {
-    Field* f = new Field(this->tree(), this->_databuffer, this->endOffset(), datatype, name, this, valid);
+    Field* f = new Field(this->tree(), this->_databuffer, this->endOffset(), datatype, name, this, valid, this->thread());
     this->bindTable(name, f);
     return f;
 }
 
 Field *Structure::addField(DataType::Type datatype, const char *name, LuaTable& valid)
 {
-    Field* f = new Field(this->tree(), this->_databuffer, this->endOffset(), datatype, name, this, valid);
+    Field* f = new Field(this->tree(), this->_databuffer, this->endOffset(), datatype, name, this, valid, this->thread());
     this->bindTable(name, f);
     return f;
 }
 
 FieldArray *Structure::addArray(DataType::Type elementtype, const char *name, uint64_t count)
 {
-    FieldArray* f = new FieldArray(this->tree(), this->_databuffer, this->endOffset(), elementtype, name, count, this);
+    FieldArray* f = new FieldArray(this->tree(), this->_databuffer, this->endOffset(), elementtype, name, count, this, this->thread());
     this->bindTable(name, f);
     return f;
 }
@@ -128,7 +129,7 @@ int Structure::luaAddField(lua_State *l)
 
         if(t == LUA_TNUMBER)
         {
-            DataValue valid = lua_tointeger(l, 4);
+            DataValue valid(lua_tointeger(l, 4), l);
             f = thethis->addField(static_cast<DataType::Type>(luaL_checkinteger(l, 2)), luaL_checkstring(l, 3), valid);
         }
         else // if(t == LUA_TTABLE)

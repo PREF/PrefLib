@@ -13,7 +13,7 @@ namespace Disassembler {
 class DisassemblerEngine: public LuaTable
 {
     public:
-        DisassemblerEngine(DisassemblerDefinition* definition);
+        DisassemblerEngine(DisassemblerDefinition* definition, lua_State* thread = nullptr);
         ~DisassemblerEngine();
         void disassemble(DisassemblerListing* listing);
 

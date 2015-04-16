@@ -19,7 +19,7 @@ class DataBuffer : public LuaTable
         enum OpenMode { Read = 1, Write = 2, ReadWrite = Read | Write };
 
     public:
-        DataBuffer(OpenMode mode);
+        DataBuffer(OpenMode mode, lua_State* thread = nullptr);
         ~DataBuffer();
         bool isReadable() const;
         bool isWritable() const;

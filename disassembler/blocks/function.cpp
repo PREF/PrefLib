@@ -3,7 +3,7 @@
 namespace PrefLib {
 namespace Disassembler {
 
-Function::Function(Function::Type functiontype, uint64_t address): Block(address, 0)
+Function::Function(Function::Type functiontype, uint64_t address, lua_State *thread): Block(address, 0, thread)
 {
     this->setInteger("type", functiontype);
 }

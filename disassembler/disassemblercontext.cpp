@@ -3,7 +3,7 @@
 namespace PrefLib {
 namespace Disassembler {
 
-DisassemblerContext::DisassemblerContext()
+DisassemblerContext::DisassemblerContext(lua_State* thread): LuaTable(thread)
 {
     this->setFunction("create", &DisassemblerContext::luaCreate);
 }

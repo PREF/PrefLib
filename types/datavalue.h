@@ -12,6 +12,8 @@
 #include "core/lua/luax.h"
 #include "core/lua/luatable.h"
 
+#include <iostream>
+
 namespace PrefLib {
 
 using namespace Lua;
@@ -62,10 +64,10 @@ class DataValue: public LuaReference
         static bool isArithmetic(InternalType type);
 
     public:
-        DataValue();
-        DataValue(float d);
-        DataValue(double d);
-        DataValue(const char* ch);
+        DataValue(lua_State* thread = nullptr);
+        DataValue(float d, lua_State* thread = nullptr);
+        DataValue(double d, lua_State* thread = nullptr);
+        DataValue(const char* ch, lua_State* thread = nullptr);
         DataValue(const DataValue& dv);
         virtual void push() const;
         void castTo(DataType::Type type);
@@ -80,8 +82,8 @@ class DataValue: public LuaReference
         bool isFloatingPoint() const;
         bool isString() const;
 
-        template<typename T> DataValue(T t, typename std::enable_if< std::is_signed<T>::value>::type* = 0);
-        template<typename T> DataValue(T t, typename std::enable_if< std::is_unsigned<T>::value>::type* = 0);
+        template<typename T> DataValue(T t, lua_State* thread = nullptr, typename std::enable_if< std::is_signed<T>::value>::type* = 0);
+        template<typename T> DataValue(T t, lua_State* thread = nullptr, typename std::enable_if< std::is_unsigned<T>::value>::type* = 0);
 
     public:
         ~DataValue();
@@ -145,7 +147,7 @@ class DataValue: public LuaReference
         UserData* _valuestruct;
 };
 
-template<typename T> DataValue::DataValue(T t, typename std::enable_if< std::is_signed<T>::value>::type*)
+template<typename T> DataValue::DataValue(T t, lua_State* thread, typename std::enable_if< std::is_signed<T>::value>::type*): LuaReference(thread)
 {
     this->allocateUserData();
 
@@ -157,7 +159,7 @@ template<typename T> DataValue::DataValue(T t, typename std::enable_if< std::is_
     this->_valuestruct->Value.Int64 = t;
 }
 
-template<typename T> DataValue::DataValue(T t, typename std::enable_if< std::is_unsigned<T>::value>::type*)
+template<typename T> DataValue::DataValue(T t, lua_State* thread, typename std::enable_if< std::is_unsigned<T>::value>::type*): LuaReference(thread)
 {
     this->allocateUserData();
 
@@ -256,7 +258,7 @@ template<typename T> bool DataValue::operator <=(const T& t) const
 template<typename T> DataValue DataValue::operator &(const T& t) const
 {
     if(this->_valuestruct->Type == InternalType::Invalid)
-        return DataValue();
+        return DataValue(this->_thread);
 
     DataValue result = *this;
 
@@ -272,7 +274,7 @@ template<typename T> DataValue DataValue::operator &(const T& t) const
 template<typename T> DataValue DataValue::operator |(const T& t) const
 {
     if(this->_valuestruct->Type == InternalType::Invalid)
-        return DataValue();
+        return DataValue(this->_thread);
 
     DataValue result = *this;
 
@@ -320,7 +322,7 @@ template<typename T> DataValue DataValue::operator <<(const T& t) const
 template<typename T> DataValue DataValue::operator >>(const T& t) const
 {
     if(this->_valuestruct->Type == InternalType::Invalid)
-        return DataValue();
+        return DataValue(this->_thread);
 
     DataValue result = *this;
 

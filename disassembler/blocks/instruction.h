@@ -9,14 +9,14 @@ namespace Disassembler {
 class Instruction: public Block
 {
     public:
-        Instruction(uint64_t address);
+        Instruction(uint64_t address, lua_State* thread = nullptr);
         ~Instruction();
 
     private:
         static char* uppercase(char* s);
 
     protected:
-        Instruction(uint64_t address, uint64_t size, char *mnemonic, bool isjump, bool iscall, bool isconditional);
+        Instruction(uint64_t address, uint64_t size, char *mnemonic, bool isjump, bool iscall, bool isconditional, lua_State* thread = nullptr);
 
     public:
         const char* mnemonic() const;

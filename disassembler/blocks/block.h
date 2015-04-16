@@ -16,7 +16,7 @@ class Block : public LuaTable
         enum Type { InvalidBlock = 0, SegmentBlock = 1, FunctionBlock = 2, LabelBlock = 3, InstructionBlock = 4};
 
     public:
-        Block(uint64_t startaddress, uint64_t size);
+        Block(uint64_t startaddress, uint64_t size, lua_State* thread = nullptr);
         ~Block();
 
     public:

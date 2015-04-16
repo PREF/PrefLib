@@ -13,7 +13,7 @@ using namespace Core::Lua;
 class ExporterContext : public LuaTable
 {
     public:
-        ExporterContext();
+        ExporterContext(lua_State* thread = nullptr);
         ~ExporterContext();
 
     public:

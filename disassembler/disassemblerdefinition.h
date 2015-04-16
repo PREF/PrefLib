@@ -16,7 +16,7 @@ using namespace Core;
 class DisassemblerDefinition: public LuaTable
 {
     public:
-        DisassemblerDefinition(const char* name, Format::FormatDefinition* formatdefinition, DataType::Type addresstype, const char* author, const char* version);
+        DisassemblerDefinition(const char* name, Format::FormatDefinition* formatdefinition, DataType::Type addresstype, const char* author, const char* version, lua_State* thread = nullptr);
         ~DisassemblerDefinition();
 
     public:

@@ -13,7 +13,7 @@ using namespace Core;
 class FormatTree: public LuaTable
 {
     public:
-        FormatTree(IO::DataBuffer* databuffer, uint64_t baseoffset);
+        FormatTree(IO::DataBuffer* databuffer, uint64_t baseoffset, lua_State* thread = nullptr);
         ~FormatTree();
 
     public:

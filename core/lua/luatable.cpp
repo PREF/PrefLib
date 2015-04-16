@@ -4,27 +4,25 @@ namespace PrefLib {
 namespace Core {
 namespace Lua {
 
-LuaTable::LuaTable(): LuaReference()
+LuaTable::LuaTable(lua_State *thread): LuaReference(thread)
 {
-    lua_State* l = LuaState::instance();
-    lua_newtable(l);
+    lua_newtable(this->_thread);
 
-    lua_pushstring(l, SELF_FIELD);
-    lua_pushlightuserdata(l, this);
-    lua_rawset(l, -3);
+    lua_pushstring(this->_thread, SELF_FIELD);
+    lua_pushlightuserdata(this->_thread, this);
+    lua_rawset(this->_thread, -3);
 
-    this->_reference = luaL_ref(l, LUA_REGISTRYINDEX);
+    this->_reference = luaL_ref(this->_thread, LUA_REGISTRYINDEX);
 }
 
 LuaTable::LuaTable(int idx): LuaReference()
 {
-    lua_State* l = LuaState::instance();
-    lua_pushvalue(l, idx);
+    lua_pushvalue(this->_thread, idx);
 
-    lua_pushstring(l, SELF_FIELD);
-    lua_pushlightuserdata(l, this);
-    lua_rawset(l, -3);
-    this->_reference = luaL_ref(l, LUA_REGISTRYINDEX);
+    lua_pushstring(this->_thread, SELF_FIELD);
+    lua_pushlightuserdata(this->_thread, this);
+    lua_rawset(this->_thread, -3);
+    this->_reference = luaL_ref(this->_thread, LUA_REGISTRYINDEX);
 }
 
 LuaTable::~LuaTable()
@@ -34,32 +32,30 @@ LuaTable::~LuaTable()
 
 LuaTable *LuaTable::bindedTable(int i) const
 {
-    lua_State* l = LuaState::instance();
     LuaTable* t = nullptr;
 
     this->push();
-    lua_rawgeti(l, -1, i + 1);
+    lua_rawgeti(this->_thread, -1, i + 1);
 
-    if(!lua_isnoneornil(l, -1))
-        t = reinterpret_cast<LuaTable*>(checkThis(l, -1));
+    if(!lua_isnoneornil(this->_thread, -1))
+        t = reinterpret_cast<LuaTable*>(checkThis(this->_thread, -1));
 
-    lua_pop(l, 2);
+    lua_pop(this->_thread, 2);
     return t;
 }
 
 LuaTable *LuaTable::bindedTable(const char *name) const
 {
-    lua_State* l = LuaState::instance();
     LuaTable* t = nullptr;
 
     this->push();
-    lua_pushstring(l, name);
-    lua_rawget(l, -2);
+    lua_pushstring(this->_thread, name);
+    lua_rawget(this->_thread, -2);
 
-    if(!lua_isnoneornil(l, -1))
-        t = reinterpret_cast<LuaTable*>(checkThis(l, -1));
+    if(!lua_isnoneornil(this->_thread, -1))
+        t = reinterpret_cast<LuaTable*>(checkThis(this->_thread, -1));
 
-    lua_pop(l, 2);
+    lua_pop(this->_thread, 2);
     return t;
 }
 
@@ -75,12 +71,10 @@ LuaTable *LuaTable::lastBindedTable()
 
 void LuaTable::bindTable(const char *name, LuaTable *t)
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
     this->setTable(name, t); // Allow self.foo
     this->setI(this->length() + 1, t); // Allow self[i]
-    lua_pop(l, 1);
+    lua_pop(this->_thread, 1);
 }
 
 void *LuaTable::checkThis(lua_State *l, int idx)
@@ -110,293 +104,246 @@ void *LuaTable::checkThis(lua_State *l, int idx)
 
 size_t LuaTable::length() const
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    size_t len = lua_rawlen(l, -1);
+    size_t len = lua_rawlen(this->_thread, -1);
 
-    lua_pop(l, 1);
+    lua_pop(this->_thread, 1);
     return len;
 }
 
 void LuaTable::protectedCall(int nargs, int nres) const
 {
-    lua_State* l = LuaState::instance();
-    int res = lua_pcall(l, nargs, nres, 0);
+    int res = lua_pcall(this->_thread, nargs, nres, 0);
 
     if(res)
     {
-        throw std::runtime_error(lua_tostring(l, -1));
-        lua_pop(l, 1);
+        throw std::runtime_error(lua_tostring(this->_thread, -1));
+        lua_pop(this->_thread, 1);
     }
 }
 
 bool LuaTable::hasField(const char *k) const
 {
-    lua_State* l = LuaState::instance();
     bool res = false;
 
     this->push();
-    lua_pushstring(l, k);
-    lua_rawget(l, -2);
+    lua_pushstring(this->_thread, k);
+    lua_rawget(this->_thread, -2);
 
-    res = !lua_isnoneornil(l, -1);
-    lua_pop(l, 2);
+    res = !lua_isnoneornil(this->_thread, -1);
+    lua_pop(this->_thread, 2);
     return res;
 }
 
 bool LuaTable::hasField(lua_Integer i) const
 {
-    lua_State* l = LuaState::instance();
     bool res = false;
 
     this->push();
-    lua_pushinteger(l, i);
-    lua_rawget(l, -2);
+    lua_pushinteger(this->_thread, i);
+    lua_rawget(this->_thread, -2);
 
-    res = !lua_isnoneornil(l, -1);
-    lua_pop(l, 2);
+    res = !lua_isnoneornil(this->_thread, -1);
+    lua_pop(this->_thread, 2);
     return res;
 }
 
 const char *LuaTable::getString(const char *k) const
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_pushstring(l, k);
-    lua_rawget(l, -2);
+    lua_pushstring(this->_thread, k);
+    lua_rawget(this->_thread, -2);
 
-    const char* res = luaL_checkstring(l, -1);
-    lua_pop(l, 2);
+    const char* res = luaL_checkstring(this->_thread, -1);
+    lua_pop(this->_thread, 2);
     return res;
 }
 
 lua_Integer LuaTable::getInteger(const char *k) const
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_pushstring(l, k);
-    lua_rawget(l, -2);
+    lua_pushstring(this->_thread, k);
+    lua_rawget(this->_thread, -2);
 
-    lua_Integer res = luaL_checkinteger(l, -1);
-    lua_pop(l, 2);
+    lua_Integer res = luaL_checkinteger(this->_thread, -1);
+    lua_pop(this->_thread, 2);
     return res;
 }
 
 bool LuaTable::getBoolean(const char *k) const
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_pushstring(l, k);
-    lua_rawget(l, -2);
+    lua_pushstring(this->_thread, k);
+    lua_rawget(this->_thread, -2);
 
-    bool res = lua_toboolean(l, -1) != 0;
-    lua_pop(l, 2);
+    bool res = lua_toboolean(this->_thread, -1) != 0;
+    lua_pop(this->_thread, 2);
     return res;
 }
 
 LuaTable *LuaTable::getTable(const char *k) const
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_pushstring(l, k);
-    lua_rawget(l, -2);
+    lua_pushstring(this->_thread, k);
+    lua_rawget(this->_thread, -2);
 
-    LuaTable* res = reinterpret_cast<LuaTable*>(checkThis(l, -1));
-    lua_pop(l, 2);
+    LuaTable* res = reinterpret_cast<LuaTable*>(checkThis(this->_thread, -1));
+    lua_pop(this->_thread, 2);
     return res;
 }
 
 lua_CFunction LuaTable::getFunction(const char *k) const
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_pushstring(l, k);
-    lua_rawget(l, -2);
+    lua_pushstring(this->_thread, k);
+    lua_rawget(this->_thread, -2);
 
-    lua_CFunction res = lua_tocfunction(l, -1);
-    lua_pop(l, 2);
+    lua_CFunction res = lua_tocfunction(this->_thread, -1);
+    lua_pop(this->_thread, 2);
     return res;
 }
 
 template<> bool LuaTable::getI<bool>(int i) const
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_rawgeti(l, -1, i + 1);
+    lua_rawgeti(this->_thread, -1, i + 1);
 
-    bool res = lua_toboolean(l, -1) == true;
-    lua_pop(l, 2);
+    bool res = lua_toboolean(this->_thread, -1) == true;
+    lua_pop(this->_thread, 2);
     return res;
 }
 
 template<> const char* LuaTable::getI<const char*>(int i) const
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_rawgeti(l, -1, i + 1);
+    lua_rawgeti(this->_thread, -1, i + 1);
 
-    const char* res = luaL_checkstring(l, -1);
-    lua_pop(l, 2);
+    const char* res = luaL_checkstring(this->_thread, -1);
+    lua_pop(this->_thread, 2);
     return res;
 }
 
 template<> lua_Integer LuaTable::getI<lua_Integer>(int i) const
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_rawgeti(l, -1, i + 1);
+    lua_rawgeti(this->_thread, -1, i + 1);
 
-    lua_Integer res = luaL_checkinteger(l, -1);
-    lua_pop(l, 2);
+    lua_Integer res = luaL_checkinteger(this->_thread, -1);
+    lua_pop(this->_thread, 2);
     return res;
 }
 
 template<> LuaTable* LuaTable::getI<LuaTable*>(int i) const
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_rawgeti(l, -1, i + 1);
+    lua_rawgeti(this->_thread, -1, i + 1);
 
-    LuaTable* res = reinterpret_cast<LuaTable*>(checkThis(l, -1));
-    lua_pop(l, 2);
+    LuaTable* res = reinterpret_cast<LuaTable*>(checkThis(this->_thread, -1));
+    lua_pop(this->_thread, 2);
     return res;
 }
 
 template<> lua_CFunction LuaTable::getI<lua_CFunction>(int i) const
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_rawgeti(l, -1, i + 1);
+    lua_rawgeti(this->_thread, -1, i + 1);
 
-    lua_CFunction res = lua_tocfunction(l, -1);
-    lua_pop(l, 2);
+    lua_CFunction res = lua_tocfunction(this->_thread, -1);
+    lua_pop(this->_thread, 2);
     return res;
 }
 
 void LuaTable::setValue(const char *k, int validx)
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_pushvalue(l, validx);
-    lua_setfield(l, -2, k);
-    lua_pop(l, 1);
+    lua_pushvalue(this->_thread, validx);
+    lua_setfield(this->_thread, -2, k);
+    lua_pop(this->_thread, 1);
 }
 
 void LuaTable::setString(const char *k, const char *s)
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_pushstring(l, k);
-    lua_pushstring(l, s);
-    lua_rawset(l, -3);
-    lua_pop(l, 1);
+    lua_pushstring(this->_thread, k);
+    lua_pushstring(this->_thread, s);
+    lua_rawset(this->_thread, -3);
+    lua_pop(this->_thread, 1);
 }
 
 void LuaTable::setInteger(const char *k, lua_Integer n)
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_pushstring(l, k);
-    lua_pushinteger(l, n);
-    lua_rawset(l, -3);
-    lua_pop(l, 1);
+    lua_pushstring(this->_thread, k);
+    lua_pushinteger(this->_thread, n);
+    lua_rawset(this->_thread, -3);
+    lua_pop(this->_thread, 1);
 }
 
 void LuaTable::setBoolean(const char *k, bool b)
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_pushstring(l, k);
-    lua_pushboolean(l, b);
-    lua_rawset(l, -3);
-    lua_pop(l, 1);
+    lua_pushstring(this->_thread, k);
+    lua_pushboolean(this->_thread, b);
+    lua_rawset(this->_thread, -3);
+    lua_pop(this->_thread, 1);
 }
 
 void LuaTable::setTable(const char *k, LuaTable *t)
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_pushstring(l, k);
+    lua_pushstring(this->_thread, k);
     t->push();
-    lua_rawset(l, -3);
-    lua_pop(l, 1);
+    lua_rawset(this->_thread, -3);
+    lua_pop(this->_thread, 1);
 }
 
 void LuaTable::setFunction(const char *k, lua_CFunction f)
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_pushstring(l, k);
-    lua_pushcfunction(l, f);
-    lua_rawset(l, -3);
-    lua_pop(l, 1);
+    lua_pushstring(this->_thread, k);
+    lua_pushcfunction(this->_thread, f);
+    lua_rawset(this->_thread, -3);
+    lua_pop(this->_thread, 1);
 }
 
 void LuaTable::setI(int i, bool b)
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_pushboolean(l, b);
-    lua_rawseti(l, -2, i);
-    lua_pop(l, 1);
+    lua_pushboolean(this->_thread, b);
+    lua_rawseti(this->_thread, -2, i);
+    lua_pop(this->_thread, 1);
 }
 
 void LuaTable::setI(int i, const char *s)
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_pushstring(l, s);
-    lua_rawseti(l, -2, i);
-    lua_pop(l, 1);
+    lua_pushstring(this->_thread, s);
+    lua_rawseti(this->_thread, -2, i);
+    lua_pop(this->_thread, 1);
 }
 
 void LuaTable::setI(int i, lua_Integer in)
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_pushinteger(l, in);
-    lua_rawseti(l, -2, i);
-    lua_pop(l, 1);
+    lua_pushinteger(this->_thread, in);
+    lua_rawseti(this->_thread, -2, i);
+    lua_pop(this->_thread, 1);
 }
 
 void LuaTable::setI(int i, lua_CFunction f)
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_pushcfunction(l, f);
-    lua_rawseti(l, -2, i);
-    lua_pop(l, 1);
+    lua_pushcfunction(this->_thread, f);
+    lua_rawseti(this->_thread, -2, i);
+    lua_pop(this->_thread, 1);
 }
 
 void LuaTable::setI(int i, const LuaTable *t)
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
     t->push();
-    lua_rawseti(l, -2, i);
-    lua_pop(l, 1);
+    lua_rawseti(this->_thread, -2, i);
+    lua_pop(this->_thread, 1);
 }
 
 } // namespace Lua

@@ -37,7 +37,7 @@ class LuaContainer: public LuaTable
         };
 
     public:
-        LuaContainer();
+        LuaContainer(lua_State* thread = nullptr);
         ~LuaContainer();
 
     public:

@@ -3,7 +3,7 @@
 namespace PrefLib {
 namespace Disassembler {
 
-Segment::Segment(const char *name, Segment::Type segmenttype, uint64_t startaddress, uint64_t size, uint64_t baseoffset): Block(startaddress, size)
+Segment::Segment(const char *name, Segment::Type segmenttype, uint64_t startaddress, uint64_t size, uint64_t baseoffset, lua_State* thread): Block(startaddress, size, thread)
 {
     this->setString("name", name);
     this->setInteger("type", segmenttype);

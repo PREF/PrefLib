@@ -3,17 +3,17 @@
 namespace PrefLib {
 namespace Format {
 
-Field::Field(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, DataType::Type datatype, const char *name, FormatElement *parent): FieldElement(formattree, databuffer, offset, datatype, name, parent)
+Field::Field(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, DataType::Type datatype, const char *name, FormatElement *parent, lua_State *thread): FieldElement(formattree, databuffer, offset, datatype, name, parent, thread)
 {
     this->setFunction("setBitField", &Field::luaSetBitField);
 }
 
-Field::Field(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, DataType::Type datatype, const char* name, FormatElement* parent, DataValue& valid): FieldElement(formattree, databuffer, offset, datatype, name, parent, valid)
+Field::Field(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, DataType::Type datatype, const char* name, FormatElement* parent, DataValue& valid, lua_State *thread): FieldElement(formattree, databuffer, offset, datatype, name, parent, valid, thread)
 {
 
 }
 
-Field::Field(FormatTree* formattree, IO::DataBuffer *databuffer, uint64_t offset, DataType::Type datatype, const char *name, FormatElement *parent, LuaTable &valid): FieldElement(formattree, databuffer, offset, datatype, name, parent, valid)
+Field::Field(FormatTree* formattree, IO::DataBuffer *databuffer, uint64_t offset, DataType::Type datatype, const char *name, FormatElement *parent, LuaTable &valid, lua_State *thread): FieldElement(formattree, databuffer, offset, datatype, name, parent, valid, thread)
 {
 
 }
@@ -25,7 +25,7 @@ Field::~Field()
 
 BitField *Field::setBitField(const char *name, uint64_t bitstart, uint64_t bitend)
 {
-    BitField* bf = new BitField(this->tree(), this->_databuffer, this->offset(), this->dataType(), name, bitstart, bitend, this);
+    BitField* bf = new BitField(this->tree(), this->_databuffer, this->offset(), this->dataType(), name, bitstart, bitend, this, this->thread());
     this->bindTable(name, bf);
     return bf;
 }

@@ -13,7 +13,7 @@ namespace Lua {
 class LuaTable: public LuaReference
 {
     public:
-        LuaTable();
+        LuaTable(lua_State* thread = nullptr);
         LuaTable(int idx);
         virtual ~LuaTable();
 

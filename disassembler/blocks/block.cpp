@@ -3,7 +3,7 @@
 namespace PrefLib {
 namespace Disassembler {
 
-Block::Block(uint64_t startaddress, uint64_t size): LuaTable(), _bookmarked(false)
+Block::Block(uint64_t startaddress, uint64_t size, lua_State *thread): LuaTable(thread), _bookmarked(false)
 {
     lua_State* l = LuaState::instance();
 

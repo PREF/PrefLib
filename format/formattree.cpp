@@ -3,7 +3,7 @@
 namespace PrefLib {
 namespace Format {
 
-FormatTree::FormatTree(IO::DataBuffer *databuffer, uint64_t baseoffset): LuaTable()
+FormatTree::FormatTree(IO::DataBuffer *databuffer, uint64_t baseoffset, lua_State *thread): LuaTable(thread)
 {
     this->setInteger("baseoffset", baseoffset);
     this->setTable("databuffer", databuffer);
@@ -28,7 +28,7 @@ Structure *FormatTree::addStructure(const char *name)
 
 Structure *FormatTree::addStructure(const char *name, uint64_t offset)
 {
-    Structure* s = new Structure(this, this->dataBuffer(), offset, name, nullptr);
+    Structure* s = new Structure(this, this->dataBuffer(), offset, name, nullptr, this->thread());
     this->bindTable(s->name(), s);
     return s;
 }
