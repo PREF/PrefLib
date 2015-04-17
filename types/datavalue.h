@@ -9,16 +9,13 @@
 #include <inttypes.h>
 #include <type_traits>
 #include "datatype.h"
-#include "core/lua/luax.h"
 #include "core/lua/luatable.h"
-
-#include <iostream>
 
 namespace PrefLib {
 
 using namespace Lua;
 
-class DataValue: public LuaReference
+class DataValue
 {
     private:
         enum InternalType { Invalid, Integer, Float, Double, String };
@@ -43,33 +40,16 @@ class DataValue: public LuaReference
             } Value;
         };
 
-    lua_api:
-        static int luaMetaGc(lua_State* l);
-        static int luaMetaIndex(lua_State* l);
-        static int luaMetaNewIndex(lua_State* l);
-        static int luaMetaUnm(lua_State* l);
-        static int luaMetaAdd(lua_State* l);
-        static int luaMetaSub(lua_State* l);
-        static int luaMetaMul(lua_State* l);
-        static int luaMetaDiv(lua_State* l);
-        static int luaMetaMod(lua_State* l);
-        static int luaMetaPow(lua_State* l);
-        static int luaMetaLen(lua_State* l);
-        static int luaMetaEq(lua_State* l);
-        static int luaMetaLt(lua_State* l);
-        static int luaMetaLe(lua_State* l);
-
     private:
-        void allocateUserData();
         static bool isArithmetic(InternalType type);
 
     public:
-        DataValue(lua_State* thread = nullptr);
-        DataValue(float d, lua_State* thread = nullptr);
-        DataValue(double d, lua_State* thread = nullptr);
-        DataValue(const char* ch, lua_State* thread = nullptr);
+        DataValue();
+        DataValue(float d);
+        DataValue(double d);
+        DataValue(const char* ch);
         DataValue(const DataValue& dv);
-        virtual void push() const;
+        virtual void push(lua_State *l) const;
         void castTo(DataType::Type type);
         const char* toString(unsigned int base = 10, unsigned int width = 0);
         Endianness::Type endianness() const;
@@ -82,8 +62,8 @@ class DataValue: public LuaReference
         bool isFloatingPoint() const;
         bool isString() const;
 
-        template<typename T> DataValue(T t, lua_State* thread = nullptr, typename std::enable_if< std::is_signed<T>::value>::type* = 0);
-        template<typename T> DataValue(T t, lua_State* thread = nullptr, typename std::enable_if< std::is_unsigned<T>::value>::type* = 0);
+        template<typename T> DataValue(T t, typename std::enable_if< std::is_signed<T>::value>::type* = 0);
+        template<typename T> DataValue(T t, typename std::enable_if< std::is_unsigned<T>::value>::type* = 0);
 
     public:
         ~DataValue();
@@ -144,43 +124,39 @@ class DataValue: public LuaReference
         DataValue operator -(const DataValue &rhs) const;
 
     private:
-        UserData* _valuestruct;
+        UserData _valuestruct;
 };
 
-template<typename T> DataValue::DataValue(T t, lua_State* thread, typename std::enable_if< std::is_signed<T>::value>::type*): LuaReference(thread)
+template<typename T> DataValue::DataValue(T t, typename std::enable_if< std::is_signed<T>::value>::type*)
 {
-    this->allocateUserData();
-
-    this->_valuestruct->StringBuffer = nullptr;
-    this->_valuestruct->Type = InternalType::Integer;
-    this->_valuestruct->Endian = Endianness::platformEndian();
-    this->_valuestruct->IsOverflowed = false;
-    this->_valuestruct->IsSigned = true;
-    this->_valuestruct->Value.Int64 = t;
+    this->_valuestruct.StringBuffer = nullptr;
+    this->_valuestruct.Type = InternalType::Integer;
+    this->_valuestruct.Endian = Endianness::platformEndian();
+    this->_valuestruct.IsOverflowed = false;
+    this->_valuestruct.IsSigned = true;
+    this->_valuestruct.Value.Int64 = t;
 }
 
-template<typename T> DataValue::DataValue(T t, lua_State* thread, typename std::enable_if< std::is_unsigned<T>::value>::type*): LuaReference(thread)
+template<typename T> DataValue::DataValue(T t, typename std::enable_if< std::is_unsigned<T>::value>::type*)
 {
-    this->allocateUserData();
-
-    this->_valuestruct->StringBuffer = nullptr;
-    this->_valuestruct->Type = InternalType::Integer;
-    this->_valuestruct->Endian = Endianness::platformEndian();
-    this->_valuestruct->IsOverflowed = false;
-    this->_valuestruct->IsSigned = false;
-    this->_valuestruct->Value.UInt64 = t;
+    this->_valuestruct.StringBuffer = nullptr;
+    this->_valuestruct.Type = InternalType::Integer;
+    this->_valuestruct.Endian = Endianness::platformEndian();
+    this->_valuestruct.IsOverflowed = false;
+    this->_valuestruct.IsSigned = false;
+    this->_valuestruct.Value.UInt64 = t;
 }
 
 template<typename T> bool DataValue::operator ==(const T& t) const
 {
     if(std::is_floating_point<T>::value)
-        return this->_valuestruct->Value.Double == static_cast<double>(t);
+        return this->_valuestruct.Value.Double == static_cast<double>(t);
 
     if(std::is_signed<T>::value)
-        return this->_valuestruct->Value.Int64 == static_cast<int64_t>(t);
+        return this->_valuestruct.Value.Int64 == static_cast<int64_t>(t);
 
     if(std::is_unsigned<T>::value)
-        return this->_valuestruct->Value.UInt64 == static_cast<uint64_t>(t);
+        return this->_valuestruct.Value.UInt64 == static_cast<uint64_t>(t);
 
     return false;
 }
@@ -188,13 +164,13 @@ template<typename T> bool DataValue::operator ==(const T& t) const
 template<typename T> bool DataValue::operator !=(const T& t) const
 {
     if(std::is_floating_point<T>::value)
-        return this->_valuestruct->Value.Double != static_cast<double>(t);
+        return this->_valuestruct.Value.Double != static_cast<double>(t);
 
     if(std::is_signed<T>::value)
-        return this->_valuestruct->Value.Int64 != static_cast<int64_t>(t);
+        return this->_valuestruct.Value.Int64 != static_cast<int64_t>(t);
 
     if(std::is_unsigned<T>::value)
-        return this->_valuestruct->Value.UInt64 != static_cast<uint64_t>(t);
+        return this->_valuestruct.Value.UInt64 != static_cast<uint64_t>(t);
 
     return false;
 }
@@ -202,13 +178,13 @@ template<typename T> bool DataValue::operator !=(const T& t) const
 template<typename T> bool DataValue::operator >(const T& t) const
 {
     if(std::is_floating_point<T>::value)
-        return this->_valuestruct->Value.Double > static_cast<double>(t);
+        return this->_valuestruct.Value.Double > static_cast<double>(t);
 
     if(std::is_signed<T>::value)
-        return this->_valuestruct->Value.Int64 > static_cast<int64_t>(t);
+        return this->_valuestruct.Value.Int64 > static_cast<int64_t>(t);
 
     if(std::is_unsigned<T>::value)
-        return this->_valuestruct->Value.UInt64 > static_cast<uint64_t>(t);
+        return this->_valuestruct.Value.UInt64 > static_cast<uint64_t>(t);
 
     return false;
 }
@@ -216,13 +192,13 @@ template<typename T> bool DataValue::operator >(const T& t) const
 template<typename T> bool DataValue::operator <(const T& t) const
 {
     if(std::is_floating_point<T>::value)
-        return this->_valuestruct->Value.Double < static_cast<double>(t);
+        return this->_valuestruct.Value.Double < static_cast<double>(t);
 
     if(std::is_signed<T>::value)
-        return this->_valuestruct->Value.Int64 < static_cast<int64_t>(t);
+        return this->_valuestruct.Value.Int64 < static_cast<int64_t>(t);
 
     if(std::is_unsigned<T>::value)
-        return this->_valuestruct->Value.UInt64 < static_cast<uint64_t>(t);
+        return this->_valuestruct.Value.UInt64 < static_cast<uint64_t>(t);
 
     return false;
 }
@@ -230,13 +206,13 @@ template<typename T> bool DataValue::operator <(const T& t) const
 template<typename T> bool DataValue::operator >=(const T& t) const
 {
     if(std::is_floating_point<T>::value)
-        return this->_valuestruct->Value.Double >= static_cast<double>(t);
+        return this->_valuestruct.Value.Double >= static_cast<double>(t);
 
     if(std::is_signed<T>::value)
-        return this->_valuestruct->Value.Int64 >= static_cast<int64_t>(t);
+        return this->_valuestruct.Value.Int64 >= static_cast<int64_t>(t);
 
     if(std::is_unsigned<T>::value)
-        return this->_valuestruct->Value.UInt64 >= static_cast<uint64_t>(t);
+        return this->_valuestruct.Value.UInt64 >= static_cast<uint64_t>(t);
 
     return false;
 }
@@ -244,93 +220,93 @@ template<typename T> bool DataValue::operator >=(const T& t) const
 template<typename T> bool DataValue::operator <=(const T& t) const
 {
     if(std::is_floating_point<T>::value)
-        return this->_valuestruct->Value.Double <= static_cast<double>(t);
+        return this->_valuestruct.Value.Double <= static_cast<double>(t);
 
     if(std::is_signed<T>::value)
-        return this->_valuestruct->Value.Int64 <= static_cast<int64_t>(t);
+        return this->_valuestruct.Value.Int64 <= static_cast<int64_t>(t);
 
     if(std::is_unsigned<T>::value)
-        return this->_valuestruct->Value.UInt64 <= static_cast<uint64_t>(t);
+        return this->_valuestruct.Value.UInt64 <= static_cast<uint64_t>(t);
 
     return false;
 }
 
 template<typename T> DataValue DataValue::operator &(const T& t) const
 {
-    if(this->_valuestruct->Type == InternalType::Invalid)
-        return DataValue(this->_thread);
+    if(this->_valuestruct.Type == InternalType::Invalid)
+        return DataValue();
 
     DataValue result = *this;
 
     if(std::is_signed<T>::value)
-        result._valuestruct->Value.Int64 &= static_cast<int64_t>(t);
+        result._valuestruct.Value.Int64 &= static_cast<int64_t>(t);
 
     if(std::is_unsigned<T>::value)
-        result._valuestruct->Value.UInt64 &= static_cast<uint64_t>(t);
+        result._valuestruct.Value.UInt64 &= static_cast<uint64_t>(t);
 
     return result;
 }
 
 template<typename T> DataValue DataValue::operator |(const T& t) const
 {
-    if(this->_valuestruct->Type == InternalType::Invalid)
-        return DataValue(this->_thread);
+    if(this->_valuestruct.Type == InternalType::Invalid)
+        return DataValue();
 
     DataValue result = *this;
 
     if(std::is_signed<T>::value)
-        result._valuestruct->Value.Int64 |= static_cast<int64_t>(t);
+        result._valuestruct.Value.Int64 |= static_cast<int64_t>(t);
 
     if(std::is_unsigned<T>::value)
-        result._valuestruct->Value.UInt64 |= static_cast<uint64_t>(t);
+        result._valuestruct.Value.UInt64 |= static_cast<uint64_t>(t);
 
     return result;
 }
 
 template<typename T> DataValue DataValue::operator ^(const T& t) const
 {
-    if(this->_valuestruct->Type == InternalType::Invalid)
+    if(this->_valuestruct.Type == InternalType::Invalid)
         return DataValue();
 
     DataValue result = *this;
 
     if(std::is_signed<T>::value)
-        result._valuestruct->Value.Int64 ^= static_cast<int64_t>(t);
+        result._valuestruct.Value.Int64 ^= static_cast<int64_t>(t);
 
     if(std::is_unsigned<T>::value)
-        result._valuestruct->Value.UInt64 ^= static_cast<uint64_t>(t);
+        result._valuestruct.Value.UInt64 ^= static_cast<uint64_t>(t);
 
     return result;
 }
 
 template<typename T> DataValue DataValue::operator <<(const T& t) const
 {
-    if(this->_valuestruct->Type == InternalType::Invalid)
+    if(this->_valuestruct.Type == InternalType::Invalid)
         return DataValue();
 
     DataValue result = *this;
 
     if(std::is_signed<T>::value)
-        result._valuestruct->Value.Int64 <<= static_cast<int64_t>(t);
+        result._valuestruct.Value.Int64 <<= static_cast<int64_t>(t);
 
     if(std::is_unsigned<T>::value)
-        result._valuestruct->Value.UInt64 <<= static_cast<uint64_t>(t);
+        result._valuestruct.Value.UInt64 <<= static_cast<uint64_t>(t);
 
     return result;
 }
 
 template<typename T> DataValue DataValue::operator >>(const T& t) const
 {
-    if(this->_valuestruct->Type == InternalType::Invalid)
-        return DataValue(this->_thread);
+    if(this->_valuestruct.Type == InternalType::Invalid)
+        return DataValue();
 
     DataValue result = *this;
 
     if(std::is_signed<T>::value)
-        result._valuestruct->Value.Int64 >>= static_cast<int64_t>(t);
+        result._valuestruct.Value.Int64 >>= static_cast<int64_t>(t);
 
     if(std::is_unsigned<T>::value)
-        result._valuestruct->Value.UInt64 >>= static_cast<uint64_t>(t);
+        result._valuestruct.Value.UInt64 >>= static_cast<uint64_t>(t);
 
     return result;
 }

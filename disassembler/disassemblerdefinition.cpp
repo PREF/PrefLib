@@ -67,7 +67,7 @@ lua_Integer DisassemblerDefinition::disassemble(LuaTable *engine, DisassemblerLi
     this->push(); // Self
     engine->push();
     listing->push();
-    address.push();
+    address.push(this->_thread);
     this->protectedCall(4, 1);
 
     lua_Integer res = luaL_checkinteger(this->_thread, -1);

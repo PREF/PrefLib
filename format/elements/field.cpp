@@ -80,7 +80,7 @@ int Field::metaIndex(lua_State *l)
     if(!strcmp(arg, "value"))
     {
         DataValue dv = this->value();
-        dv.push();
+        dv.push(l);
         return 1;
     }
 
