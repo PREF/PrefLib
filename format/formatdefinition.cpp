@@ -37,7 +37,10 @@ FormatTree* FormatDefinition::build(IO::DataBuffer *databuffer, uint64_t baseoff
     FormatTree* formattree = nullptr;
 
     if(!lua_isnoneornil(thread, -1))
+    {
         formattree = reinterpret_cast<FormatTree*>(checkThis(thread, -1));
+        formattree->moveTo(LuaState::instance());
+    }
 
     lua_pop(thread, 2);
     return formattree;
