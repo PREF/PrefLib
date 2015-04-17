@@ -9,7 +9,7 @@ namespace Format {
 
 using namespace Core;
 
-class Field: public FieldElement, public ValuedField
+class Field: public FieldElement
 {
     public:
         Field(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, DataType::Type datatype, const char* name, FormatElement* parent, lua_State* thread = nullptr);
@@ -29,8 +29,6 @@ class Field: public FieldElement, public ValuedField
 
     protected:
         virtual FormatElement::Type type() const;
-        virtual int metaIndex(lua_State *l);
-        virtual int metaNewIndex(lua_State *l);
 };
 
 } // namespace Format

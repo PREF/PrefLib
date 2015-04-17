@@ -3,16 +3,16 @@
 namespace PrefLib {
 namespace Format {
 
-FieldArray::FieldArray(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, DataType::Type elementtype, const char *name, uint64_t userlength, FormatElement *parent, lua_State *thread): FieldElement(formattree, databuffer, offset, DataType::Array, name, parent, thread), _elementtype(elementtype), _userlength(userlength)
+FieldArray::FieldArray(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, DataType::Type elementtype, const char *name, uint64_t userlength, FormatElement *parent, lua_State *thread): FieldElement(formattree, databuffer, offset, DataType::Array, name, parent, thread), _userlength(userlength)
 {
-    this->_dynamic = this->_elementtype != DataType::Blob;
+    this->_dynamic = elementtype != DataType::Blob;
 
     this->setInteger("elementtype", elementtype);
 }
 
 FieldArray::~FieldArray()
 {
-    if(this->_elementtype == DataType::Blob)
+    if(this->elementType() == DataType::Blob)
         return;
 
     for(size_t i = 0; i < this->length(); i++)
@@ -55,7 +55,7 @@ bool FieldArray::parseDynamic(const char** errmsg)
 
     this->_dynamic = false;
     uint64_t offset = this->offset();
-    size_t elementsize = DataType::sizeOf(this->_elementtype);
+    size_t elementsize = DataType::sizeOf(this->elementType());
 
     const char* arrayname = this->name();
     int namelen = strlen(arrayname) + sizeof(uintmax_t);
@@ -67,7 +67,7 @@ bool FieldArray::parseDynamic(const char** errmsg)
         int len = snprintf(elementname, namelen, "%s[%" PRIu64 "]", arrayname, i);
         elementname[len] = '\0';
 
-        Field* f = new Field(this->tree(), this->_databuffer, offset, this->_elementtype, elementname, this);
+        Field* f = new Field(this->tree(), this->_databuffer, offset, this->elementType(), elementname, this);
         this->bindTable(elementname, f);
     }
 
@@ -88,6 +88,28 @@ size_t FieldArray::length() const
         return this->_userlength;
 
     return len;
+}
+
+DataValue FieldArray::value()
+{
+    if(this->elementType() == DataType::Character)
+    {
+        if(!this->parseDynamic())
+            return DataValue();
+
+        IO::DataBuffer* databuffer = this->dataBuffer();
+        size_t len = this->length();
+        char* data = new char[len + 1];
+
+        data[len] = '\0';
+        databuffer->read(this->offset(), reinterpret_cast<unsigned char*>(data), this->length());
+
+        DataValue dv = data;
+        delete[] data;
+        return dv;
+    }
+
+    return DataValue();
 }
 
 DataType::Type FieldArray::elementType() const

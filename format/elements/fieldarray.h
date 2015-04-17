@@ -18,13 +18,13 @@ class FieldArray : public FieldElement
         DataType::Type elementType() const;
         virtual uint64_t size();
         virtual size_t length() const;
+        virtual DataValue value();
 
     protected:
         virtual FormatElement::Type type() const;
         virtual bool parseDynamic(const char **errmsg = nullptr);
 
     private:
-        DataType::Type _elementtype;
         uint64_t _userlength;
 };
 

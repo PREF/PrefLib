@@ -73,34 +73,6 @@ BitField *Field::bitField(const char *name) const
     return dynamic_cast<BitField*>(this->bindedTable(name));
 }
 
-int Field::metaIndex(lua_State *l)
-{
-    const char* arg = luaL_checkstring(l, 2);
-
-    if(!strcmp(arg, "value"))
-    {
-        DataValue dv = this->value();
-        dv.push(l);
-        return 1;
-    }
-
-    return FieldElement::metaIndex(l);
-}
-
-int Field::metaNewIndex(lua_State *l)
-{
-    const char* arg = luaL_checkstring(l, 2);
-
-    if(!strcmp(arg, "value"))
-    {
-        IO::DataBuffer* databuffer = this->dataBuffer();
-        DataValue dv = this->value();
-        databuffer->write(this->offset(), &dv, this->size());
-    }
-
-    return FieldElement::metaNewIndex(l);
-}
-
 FormatElement::Type Field::type() const
 {
     return FormatElement::FieldType;

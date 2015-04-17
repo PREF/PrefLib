@@ -7,7 +7,7 @@
 namespace PrefLib {
 namespace Format {
 
-class FieldElement: public FormatElement
+class FieldElement: public FormatElement, public ValuedField
 {
     public:
         FieldElement(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, DataType::Type datatype, const char* name, FormatElement* parent, lua_State* thread = nullptr);
@@ -18,6 +18,10 @@ class FieldElement: public FormatElement
     public:
         DataType::Type dataType() const;
         virtual uint64_t size();
+
+    protected:
+        virtual int metaIndex(lua_State *l);
+        virtual int metaNewIndex(lua_State *l);
 };
 
 } // namespace Format

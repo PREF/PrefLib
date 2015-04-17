@@ -46,6 +46,34 @@ uint64_t FieldElement::size()
     return DataType::sizeOf(this->dataType());
 }
 
+int FieldElement::metaIndex(lua_State *l)
+{
+    const char* arg = luaL_checkstring(l, 2);
+
+    if(!strcmp(arg, "value"))
+    {
+        DataValue dv = this->value();
+        dv.push(l);
+        return 1;
+    }
+
+    return FieldElement::metaIndex(l);
+}
+
+int FieldElement::metaNewIndex(lua_State *l)
+{
+    const char* arg = luaL_checkstring(l, 2);
+
+    if(!strcmp(arg, "value"))
+    {
+        IO::DataBuffer* databuffer = this->dataBuffer();
+        DataValue dv = this->value();
+        databuffer->write(this->offset(), &dv, this->size());
+    }
+
+    return FieldElement::metaNewIndex(l);
+}
+
 } // namespace Format
 } // namespace PrefLib
 
