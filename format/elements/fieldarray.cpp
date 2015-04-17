@@ -5,7 +5,7 @@ namespace Format {
 
 FieldArray::FieldArray(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, DataType::Type elementtype, const char *name, uint64_t userlength, FormatElement *parent, lua_State *thread): FieldElement(formattree, databuffer, offset, DataType::Array, name, parent, thread), _elementtype(elementtype), _userlength(userlength)
 {
-    this->_dynamic = true; /* FieldArray is always dynamic */
+    this->_dynamic = this->_elementtype != DataType::Blob;
 
     this->setInteger("elementtype", elementtype);
 }
@@ -26,7 +26,7 @@ FieldArray::~FieldArray()
 Field *FieldArray::item(int i)
 {
     this->parseDynamic();
-    return dynamic_cast<Field*>(this->item(i));
+    return dynamic_cast<Field*>(this->bindedTable(i));
 }
 
 Field *FieldArray::firstItem()
@@ -46,13 +46,14 @@ FormatElement::Type FieldArray::type() const
     return FormatElement::FieldArrayType;
 }
 
-bool FieldArray::parseDynamic(const char **errmsg)
+bool FieldArray::parseDynamic(const char** errmsg)
 {
     (void)errmsg; /* Unused Parameter */
 
-    if(this->length() || (this->_elementtype == DataType::Blob))
+    if(!this->_dynamic)
         return true;
 
+    this->_dynamic = false;
     uint64_t offset = this->offset();
     size_t elementsize = DataType::sizeOf(this->_elementtype);
 

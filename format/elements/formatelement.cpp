@@ -204,6 +204,8 @@ bool FormatElement::parseDynamic(const char** errmsg)
     if(!this->_dynamic || !this->_dynamiccallback.Cpp || this->length())
         return true;
 
+    this->_dynamic = false;
+
     if(!this->_dynamiccallback.IsLua)
     {
         this->_dynamiccallback.Cpp(this);
