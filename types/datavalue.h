@@ -18,7 +18,7 @@ using namespace Lua;
 class DataValue
 {
     private:
-        enum InternalType { Invalid, Integer, Float, Double, String };
+        enum InternalType { Invalid, Integer, Float, Double, Character, String };
 
         struct UserData
         {
@@ -30,6 +30,7 @@ class DataValue
 
             union
             {
+                char Character;
                 int8_t Int8; uint8_t UInt8;
                 int16_t Int16; uint16_t UInt16;
                 int32_t Int32; uint32_t UInt32;
@@ -47,7 +48,8 @@ class DataValue
         DataValue();
         DataValue(float d);
         DataValue(double d);
-        DataValue(const char* ch);
+        DataValue(char ch);
+        DataValue(const char* s);
         DataValue(const DataValue& dv);
         virtual void push(lua_State *l) const;
         void castTo(DataType::Type type);
@@ -61,6 +63,7 @@ class DataValue
         bool isIntegral() const;
         bool isFloatingPoint() const;
         bool isString() const;
+        bool isCharacter() const;
 
         template<typename T> DataValue(T t, typename std::enable_if< std::is_signed<T>::value>::type* = 0);
         template<typename T> DataValue(T t, typename std::enable_if< std::is_unsigned<T>::value>::type* = 0);

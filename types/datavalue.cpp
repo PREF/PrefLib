@@ -37,14 +37,24 @@ DataValue::DataValue(double d)
     this->_valuestruct.Value.Double = d;
 }
 
-DataValue::DataValue(const char *ch)
+DataValue::DataValue(char ch)
+{
+    this->_valuestruct.Endian = Endianness::platformEndian();
+    this->_valuestruct.IsOverflowed = false;
+    this->_valuestruct.IsSigned = true;
+    this->_valuestruct.StringBuffer = nullptr;
+    this->_valuestruct.Type = InternalType::Character;
+    this->_valuestruct.Value.Character = ch;
+}
+
+DataValue::DataValue(const char *s)
 {
     this->_valuestruct.Endian = Endianness::platformEndian();
     this->_valuestruct.IsOverflowed = false;
     this->_valuestruct.IsSigned = false;
     this->_valuestruct.StringBuffer = nullptr;
     this->_valuestruct.Type = InternalType::String;
-    this->_valuestruct.Value.AsciiString = ch ? strdup(ch) : nullptr;
+    this->_valuestruct.Value.AsciiString = s ? strdup(s) : nullptr;
 }
 
 DataValue::DataValue(const DataValue &dv)
@@ -65,6 +75,8 @@ void DataValue::push(lua_State* l) const
 {
     if(this->_valuestruct.Type == InternalType::String)
         lua_pushstring(l, this->_valuestruct.Value.AsciiString);
+    else if(this->_valuestruct.Type == InternalType::Character)
+        lua_pushlstring(l, &this->_valuestruct.Value.Character, 1);
     else if(this->_valuestruct.Type == InternalType::Float)
         lua_pushnumber(l, this->_valuestruct.Value.Float);
     else if(this->_valuestruct.Type == InternalType::Double)
@@ -80,14 +92,19 @@ void DataValue::push(lua_State* l) const
         lua_pushnil(l);
 }
 
-void DataValue::castTo(DataType::Type type)
+void DataValue::castTo(DataType::Type type) // Let the compiler cast to the correct type
 {
+    if(type == DataType::Character)
+    {
+        this->_valuestruct.Type = DataValue::Character;
+        return;
+    }
+
     if(!DataType::isArithmetic(type))
         return;
 
     this->_valuestruct.IsSigned = DataType::isSigned(type);
 
-    /* Let the compiler cast to the correct type */
     if(DataType::isFloatingPoint(type))
     {
         if(DataType::isFloat(type))
@@ -219,7 +236,12 @@ bool DataValue::isFloatingPoint() const
 
 bool DataValue::isString() const
 {
-    return this->_valuestruct.Type == InternalType::String;
+    return (this->_valuestruct.Type == InternalType::String) || (this->_valuestruct.Type == InternalType::Character);
+}
+
+bool DataValue::isCharacter() const
+{
+    return this->_valuestruct.Type == InternalType::Character;
 }
 
 DataValue::~DataValue()
@@ -228,23 +250,35 @@ DataValue::~DataValue()
 }
 
 const char *DataValue::toString(unsigned int base, unsigned int width)
-{
+{    
     if(this->_valuestruct.Type == InternalType::String)
         return this->_valuestruct.Value.AsciiString;
 
-    if(this->isArithmetic())
+    if(this->_valuestruct.Type == InternalType::Character)
     {
-        unsigned int sz = sizeof(uintmax_t) * 8; // Use the biggest type's size (in bits)
+        unsigned int len = sizeof(char);
 
         if(!this->_valuestruct.StringBuffer)
-            this->_valuestruct.StringBuffer = new char[sz + 1];
+            this->_valuestruct.StringBuffer = new char[len + 1];
 
-        this->_valuestruct.StringBuffer[sz] = '\0';
+        this->_valuestruct.StringBuffer[len] = '\0';
+        this->_valuestruct.StringBuffer[0] = this->_valuestruct.Value.Character;
+        return this->_valuestruct.StringBuffer;
+    }
+
+    if(this->isArithmetic())
+    {
+        unsigned int len = sizeof(uintmax_t) * 8; // Use the biggest type's size (in bits)
+
+        if(!this->_valuestruct.StringBuffer)
+            this->_valuestruct.StringBuffer = new char[len + 1];
+
+        this->_valuestruct.StringBuffer[len] = '\0';
 
         if(base == 2)
         {
             unsigned int len = 0;
-            char* p = this->_valuestruct.StringBuffer + (sz - 1);
+            char* p = this->_valuestruct.StringBuffer + (len - 1);
 
             for(uintmax_t i = 0, b = this->_valuestruct.Value.UInt64; i < sizeof(uintmax_t); i++, b >>= 1)
             {
@@ -260,16 +294,16 @@ const char *DataValue::toString(unsigned int base, unsigned int width)
             }
 
             if(width)
-                return (this->_valuestruct.StringBuffer + sz) - width;
+                return (this->_valuestruct.StringBuffer + len) - width;
 
             return this->_valuestruct.StringBuffer + len;
         }
         else if(base == 8)
-            snprintf(this->_valuestruct.StringBuffer, sz, "%.*" PRIo64, width, (this->_valuestruct.IsSigned ? this->_valuestruct.Value.Int64 : this->_valuestruct.Value.UInt64));
+            snprintf(this->_valuestruct.StringBuffer, len, "%.*" PRIo64, width, (this->_valuestruct.IsSigned ? this->_valuestruct.Value.Int64 : this->_valuestruct.Value.UInt64));
         else if(base == 10)
-            snprintf(this->_valuestruct.StringBuffer, sz, (this->_valuestruct.IsSigned ? "%" PRId64 : "%" PRIu64), (this->_valuestruct.IsSigned ? this->_valuestruct.Value.Int64 : this->_valuestruct.Value.UInt64));
+            snprintf(this->_valuestruct.StringBuffer, len, (this->_valuestruct.IsSigned ? "%" PRId64 : "%" PRIu64), (this->_valuestruct.IsSigned ? this->_valuestruct.Value.Int64 : this->_valuestruct.Value.UInt64));
         else if(base == 16)
-            snprintf(this->_valuestruct.StringBuffer, sz, "%.*" PRIX64, width, this->_valuestruct.Value.UInt64);
+            snprintf(this->_valuestruct.StringBuffer, len, "%.*" PRIX64, width, this->_valuestruct.Value.UInt64);
         else
             throw std::runtime_error("Invalid Base");
 
