@@ -19,6 +19,15 @@ FormatTree::~FormatTree()
         delete databuffer;
         this->setTable("databuffer", nullptr);
     }
+
+    size_t len = this->length();
+
+    for(size_t i = 0; i < len; i++)
+    {
+        FormatElement* element = this->element(i);
+        this->unbindTable(i, element->name());
+        delete element;
+    }
 }
 
 Structure *FormatTree::addStructure(const char *name)

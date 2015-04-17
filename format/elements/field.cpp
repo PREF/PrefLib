@@ -20,7 +20,14 @@ Field::Field(FormatTree* formattree, IO::DataBuffer *databuffer, uint64_t offset
 
 Field::~Field()
 {
+    size_t len = this->length();
 
+    for(size_t i = 0; i < len; i++)
+    {
+        BitField* bitfield = this->bitField(i);
+        this->unbindTable(i, bitfield->name());
+        delete bitfield;
+    }
 }
 
 BitField *Field::setBitField(const char *name, uint64_t bitstart, uint64_t bitend)
@@ -54,6 +61,16 @@ DataValue Field::value()
     databuffer->read(this->offset(), &dv, this->size());
     dv.castTo(this->dataType());
     return dv;
+}
+
+BitField *Field::bitField(int i) const
+{
+    return dynamic_cast<BitField*>(this->bindedTable(i));
+}
+
+BitField *Field::bitField(const char *name) const
+{
+    return dynamic_cast<BitField*>(this->bindedTable(name));
 }
 
 int Field::metaIndex(lua_State *l)

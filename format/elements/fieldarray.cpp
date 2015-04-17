@@ -12,7 +12,15 @@ FieldArray::FieldArray(FormatTree* formattree, IO::DataBuffer* databuffer, uint6
 
 FieldArray::~FieldArray()
 {
+    if(this->_elementtype == DataType::Blob)
+        return;
 
+    for(size_t i = 0; i < this->length(); i++)
+    {
+        Field* field = this->item(i);
+        this->unbindTable(i, field->name());
+        delete field;
+    }
 }
 
 Field *FieldArray::item(int i)

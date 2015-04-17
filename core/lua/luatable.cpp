@@ -30,6 +30,22 @@ LuaTable::~LuaTable()
 
 }
 
+void LuaTable::unbindTable(int i, const char* name) const
+{
+    this->push();
+
+    // self[i] = nil
+    lua_pushnil(this->_thread);
+    lua_rawseti(this->_thread, -2, i + 1);
+
+    // self.name = nil
+    lua_pushstring(this->_thread, name);
+    lua_pushnil(this->_thread);
+    lua_rawset(this->_thread, -3);
+
+    lua_pop(this->_thread, 1);
+}
+
 LuaTable *LuaTable::bindedTable(int i) const
 {
     LuaTable* t = nullptr;
@@ -292,7 +308,9 @@ void LuaTable::setTable(const char *k, LuaTable *t)
 {
     this->push();
     lua_pushstring(this->_thread, k);
-    t->push();
+
+    t ? t->push() : lua_pushnil(this->_thread);
+
     lua_rawset(this->_thread, -3);
     lua_pop(this->_thread, 1);
 }

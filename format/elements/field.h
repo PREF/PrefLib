@@ -19,6 +19,8 @@ class Field: public FieldElement, public ValuedField
 
     public:
         virtual DataValue value();
+        BitField* bitField(int i) const;
+        BitField* bitField(const char* name) const;
         BitField* setBitField(const char* name, uint64_t bitstart, uint64_t bitend);
         BitField* setBitField(const char* name, uint64_t bitstart);
 

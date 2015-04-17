@@ -12,7 +12,14 @@ Structure::Structure(FormatTree* formattree, IO::DataBuffer *databuffer, uint64_
 
 Structure::~Structure()
 {
+    size_t len = this->length();
 
+    for(size_t i = 0; i < len; i++)
+    {
+        FormatElement* element = this->field(i);
+        this->unbindTable(i, element->name());
+        delete element;
+    }
 }
 
 uint64_t Structure::size()

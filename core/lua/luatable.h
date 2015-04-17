@@ -18,6 +18,7 @@ class LuaTable: public LuaReference
         virtual ~LuaTable();
 
     protected:
+        void unbindTable(int i, const char* name) const;
         LuaTable* bindedTable(int i) const;
         LuaTable* bindedTable(const char* name) const;
         LuaTable* firstBindedTable() const;
