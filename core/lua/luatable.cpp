@@ -15,7 +15,7 @@ LuaTable::LuaTable(lua_State *thread): LuaReference(thread)
     this->_reference = luaL_ref(this->_thread, LUA_REGISTRYINDEX);
 }
 
-LuaTable::LuaTable(int idx): LuaReference()
+LuaTable::LuaTable(lua_State* thread, int idx): LuaReference(thread)
 {
     lua_pushvalue(this->_thread, idx);
 

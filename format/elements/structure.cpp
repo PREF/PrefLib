@@ -141,7 +141,7 @@ int Structure::luaAddField(lua_State *l)
         }
         else // if(t == LUA_TTABLE)
         {
-            LuaTable valid(4);
+            LuaTable valid(l, 4);
             f = thethis->addField(static_cast<DataType::Type>(luaL_checkinteger(l, 2)), luaL_checkstring(l, 3), valid);
         }
     }

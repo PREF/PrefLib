@@ -14,7 +14,7 @@ class LuaTable: public LuaReference
 {
     public:
         LuaTable(lua_State* thread = nullptr);
-        LuaTable(int idx);
+        LuaTable(lua_State *thread, int idx);
         virtual ~LuaTable();
 
     protected:
