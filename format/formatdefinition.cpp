@@ -22,27 +22,20 @@ FormatTree* FormatDefinition::build(IO::DataBuffer *databuffer, uint64_t baseoff
     if(!this->hasField("build"))
         return nullptr;
 
-    LuaThread thread;
-    thread.take(this);
-    thread.take(databuffer);
-
     this->push();
 
-    lua_getfield(thread, -1, "build");
+    lua_getfield(this->_thread, -1, "build");
     this->push(); // Self
     databuffer->push();
-    lua_pushinteger(thread, baseoffset);
-    thread.resume(3);
+    lua_pushinteger(this->_thread, baseoffset);
+    this->protectedCall(3, 1);
 
     FormatTree* formattree = nullptr;
 
-    if(!lua_isnoneornil(thread, -1))
-    {
-        formattree = reinterpret_cast<FormatTree*>(checkThis(thread, -1));
-        formattree->moveTo(LuaState::instance());
-    }
+    if(!lua_isnoneornil(this->_thread, -1))
+        formattree = reinterpret_cast<FormatTree*>(checkThis(this->_thread, -1));
 
-    lua_pop(thread, 2);
+    lua_pop(this->_thread, 2);
     return formattree;
 }
 

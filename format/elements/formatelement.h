@@ -42,6 +42,7 @@ class FormatElement: public LuaTable
         bool isField() const;
         bool isFieldArray() const;
         bool isBitField() const;
+        bool contains(uint64_t offset);
         virtual uint64_t size() = 0;
         uint64_t offset() const;
         uint64_t endOffset();

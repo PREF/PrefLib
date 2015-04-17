@@ -135,6 +135,11 @@ bool FormatElement::isBitField() const
     return this->type() == FormatElement::BitFieldType;
 }
 
+bool FormatElement::contains(uint64_t offset)
+{
+    return (offset >= this->offset()) && (offset < this->endOffset());
+}
+
 IO::DataBuffer *FormatElement::dataBuffer() const
 {
     return this->_databuffer;
