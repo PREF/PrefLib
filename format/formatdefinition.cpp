@@ -17,27 +17,29 @@ FormatDefinition::~FormatDefinition()
 
 }
 
-FormatTree* FormatDefinition::build(IO::DataBuffer *databuffer, uint64_t baseoffset) const
+FormatTree* FormatDefinition::build(IO::DataBuffer *databuffer, uint64_t baseoffset)
 {
     if(!this->hasField("build"))
         return nullptr;
 
     LuaThread thread;
-    lua_State* l = thread; //LuaState::instance();
+    thread.take(this);
+    thread.take(databuffer);
+
     this->push();
 
-    lua_getfield(l, -1, "build");
+    lua_getfield(thread, -1, "build");
     this->push(); // Self
     databuffer->push();
-    lua_pushinteger(l, baseoffset);
+    lua_pushinteger(thread, baseoffset);
     thread.resume(3);
 
     FormatTree* formattree = nullptr;
 
-    if(!lua_isnoneornil(l, -1))
-        formattree = reinterpret_cast<FormatTree*>(checkThis(l, -1));
+    if(!lua_isnoneornil(thread, -1))
+        formattree = reinterpret_cast<FormatTree*>(checkThis(thread, -1));
 
-    lua_pop(l, 2);
+    lua_pop(thread, 2);
     return formattree;
 }
 

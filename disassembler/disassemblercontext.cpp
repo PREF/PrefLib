@@ -15,40 +15,38 @@ DisassemblerContext::~DisassemblerContext()
 
 void DisassemblerContext::push() const
 {
-    lua_State* l = LuaState::instance();
     LuaTable::push();
 
-    lua_newtable(l);
-    lua_pushinteger(l, Segment::Code);
-    lua_setfield(l, -2, "Code");
-    lua_pushinteger(l, Segment::Data);
-    lua_setfield(l, -2, "Data");
-    lua_setfield(l, -2, "segmenttype");
+    lua_newtable(this->_thread);
+    lua_pushinteger(this->_thread, Segment::Code);
+    lua_setfield(this->_thread, -2, "Code");
+    lua_pushinteger(this->_thread, Segment::Data);
+    lua_setfield(this->_thread, -2, "Data");
+    lua_setfield(this->_thread, -2, "segmenttype");
 
-    lua_newtable(l);
-    lua_pushinteger(l, Function::FunctionBlock);
-    lua_setfield(l, -2, "Function");
-    lua_pushinteger(l, Function::EntryPointBlock);
-    lua_setfield(l, -2, "EntryPoint");
-    lua_pushinteger(l, Function::ExportBlock);
-    lua_setfield(l, -2, "Export");
-    lua_pushinteger(l, Function::ImportBlock);
-    lua_setfield(l, -2, "Import");
-    lua_setfield(l, -2, "functiontype");
+    lua_newtable(this->_thread);
+    lua_pushinteger(this->_thread, Function::FunctionBlock);
+    lua_setfield(this->_thread, -2, "Function");
+    lua_pushinteger(this->_thread, Function::EntryPointBlock);
+    lua_setfield(this->_thread, -2, "EntryPoint");
+    lua_pushinteger(this->_thread, Function::ExportBlock);
+    lua_setfield(this->_thread, -2, "Export");
+    lua_pushinteger(this->_thread, Function::ImportBlock);
+    lua_setfield(this->_thread, -2, "Import");
+    lua_setfield(this->_thread, -2, "functiontype");
 }
 
 DisassemblerDefinition *DisassemblerContext::get(int idx) const
 {
-    lua_State* l = LuaState::instance();
     DisassemblerDefinition* disassemblerdefinition = nullptr;
 
     this->push();
-    lua_rawgeti(l, -1, idx + 1);
+    lua_rawgeti(this->_thread, -1, idx + 1);
 
-    if(!lua_isnoneornil(l, -1))
-        disassemblerdefinition = reinterpret_cast<DisassemblerDefinition*>(checkThis(l, -1));
+    if(!lua_isnoneornil(this->_thread, -1))
+        disassemblerdefinition = reinterpret_cast<DisassemblerDefinition*>(checkThis(this->_thread, -1));
 
-    lua_pop(l, 2);
+    lua_pop(this->_thread, 2);
     return disassemblerdefinition;
 }
 

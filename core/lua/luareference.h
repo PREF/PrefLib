@@ -28,6 +28,8 @@ class LuaReference
     protected:
         lua_State* _thread;
         int _reference;
+
+    friend class LuaThread;
 };
 
 } // namespace Lua

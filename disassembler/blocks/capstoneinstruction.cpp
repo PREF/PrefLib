@@ -18,7 +18,7 @@ CapstoneInstruction::~CapstoneInstruction()
 
     if(this->_csinsinref != LUA_REFNIL)
     {
-        luaL_unref(LuaState::instance(), LUA_REGISTRYINDEX, this->_csinsinref);
+        luaL_unref(this->_thread, LUA_REGISTRYINDEX, this->_csinsinref);
         this->_csinsinref = LUA_REFNIL;
     }
 }

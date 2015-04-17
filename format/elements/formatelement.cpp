@@ -17,30 +17,29 @@ FormatElement::FormatElement(FormatTree* formattree, IO::DataBuffer *databuffer,
     if(parent)
         this->setTable("parent", parent);
 
-    lua_State* l = LuaState::instance();
     this->push();
 
-    if(luaL_newmetatable(l, "formatelement"))
+    if(luaL_newmetatable(this->_thread, "formatelement"))
     {
-        lua_pushcfunction(l, &FormatElement::luaMetaIndex);
-        lua_setfield(l, -2, "__index");
+        lua_pushcfunction(this->_thread, &FormatElement::luaMetaIndex);
+        lua_setfield(this->_thread, -2, "__index");
 
-        lua_pushcfunction(l, &FormatElement::luaMetaNewIndex);
-        lua_setfield(l, -2, "__newindex");
+        lua_pushcfunction(this->_thread, &FormatElement::luaMetaNewIndex);
+        lua_setfield(this->_thread, -2, "__newindex");
 
-        lua_pushcfunction(l, &FormatElement::luaMetaLength);
-        lua_setfield(l, -2, "__len");
+        lua_pushcfunction(this->_thread, &FormatElement::luaMetaLength);
+        lua_setfield(this->_thread, -2, "__len");
     }
 
-    lua_setmetatable(l, -2);
-    lua_pop(l, 1);
+    lua_setmetatable(this->_thread, -2);
+    lua_pop(this->_thread, 1);
 }
 
 FormatElement::~FormatElement()
 {
     if(this->_infocallback.Lua && this->_infocallback.IsLua)
     {
-        luaL_unref(LuaState::instance(), LUA_REGISTRYINDEX, this->_infocallback.Lua);
+        luaL_unref(this->_thread, LUA_REGISTRYINDEX, this->_infocallback.Lua);
 
         /* Reset Callback Information */
         this->_infocallback.IsLua = false;
@@ -206,20 +205,19 @@ bool FormatElement::parseDynamic(const char** errmsg)
         return true;
     }
 
-    lua_State* l = LuaState::instance();
-    lua_rawgeti(l, LUA_REGISTRYINDEX, this->_dynamiccallback.Lua);
+    lua_rawgeti(this->_thread, LUA_REGISTRYINDEX, this->_dynamiccallback.Lua);
     this->push();
 
-    int err = lua_pcall(l, 1, 0, 0);
+    int err = lua_pcall(this->_thread, 1, 0, 0);
 
     if(err)
     {
         if(errmsg)
-            *errmsg = lua_tostring(l, -1);
+            *errmsg = lua_tostring(this->_thread, -1);
         else
-            luaL_error(l, lua_tostring(l, -1));
+            luaL_error(this->_thread, lua_tostring(this->_thread, -1));
 
-        lua_pop(l, 1);
+        lua_pop(this->_thread, 1);
         return false;
     }
 
@@ -249,13 +247,12 @@ const char *FormatElement::info()
     if(!this->_infocallback.IsLua)
         return this->_infocallback.Cpp(this);
 
-    lua_State* l = LuaState::instance();
-    lua_rawgeti(l, LUA_REGISTRYINDEX, this->_infocallback.Lua);
+    lua_rawgeti(this->_thread, LUA_REGISTRYINDEX, this->_infocallback.Lua);
     this->push();
-    lua_pcall(l, 1, 1, 0);
+    lua_pcall(this->_thread, 1, 1, 0);
 
-    const char* infostring = lua_tostring(l, -1);
-    lua_pop(l, 1);
+    const char* infostring = lua_tostring(this->_thread, -1);
+    lua_pop(this->_thread, 1);
     return infostring;
 }
 

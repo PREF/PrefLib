@@ -19,7 +19,7 @@ class FormatDefinition: public LuaTable
         virtual ~FormatDefinition();
 
     public:
-        FormatTree* build(IO::DataBuffer* databuffer, uint64_t baseoffset = 0) const;
+        FormatTree* build(IO::DataBuffer* databuffer, uint64_t baseoffset = 0);
         const char* category() const;
         const char* name() const;
         const char* author() const;

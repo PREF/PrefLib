@@ -16,52 +16,42 @@ LuaContainer::~LuaContainer()
 
 void LuaContainer::append(bool val)
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_pushboolean(l, val);
-    lua_rawseti(l, -2, lua_rawlen(l, -2) + 1);
-    lua_pop(l, 1);
+    lua_pushboolean(this->_thread, val);
+    lua_rawseti(this->_thread, -2, lua_rawlen(this->_thread, -2) + 1);
+    lua_pop(this->_thread, 1);
 }
 
 void LuaContainer::append(const char *val)
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_pushstring(l, val);
-    lua_rawseti(l, -2, lua_rawlen(l, -2) + 1);
-    lua_pop(l, 1);
+    lua_pushstring(this->_thread, val);
+    lua_rawseti(this->_thread, -2, lua_rawlen(this->_thread, -2) + 1);
+    lua_pop(this->_thread, 1);
 }
 
 void LuaContainer::append(lua_Integer val)
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_pushinteger(l, val);
-    lua_rawseti(l, -2, lua_rawlen(l, -2) + 1);
-    lua_pop(l, 1);
+    lua_pushinteger(this->_thread, val);
+    lua_rawseti(this->_thread, -2, lua_rawlen(this->_thread, -2) + 1);
+    lua_pop(this->_thread, 1);
 }
 
 void LuaContainer::append(lua_CFunction val)
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
-    lua_pushcfunction(l, val);
-    lua_rawseti(l, -2, lua_rawlen(l, -2) + 1);
-    lua_pop(l, 1);
+    lua_pushcfunction(this->_thread, val);
+    lua_rawseti(this->_thread, -2, lua_rawlen(this->_thread, -2) + 1);
+    lua_pop(this->_thread, 1);
 }
 
 void LuaContainer::append(LuaTable *val)
 {
-    lua_State* l = LuaState::instance();
-
     this->push();
     val->push();
-    lua_rawseti(l, -2, lua_rawlen(l, -2) + 1);
-    lua_pop(l, 1);
+    lua_rawseti(this->_thread, -2, lua_rawlen(this->_thread, -2) + 1);
+    lua_pop(this->_thread, 1);
 }
 
 LuaContainer::Entry LuaContainer::operator[](lua_Integer idx)

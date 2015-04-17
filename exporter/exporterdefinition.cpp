@@ -41,18 +41,17 @@ void ExporterDefinition::dump(IO::DataBuffer *databufferin, IO::DataBuffer *data
     if(!this->hasField("dump"))
         return;
 
-    lua_State* l = LuaState::instance();
     this->push();
 
-    lua_getfield(l, -1, "dump");
+    lua_getfield(this->_thread, -1, "dump");
     this->push(); /* Self */
     databufferin->push();
     databufferout->push();
-    lua_pushinteger(l, startoffset);
-    lua_pushinteger(l, (!endoffset ? databufferin->length() : endoffset));
+    lua_pushinteger(this->_thread, startoffset);
+    lua_pushinteger(this->_thread, (!endoffset ? databufferin->length() : endoffset));
     this->protectedCall(5, 0);
 
-    lua_pop(l, 1);
+    lua_pop(this->_thread, 1);
 }
 
 } // namespace Exporter

@@ -12,17 +12,16 @@ DataBuffer::DataBuffer(OpenMode mode, lua_State *thread): LuaTable(thread)
     this->setFunction("read", &DataBuffer::luaRead);
     this->setFunction("write", &DataBuffer::luaWrite);
 
-    lua_State* l = LuaState::instance();
     this->push();
 
-    if(luaL_newmetatable(l, "databuffer"))
+    if(luaL_newmetatable(this->_thread, "databuffer"))
     {
-        lua_pushcfunction(l, &DataBuffer::luaMetaLength);
-        lua_setfield(l, -2, "__len");
+        lua_pushcfunction(this->_thread, &DataBuffer::luaMetaLength);
+        lua_setfield(this->_thread, -2, "__len");
     }
 
-    lua_setmetatable(l, -2);
-    lua_pop(l, 1);
+    lua_setmetatable(this->_thread, -2);
+    lua_pop(this->_thread, 1);
 }
 
 DataBuffer::~DataBuffer()

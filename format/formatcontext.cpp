@@ -18,16 +18,15 @@ FormatContext::~FormatContext()
 
 FormatDefinition *FormatContext::get(int idx) const
 {
-    lua_State* l = LuaState::instance();
     FormatDefinition* formatdefinition = nullptr;
 
     this->push();
-    lua_rawgeti(l, -1, idx + 1);
+    lua_rawgeti(this->_thread, -1, idx + 1);
 
-    if(!lua_isnoneornil(l, -1))
-        formatdefinition = reinterpret_cast<FormatDefinition*>(checkThis(l, -1));
+    if(!lua_isnoneornil(this->_thread, -1))
+        formatdefinition = reinterpret_cast<FormatDefinition*>(checkThis(this->_thread, -1));
 
-    lua_pop(l, 2);
+    lua_pop(this->_thread, 2);
     return formatdefinition;
 }
 

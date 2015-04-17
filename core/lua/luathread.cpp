@@ -11,8 +11,23 @@ LuaThread::LuaThread()
 
 LuaThread::~LuaThread()
 {
+    std::map<LuaReference*, lua_State*>::iterator it = this->_objects.begin();
+
+    for(; it != this->_objects.end(); it++)
+        it->first->_thread = it->second;
+
+    this->_objects.clear();
     lua_pop(LuaState::instance(), 1);
     this->_thread = nullptr;
+}
+
+void LuaThread::take(LuaReference *refobj)
+{
+    if(refobj->_thread == this->_thread)
+        return;
+
+    this->_objects[refobj] = refobj->_thread;
+    refobj->_thread = this->_thread;
 }
 
 void LuaThread::resume(int argc) const

@@ -30,7 +30,7 @@ class DisassemblerDefinition: public LuaTable
         const char *name() const;
         const char* author() const;
         const char* version() const;
-        const Format::FormatDefinition* format() const;
+        Format::FormatDefinition *format() const;
         DataType::Type addressType() const;
 };
 

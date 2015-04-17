@@ -14,7 +14,7 @@ FieldElement::FieldElement(FormatTree* formattree, IO::DataBuffer* databuffer, u
     databuffer->read(offset, &v, DataType::sizeOf(datatype));
 
     if(v != valid)
-        luaL_error(LuaState::instance(), "Field '%s': Expected 0x%s, got 0x%s", name, valid.toString(16), v.toString(16));
+        luaL_error(this->_thread, "Field '%s': Expected 0x%s, got 0x%s", name, valid.toString(16), v.toString(16));
 }
 
 FieldElement::FieldElement(FormatTree* formattree, IO::DataBuffer *databuffer, uint64_t offset, DataType::Type datatype, const char *name, FormatElement *parent, LuaTable& valid, lua_State *thread): FieldElement(formattree, databuffer, offset, datatype, name, parent, thread)
@@ -28,7 +28,7 @@ FieldElement::FieldElement(FormatTree* formattree, IO::DataBuffer *databuffer, u
             return;
     }
 
-    luaL_error(LuaState::instance(), "Field '%s': 0x%s is not valid", name, v.toString(16));
+    luaL_error(this->_thread, "Field '%s': 0x%s is not valid", name, v.toString(16));
 }
 
 FieldElement::~FieldElement()

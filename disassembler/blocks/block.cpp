@@ -5,24 +5,22 @@ namespace Disassembler {
 
 Block::Block(uint64_t startaddress, uint64_t size, lua_State *thread): LuaTable(thread), _bookmarked(false)
 {
-    lua_State* l = LuaState::instance();
-
     this->setInteger("startaddress", startaddress);
     this->setInteger("size", size);
 
     this->push();
 
-    if(luaL_newmetatable(l, "block"))
+    if(luaL_newmetatable(this->_thread, "block"))
     {
-        lua_pushcfunction(l, &Block::luaMetaIndex);
-        lua_setfield(l, -2, "__index");
+        lua_pushcfunction(this->_thread, &Block::luaMetaIndex);
+        lua_setfield(this->_thread, -2, "__index");
 
-        lua_pushcfunction(l, &Block::luaMetaNewIndex);
-        lua_setfield(l, -2, "__newindex");
+        lua_pushcfunction(this->_thread, &Block::luaMetaNewIndex);
+        lua_setfield(this->_thread, -2, "__newindex");
     }
 
-    lua_setmetatable(l, -2);
-    lua_pop(l, 1);
+    lua_setmetatable(this->_thread, -2);
+    lua_pop(this->_thread, 1);
 }
 
 Block::~Block()

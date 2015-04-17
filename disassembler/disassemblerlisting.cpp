@@ -37,7 +37,6 @@ int DisassemblerListing::MemoryBuffer::luaRead(lua_State *l)
 DisassemblerListing::DisassemblerListing(IO::DataBuffer *databuffer, lua_State *thread): LuaTable(thread), _databuffer(databuffer)
 {
     this->_memorybuffer = new MemoryBuffer(this, databuffer);
-    lua_State* l = LuaState::instance();
 
     this->push();
     this->setInteger("baseaddress", 0);
@@ -52,7 +51,7 @@ DisassemblerListing::DisassemblerListing(IO::DataBuffer *databuffer, lua_State *
     this->setFunction("createfunction", &DisassemblerListing::luaCreateFunction);
     this->setFunction("createentrypoint", &DisassemblerListing::luaCreateEntryPoint);
     this->setFunction("createinstruction", &DisassemblerListing::luaCreateInstruction);
-    lua_pop(l, 1);
+    lua_pop(this->_thread, 1);
 }
 
 DisassemblerListing::~DisassemblerListing()

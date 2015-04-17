@@ -4,26 +4,25 @@ namespace PrefLib {
 
 Buffer::Buffer(uint64_t len, lua_State *thread): LuaReference(thread)
 {
-    lua_State* l = LuaState::instance();
-    this->_data = reinterpret_cast<unsigned char*>(lua_newuserdata(l, len * sizeof(unsigned char)));
+    this->_data = reinterpret_cast<unsigned char*>(lua_newuserdata(this->_thread, len * sizeof(unsigned char)));
 
-    if(luaL_newmetatable(l, "buffer"))
+    if(luaL_newmetatable(this->_thread, "buffer"))
     {
-        lua_pushinteger(l, len);
-        lua_pushcclosure(l, &Buffer::luaMetaIndex, 1);
-        lua_setfield(l, -2, "__index");
+        lua_pushinteger(this->_thread, len);
+        lua_pushcclosure(this->_thread, &Buffer::luaMetaIndex, 1);
+        lua_setfield(this->_thread, -2, "__index");
 
-        lua_pushinteger(l, len);
-        lua_pushcclosure(l, &Buffer::luaMetaNewIndex, 1);
-        lua_setfield(l, -2, "__newindex");
+        lua_pushinteger(this->_thread, len);
+        lua_pushcclosure(this->_thread, &Buffer::luaMetaNewIndex, 1);
+        lua_setfield(this->_thread, -2, "__newindex");
 
-        lua_pushinteger(l, len);
-        lua_pushcclosure(l, &Buffer::luaMetaLength, 1);
-        lua_setfield(l, -2, "__len");
+        lua_pushinteger(this->_thread, len);
+        lua_pushcclosure(this->_thread, &Buffer::luaMetaLength, 1);
+        lua_setfield(this->_thread, -2, "__len");
     }
 
-    lua_setmetatable(l, -2);
-    this->_reference = luaL_ref(l, LUA_REGISTRYINDEX);
+    lua_setmetatable(this->_thread, -2);
+    this->_reference = luaL_ref(this->_thread, LUA_REGISTRYINDEX);
 }
 
 unsigned char *Buffer::operator &()

@@ -15,16 +15,15 @@ ExporterContext::~ExporterContext()
 
 ExporterDefinition *ExporterContext::get(int idx) const
 {
-    lua_State* l = LuaState::instance();
     ExporterDefinition* exporterdefinition = nullptr;
 
     this->push();
-    lua_rawgeti(l, -1, idx + 1);
+    lua_rawgeti(this->_thread, -1, idx + 1);
 
-    if(!lua_isnoneornil(l, -1))
-        exporterdefinition = reinterpret_cast<ExporterDefinition*>(checkThis(l, -1));
+    if(!lua_isnoneornil(this->_thread, -1))
+        exporterdefinition = reinterpret_cast<ExporterDefinition*>(checkThis(this->_thread, -1));
 
-    lua_pop(l, 2);
+    lua_pop(this->_thread, 2);
     return exporterdefinition;
 }
 
