@@ -89,7 +89,7 @@ void LuaTable::bindTable(const char *name, LuaTable *t)
 {
     this->push();
     this->setTable(name, t); // Allow self.foo
-    this->setI(this->length() + 1, t); // Allow self[i]
+    this->setI(lua_rawlen(this->_thread, -1) + 1, t); // Allow self[i]
     lua_pop(this->_thread, 1);
 }
 
