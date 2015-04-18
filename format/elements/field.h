@@ -21,8 +21,10 @@ class Field: public FieldElement
         virtual DataValue value();
         BitField* bitField(int i) const;
         BitField* bitField(const char* name) const;
-        BitField* setBitField(const char* name, uint64_t bitstart, uint64_t bitend);
         BitField* setBitField(const char* name, uint64_t bitstart);
+        BitField* setBitField(const char* name, uint64_t bitstart, uint64_t bitend);
+        BitField* setBitField(const char* name, uint64_t bitstart, uint64_t bitend, DataValue& valid);
+        BitField* setBitField(const char* name, uint64_t bitstart, uint64_t bitend, LuaTable& valid);
 
     lua_api:
         static int luaSetBitField(lua_State*l);

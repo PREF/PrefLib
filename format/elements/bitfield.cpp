@@ -9,6 +9,27 @@ BitField::BitField(FormatTree *formattree, IO::DataBuffer *databuffer, uint64_t 
     this->setInteger("bitend", bitend);
 }
 
+BitField::BitField(FormatTree *formattree, IO::DataBuffer *databuffer, uint64_t offset, DataType::Type datatype, const char *name, int bitstart, int bitend, FormatElement *parent, DataValue &valid, lua_State *thread): BitField(formattree, databuffer, offset, datatype, name, bitstart, bitend, parent, thread)
+{
+    DataValue v = this->value();
+
+    if(v != valid)
+        luaL_error(this->_thread, "BitField '%s': Expected 0x%s, got 0x%s", name, valid.toString(16), v.toString(16));
+}
+
+BitField::BitField(FormatTree *formattree, IO::DataBuffer *databuffer, uint64_t offset, DataType::Type datatype, const char *name, int bitstart, int bitend, FormatElement *parent, LuaTable &valid, lua_State *thread): BitField(formattree, databuffer, offset, datatype, name, bitstart, bitend, parent, thread)
+{
+    DataValue v = this->value();
+
+    for(size_t i = 0; i < valid.length(); i++)
+    {
+        if(v == valid.getI<lua_Integer>(i))
+            return;
+    }
+
+    luaL_error(this->_thread, "BitField '%s': 0x%s is not valid", name, v.toString(16));
+}
+
 BitField::~BitField()
 {
 

@@ -10,8 +10,7 @@ Field::Field(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset
 
 Field::Field(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, DataType::Type datatype, const char* name, FormatElement* parent, DataValue& valid, lua_State *thread): Field(formattree, databuffer, offset, datatype, name, parent, thread)
 {
-    DataValue v = 0;
-    databuffer->read(offset, &v, DataType::sizeOf(datatype));
+    DataValue v = this->value();
 
     if(v != valid)
         luaL_error(this->_thread, "Field '%s': Expected 0x%s, got 0x%s", name, valid.toString(16), v.toString(16));
@@ -19,8 +18,7 @@ Field::Field(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset
 
 Field::Field(FormatTree* formattree, IO::DataBuffer *databuffer, uint64_t offset, DataType::Type datatype, const char *name, FormatElement *parent, LuaTable &valid, lua_State *thread): Field(formattree, databuffer, offset, datatype, name, parent, thread)
 {
-    DataValue v = 0;
-    databuffer->read(offset, &v, DataType::sizeOf(datatype));
+    DataValue v = this->value();
 
     for(size_t i = 0; i < valid.length(); i++)
     {
@@ -50,6 +48,20 @@ BitField *Field::setBitField(const char *name, uint64_t bitstart, uint64_t biten
     return bf;
 }
 
+BitField *Field::setBitField(const char *name, uint64_t bitstart, uint64_t bitend, DataValue &valid)
+{
+    BitField* bf = new BitField(this->tree(), this->_databuffer, this->offset(), this->dataType(), name, bitstart, bitend, this, valid, this->thread());
+    this->bindTable(name, bf);
+    return bf;
+}
+
+BitField *Field::setBitField(const char *name, uint64_t bitstart, uint64_t bitend, LuaTable &valid)
+{
+    BitField* bf = new BitField(this->tree(), this->_databuffer, this->offset(), this->dataType(), name, bitstart, bitend, this, valid, this->thread());
+    this->bindTable(name, bf);
+    return bf;
+}
+
 BitField *Field::setBitField(const char *name, uint64_t bitstart)
 {
     return this->setBitField(name, bitstart, bitstart);
@@ -61,8 +73,31 @@ int Field::luaSetBitField(lua_State* l)
     luaX_expectminargc(l, argc, 3);
 
     Field* thethis = reinterpret_cast<Field*>(checkThis(l, 1));
-    int bitstart = luaL_checkinteger(l, 3);
-    BitField* bf = thethis->setBitField(luaL_checkstring(l, 2), bitstart, luaL_optinteger(l, 4, bitstart));
+
+    BitField* bf = nullptr;
+    lua_Integer bitstart = luaL_checkinteger(l, 3);
+
+    if(argc > 4)
+    {
+        int t = lua_type(l, 5);
+
+        if((t != LUA_TNUMBER) && (t != LUA_TTABLE))
+            luaL_error(l, "Field.setBitField(): Expected 'number' or 'table', '%s' given", lua_typename(l, t));
+
+        if(t == LUA_TNUMBER)
+        {
+            DataValue valid = lua_tointeger(l, 5);
+            bf = thethis->setBitField(luaL_checkstring(l, 2), bitstart, luaL_checkinteger(l, 4), valid);
+        }
+        else // if(t == LUA_TTABLE)
+        {
+            LuaTable valid(l, 5);
+            bf = thethis->setBitField(luaL_checkstring(l, 2), bitstart, luaL_checkinteger(l, 4), valid);
+        }
+    }
+    else
+        bf = thethis->setBitField(luaL_checkstring(l, 2), bitstart, luaL_optinteger(l, 4, bitstart));
+
     bf->push();
     return 1;
 }
