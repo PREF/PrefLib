@@ -6,7 +6,7 @@ namespace Format {
 FormatTree::FormatTree(IO::DataBuffer *databuffer, uint64_t baseoffset, lua_State *thread): LuaTable(thread)
 {
     this->setInteger("baseoffset", baseoffset);
-    this->setTable("databuffer", databuffer);
+    this->setTable("buffer", databuffer);
     this->setFunction("addStructure", &FormatTree::luaAddStructure);
 }
 
@@ -17,7 +17,7 @@ FormatTree::~FormatTree()
     if(databuffer)
     {
         delete databuffer;
-        this->setTable("databuffer", nullptr);
+        this->setTable("buffer", nullptr);
     }
 
     size_t len = this->length();
@@ -44,7 +44,7 @@ Structure *FormatTree::addStructure(const char *name, uint64_t offset)
 
 IO::DataBuffer *FormatTree::dataBuffer() const
 {
-    return dynamic_cast<IO::DataBuffer*>(this->getTable("databuffer"));
+    return dynamic_cast<IO::DataBuffer*>(this->getTable("buffer"));
 }
 
 uint64_t FormatTree::baseOffset() const

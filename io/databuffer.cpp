@@ -11,6 +11,7 @@ DataBuffer::DataBuffer(OpenMode mode, lua_State *thread): LuaTable(thread)
     this->setFunction("indexOf", &DataBuffer::luaIndexOf);
     this->setFunction("readString", &DataBuffer::luaReadString);
     this->setFunction("readLine", &DataBuffer::luaReadLine);
+    this->setFunction("readType", &DataBuffer::luaReadType);
     this->setFunction("copyTo", &DataBuffer::luaCopyTo);
     this->setFunction("read", &DataBuffer::luaRead);
     this->setFunction("write", &DataBuffer::luaWrite);
@@ -119,6 +120,15 @@ uint64_t DataBuffer::readLine(uint64_t offset, char **data)
     return this->read(offset, reinterpret_cast<unsigned char*>(*data), len);
 }
 
+DataValue DataBuffer::readType(uint64_t offset, DataType::Type datatype)
+{
+    DataValue dv = 0;
+
+    this->read(offset, &dv, DataType::sizeOf(datatype));
+    dv.castTo(datatype);
+    return dv;
+}
+
 void DataBuffer::copyTo(DataBuffer *destbuffer, uint64_t startoffset, uint64_t endoffset)
 {
     if(!endoffset)
@@ -181,6 +191,18 @@ int DataBuffer::luaReadLine(lua_State *l)
 
     lua_pushstring(l, s);
     delete[] s;
+    return 1;
+}
+
+int DataBuffer::luaReadType(lua_State *l)
+{
+    int argc = lua_gettop(l);
+    luaX_expectargc(l, argc, 3);
+
+    DataBuffer* thethis = reinterpret_cast<DataBuffer*>(checkThis(l, 1));
+    DataValue dv = thethis->readType(luaL_checkinteger(l, 2), static_cast<DataType::Type>(luaL_checkinteger(l, 3)));
+
+    dv.push(l);
     return 1;
 }
 

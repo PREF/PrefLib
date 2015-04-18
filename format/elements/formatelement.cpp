@@ -162,6 +162,12 @@ int FormatElement::metaIndex(lua_State *l)
 {
     const char* arg = luaL_checkstring(l, 2);
 
+    if(!strcmp(arg, "buffer"))
+    {
+        this->dataBuffer()->push();
+        return 1;
+    }
+
     if(!strcmp(arg, "size"))
     {
         lua_pushinteger(l, this->size());

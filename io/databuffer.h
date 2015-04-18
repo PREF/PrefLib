@@ -30,6 +30,7 @@ class DataBuffer : public LuaTable
         int64_t indexOf(const char* s, uint64_t startoffset = 0);
         uint64_t readString(uint64_t offset, char** data, uint64_t maxlen = 0);
         uint64_t readLine(uint64_t offset, char** data);
+        DataValue readType(uint64_t offset, DataType::Type datatype);
         void copyTo(DataBuffer* destbuffer, uint64_t startoffset = 0, uint64_t endoffset = 0);
 
     public: /* Abstract Methods */
@@ -43,6 +44,7 @@ class DataBuffer : public LuaTable
         static int luaIndexOf(lua_State* l);
         static int luaReadString(lua_State* l);
         static int luaReadLine(lua_State* l);
+        static int luaReadType(lua_State* l);
         static int luaCopyTo(lua_State* l);
         static int luaRead(lua_State* l);
         static int luaWrite(lua_State* l);

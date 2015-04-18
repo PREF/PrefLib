@@ -105,10 +105,7 @@ int Field::luaSetBitField(lua_State* l)
 DataValue Field::value()
 {
     IO::DataBuffer* databuffer = this->dataBuffer();
-    DataValue dv = 0;
-    databuffer->read(this->offset(), &dv, this->size());
-    dv.castTo(this->dataType());
-    return dv;
+    return databuffer->readType(this->offset(), this->dataType());
 }
 
 BitField *Field::bitField(int i) const
