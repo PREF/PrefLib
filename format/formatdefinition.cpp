@@ -9,7 +9,6 @@ FormatDefinition::FormatDefinition(const char *category, const char* name, const
     this->setString("name", name);
     this->setString("author", author);
     this->setString("version", version);
-    this->setFunction("createTree", &FormatDefinition::luaCreateTree);
 }
 
 FormatDefinition::~FormatDefinition()
@@ -22,20 +21,15 @@ FormatTree* FormatDefinition::build(IO::DataBuffer *databuffer, uint64_t baseoff
     if(!this->hasField("build"))
         return nullptr;
 
+    FormatTree* formattree = new FormatTree(databuffer, baseoffset, this->_thread);
     this->push();
 
     lua_getfield(this->_thread, -1, "build");
     this->push(); // Self
-    databuffer->push();
-    lua_pushinteger(this->_thread, baseoffset);
-    this->protectedCall(3, 1);
+    formattree->push();
+    this->protectedCall(2, 0);
 
-    FormatTree* formattree = nullptr;
-
-    if(!lua_isnoneornil(this->_thread, -1))
-        formattree = reinterpret_cast<FormatTree*>(checkThis(this->_thread, -1));
-
-    lua_pop(this->_thread, 2);
+    lua_pop(this->_thread, 1);
     return formattree;
 }
 
@@ -57,16 +51,6 @@ const char *FormatDefinition::author() const
 const char *FormatDefinition::version() const
 {
     return this->getString("version");
-}
-
-int FormatDefinition::luaCreateTree(lua_State *l)
-{
-    int argc = lua_gettop(l);
-    luaX_expectargc(l, argc, 3);
-
-    FormatTree* formattree = new FormatTree(reinterpret_cast<IO::DataBuffer*>(checkThis(l, 2)), luaL_checkinteger(l, 3), l);
-    formattree->push();
-    return 1;
 }
 
 } // namespace Format

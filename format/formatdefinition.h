@@ -23,9 +23,6 @@ class FormatDefinition: public LuaTable
         const char* name() const;
         const char* author() const;
         const char* version() const;
-
-    lua_api:
-        static int luaCreateTree(lua_State *l);
 };
 
 } // namespace Format
