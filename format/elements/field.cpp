@@ -8,14 +8,27 @@ Field::Field(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset
     this->setFunction("setBitField", &Field::luaSetBitField);
 }
 
-Field::Field(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, DataType::Type datatype, const char* name, FormatElement* parent, DataValue& valid, lua_State *thread): FieldElement(formattree, databuffer, offset, datatype, name, parent, valid, thread)
+Field::Field(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, DataType::Type datatype, const char* name, FormatElement* parent, DataValue& valid, lua_State *thread): Field(formattree, databuffer, offset, datatype, name, parent, thread)
 {
+    DataValue v = 0;
+    databuffer->read(offset, &v, DataType::sizeOf(datatype));
 
+    if(v != valid)
+        luaL_error(this->_thread, "Field '%s': Expected 0x%s, got 0x%s", name, valid.toString(16), v.toString(16));
 }
 
-Field::Field(FormatTree* formattree, IO::DataBuffer *databuffer, uint64_t offset, DataType::Type datatype, const char *name, FormatElement *parent, LuaTable &valid, lua_State *thread): FieldElement(formattree, databuffer, offset, datatype, name, parent, valid, thread)
+Field::Field(FormatTree* formattree, IO::DataBuffer *databuffer, uint64_t offset, DataType::Type datatype, const char *name, FormatElement *parent, LuaTable &valid, lua_State *thread): Field(formattree, databuffer, offset, datatype, name, parent, thread)
 {
+    DataValue v = 0;
+    databuffer->read(offset, &v, DataType::sizeOf(datatype));
 
+    for(size_t i = 0; i < valid.length(); i++)
+    {
+        if(v == valid.getI<lua_Integer>(i))
+            return;
+    }
+
+    luaL_error(this->_thread, "Field '%s': 0x%s is not valid", name, v.toString(16));
 }
 
 Field::~Field()

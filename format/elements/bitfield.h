@@ -9,7 +9,7 @@ namespace Format {
 class BitField: public FieldElement
 {
     public:
-        BitField(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, DataType::Type datatype, const char* name, int bitstart, int bitend, FormatElement* parent, lua_State* thread = nullptr);
+        BitField(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, DataType::Type datatype, const char* name, int bitstart, int bitend, FormatElement* parent, lua_State* thread);
         ~BitField();
 
     protected:

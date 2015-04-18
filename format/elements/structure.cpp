@@ -72,6 +72,20 @@ FieldArray *Structure::addArray(DataType::Type elementtype, const char *name, ui
     return f;
 }
 
+FieldArray *Structure::addArray(DataType::Type elementtype, const char *name, uint64_t count, LuaTable &valid)
+{
+    FieldArray* f = new FieldArray(this->tree(), this->_databuffer, this->endOffset(), elementtype, name, count, this, valid, this->thread());
+    this->bindTable(name, f);
+    return f;
+}
+
+FieldArray *Structure::addArray(DataType::Type elementtype, const char *name, uint64_t count, const char *valid)
+{
+    FieldArray* f = new FieldArray(this->tree(), this->_databuffer, this->endOffset(), elementtype, name, count, this, valid, this->thread());
+    this->bindTable(name, f);
+    return f;
+}
+
 FieldArray *Structure::addString(DataType::Type datatype, const char *name)
 {
     if(!DataType::isString(datatype))
@@ -166,7 +180,7 @@ int Structure::luaAddField(lua_State *l)
 
         if(t == LUA_TNUMBER)
         {
-            DataValue valid(lua_tointeger(l, 4), l);
+            DataValue valid = lua_tointeger(l, 4);
             f = thethis->addField(static_cast<DataType::Type>(luaL_checkinteger(l, 2)), luaL_checkstring(l, 3), valid);
         }
         else // if(t == LUA_TTABLE)
@@ -185,10 +199,28 @@ int Structure::luaAddField(lua_State *l)
 int Structure::luaAddArray(lua_State *l)
 {
     int argc = lua_gettop(l);
-    luaX_expectargc(l, argc, 4);
+    luaX_expectminargc(l, argc, 4);
 
     Structure* thethis = reinterpret_cast<Structure*>(checkThis(l, 1));
-    FieldArray* f = thethis->addArray(static_cast<DataType::Type>(luaL_checkinteger(l, 2)), luaL_checkstring(l, 3), luaL_checkinteger(l, 4));
+    FieldArray* f = nullptr;
+
+    if(argc >= 5)
+    {
+        int t = lua_type(l, 5);
+
+        if((t != LUA_TTABLE) && (t != LUA_TSTRING))
+            luaL_error(l, "Structure.addArray(): Expected 'table' or 'string', '%s' given", lua_typename(l, t));
+
+        if(t == LUA_TTABLE)
+        {
+            LuaTable valid(l, 5);
+            f = thethis->addArray(static_cast<DataType::Type>(luaL_checkinteger(l, 2)), luaL_checkstring(l, 3), luaL_checkinteger(l, 4), valid);
+        }
+        else // if(t == LUA_TSTRING)
+            f = thethis->addArray(static_cast<DataType::Type>(luaL_checkinteger(l, 2)), luaL_checkstring(l, 3), luaL_checkinteger(l, 4), lua_tostring(l, 5));
+    }
+    else
+        f = thethis->addArray(static_cast<DataType::Type>(luaL_checkinteger(l, 2)), luaL_checkstring(l, 3), luaL_checkinteger(l, 4));
 
     f->push();
     return 1;

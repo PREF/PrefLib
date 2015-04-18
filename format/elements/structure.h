@@ -14,7 +14,7 @@ using namespace Core;
 class Structure: public FormatElement
 {
     public:
-        Structure(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, const char* name, FormatElement* parent = nullptr, lua_State* thread = nullptr);
+        Structure(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, const char* name, FormatElement* parent, lua_State* thread);
         ~Structure();
 
     public:
@@ -24,6 +24,8 @@ class Structure: public FormatElement
         Field* addField(DataType::Type datatype, const char* name, DataValue& valid);
         Field* addField(DataType::Type datatype, const char* name, LuaTable& valid);
         FieldArray* addArray(DataType::Type elementtype, const char* name, uint64_t count);
+        FieldArray* addArray(DataType::Type elementtype, const char* name, uint64_t count, LuaTable& valid);
+        FieldArray* addArray(DataType::Type elementtype, const char* name, uint64_t count, const char* valid);
         FieldArray* addString(DataType::Type datatype, const char* name);
 
     public:

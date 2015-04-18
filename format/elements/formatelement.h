@@ -35,7 +35,7 @@ class FormatElement: public LuaTable
         };
 
     public:
-        FormatElement(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, const char* name, FormatElement* parent = nullptr, lua_State* thread = nullptr);
+        FormatElement(FormatTree* formattree, IO::DataBuffer* databuffer, uint64_t offset, const char* name, FormatElement* parent, lua_State* thread);
         ~FormatElement();
         bool isDynamic() const;
         bool isStructure() const;

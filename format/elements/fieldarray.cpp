@@ -10,6 +10,47 @@ FieldArray::FieldArray(FormatTree* formattree, IO::DataBuffer* databuffer, uint6
     this->setInteger("elementtype", elementtype);
 }
 
+FieldArray::FieldArray(FormatTree *formattree, IO::DataBuffer *databuffer, uint64_t offset, DataType::Type elementtype, const char *name, uint64_t userlength, FormatElement *parent, LuaTable &valid, lua_State *thread): FieldArray(formattree, databuffer, offset, elementtype, name, userlength, parent, thread)
+{
+    if(elementtype == DataType::Blob)
+        return;
+
+    size_t sz = DataType::sizeOf(elementtype);
+    uint64_t curroffset = offset;
+
+    for(size_t i = 0; i < std::min(userlength, valid.length()); i++, curroffset += sz)
+    {
+        DataValue v = 0;
+        databuffer->read(curroffset, &v, sz);
+        v.castTo(elementtype);
+
+        if(v != valid.getI<lua_Integer>(i))
+        {
+            luaL_error(this->_thread, "Field Element '%d (Lua: %d)': 0x%s is not valid", i, i + 1, v.toString(16));
+            break;
+        }
+    }
+}
+
+FieldArray::FieldArray(FormatTree *formattree, IO::DataBuffer *databuffer, uint64_t offset, DataType::Type elementtype, const char *name, uint64_t userlength, FormatElement *parent, const char *valid, lua_State *thread): FieldArray(formattree, databuffer, offset, elementtype, name, userlength, parent, thread)
+{
+    if(elementtype == DataType::Blob)
+        return;
+
+    uint64_t len = strlen(valid);
+
+    for(size_t i = 0; i < std::min(userlength, len); i++)
+    {
+        unsigned char ch = databuffer->at(offset + i);
+
+        if(ch != valid[i])
+        {
+            luaL_error(this->_thread, "Field Element '%d (Lua: %d)': '%s' is not valid", i - 1, i, ch);
+            break;
+        }
+    }
+}
+
 FieldArray::~FieldArray()
 {
     if(this->elementType() == DataType::Blob)
@@ -67,7 +108,7 @@ bool FieldArray::parseDynamic(const char** errmsg)
         int len = snprintf(elementname, namelen, "%s[%" PRIu64 "]", arrayname, i);
         elementname[len] = '\0';
 
-        Field* f = new Field(this->tree(), this->_databuffer, offset, this->elementType(), elementname, this);
+        Field* f = new Field(this->tree(), this->_databuffer, offset, this->elementType(), elementname, this, this->_thread);
         this->bindTable(elementname, f);
     }
 
