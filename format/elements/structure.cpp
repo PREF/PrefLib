@@ -8,6 +8,7 @@ Structure::Structure(FormatTree* formattree, IO::DataBuffer *databuffer, uint64_
     this->setFunction("addStructure", &Structure::luaAddStructure);
     this->setFunction("addField", &Structure::luaAddField);
     this->setFunction("addArray", &Structure::luaAddArray);
+    this->setFunction("addString", &Structure::luaAddString);
 }
 
 Structure::~Structure()
@@ -69,6 +70,35 @@ FieldArray *Structure::addArray(DataType::Type elementtype, const char *name, ui
     FieldArray* f = new FieldArray(this->tree(), this->_databuffer, this->endOffset(), elementtype, name, count, this, this->thread());
     this->bindTable(name, f);
     return f;
+}
+
+FieldArray *Structure::addString(DataType::Type datatype, const char *name)
+{
+    if(!DataType::isString(datatype))
+    {
+        throw std::runtime_error("Structure::addString(): Invalid DataType");
+        return nullptr;
+    }
+
+    // Find null-terminating character
+    IO::DataBuffer* databuffer = this->dataBuffer();
+    uint64_t offset = this->endOffset();
+
+    while(offset < databuffer->length())
+    {
+        if(databuffer->at(offset) == '\0')
+            break;
+
+        offset++;
+    }
+
+    if(offset == databuffer->length())
+    {
+        throw std::runtime_error("Structure::addString(): Cannot find null-terminating character");
+        return nullptr;
+    }
+
+    return this->addArray((DataType::isAscii(datatype) ? DataType::AsciiCharacter : DataType::UnicodeCharacter), name, (offset - this->endOffset()) + 1);
 }
 
 FormatElement *Structure::field(int i)
@@ -159,6 +189,18 @@ int Structure::luaAddArray(lua_State *l)
 
     Structure* thethis = reinterpret_cast<Structure*>(checkThis(l, 1));
     FieldArray* f = thethis->addArray(static_cast<DataType::Type>(luaL_checkinteger(l, 2)), luaL_checkstring(l, 3), luaL_checkinteger(l, 4));
+
+    f->push();
+    return 1;
+}
+
+int Structure::luaAddString(lua_State *l)
+{
+    int argc = lua_gettop(l);
+    luaX_expectargc(l, argc, 3);
+
+    Structure* thethis = reinterpret_cast<Structure*>(checkThis(l, 1));
+    FieldArray* f = thethis->addString(static_cast<DataType::Type>(luaL_checkinteger(l, 2)), luaL_checkstring(l, 3));
 
     f->push();
     return 1;

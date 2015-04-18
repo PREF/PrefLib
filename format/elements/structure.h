@@ -24,6 +24,7 @@ class Structure: public FormatElement
         Field* addField(DataType::Type datatype, const char* name, DataValue& valid);
         Field* addField(DataType::Type datatype, const char* name, LuaTable& valid);
         FieldArray* addArray(DataType::Type elementtype, const char* name, uint64_t count);
+        FieldArray* addString(DataType::Type datatype, const char* name);
 
     public:
         FormatElement* field(int i);
@@ -38,6 +39,7 @@ class Structure: public FormatElement
         static int luaAddStructure(lua_State* l);
         static int luaAddField(lua_State* l);
         static int luaAddArray(lua_State* l);
+        static int luaAddString(lua_State* l);
 };
 
 } // namespace Format
