@@ -34,7 +34,7 @@ int FieldElement::metaIndex(lua_State *l)
         return 1;
     }
 
-    return FieldElement::metaIndex(l);
+    return FormatElement::metaIndex(l);
 }
 
 int FieldElement::metaNewIndex(lua_State *l)
