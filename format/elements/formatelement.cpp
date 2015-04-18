@@ -168,6 +168,12 @@ int FormatElement::metaIndex(lua_State *l)
         return 1;
     }
 
+    if(!strcmp(arg, "endoffset"))
+    {
+        lua_pushinteger(l, this->endOffset());
+        return 1;
+    }
+
     if(!strcmp(arg, "base"))
     {
         lua_pushinteger(l, this->base());
