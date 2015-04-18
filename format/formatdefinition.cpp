@@ -3,12 +3,12 @@
 namespace PrefLib {
 namespace Format {
 
-FormatDefinition::FormatDefinition(const char *category, const char* name, const char* version, const char* author, lua_State *thread): LuaTable(thread)
+FormatDefinition::FormatDefinition(const char *category, const char* name, const char* author, const char* version, lua_State *thread): LuaTable(thread)
 {
     this->setString("category", category);
     this->setString("name", name);
-    this->setString("version", version);
     this->setString("author", author);
+    this->setString("version", version);
     this->setFunction("createTree", &FormatDefinition::luaCreateTree);
 }
 

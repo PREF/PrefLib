@@ -14,7 +14,7 @@ using namespace Core;
 class FormatDefinition: public LuaTable
 {
     public:
-        FormatDefinition(const char* category, const char *name, const char *version, const char *author, lua_State* thread = nullptr);
+        FormatDefinition(const char* category, const char *name, const char *author, const char *version, lua_State* thread = nullptr);
         virtual ~FormatDefinition();
 
     public:
