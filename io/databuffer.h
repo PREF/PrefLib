@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <cctype>
 #include "../types/datavalue.h"
 #include "../types/buffer.h"
 #include "../core/lua/luax.h"
@@ -26,6 +27,9 @@ class DataBuffer : public LuaTable
 
     public:
         unsigned char at(uint64_t offset);
+        int64_t indexOf(const char* s, uint64_t startoffset = 0);
+        uint64_t readString(uint64_t offset, char** data, uint64_t maxlen = 0);
+        uint64_t readLine(uint64_t offset, char** data);
         void copyTo(DataBuffer* destbuffer, uint64_t startoffset = 0, uint64_t endoffset = 0);
 
     public: /* Abstract Methods */
@@ -36,6 +40,9 @@ class DataBuffer : public LuaTable
     lua_api:
         static int luaMetaLength(lua_State* l);
         static int luaAt(lua_State* l);
+        static int luaIndexOf(lua_State* l);
+        static int luaReadString(lua_State* l);
+        static int luaReadLine(lua_State* l);
         static int luaCopyTo(lua_State* l);
         static int luaRead(lua_State* l);
         static int luaWrite(lua_State* l);
