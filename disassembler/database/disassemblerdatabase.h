@@ -19,7 +19,7 @@ class DisassemblerDatabase
         ~DisassemblerDatabase();
         bool contains(uint64_t address) const;
         void set(uint64_t address, const char* name);
-        const char* get(uint64_t address);
+        const char* get(uint64_t address) const;
 
     public:
         void save();

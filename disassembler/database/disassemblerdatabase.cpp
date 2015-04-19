@@ -23,9 +23,9 @@ void DisassemblerDatabase::set(uint64_t address, const char *name)
     this->_symbols[address] = name;
 }
 
-const char *DisassemblerDatabase::get(uint64_t address)
+const char *DisassemblerDatabase::get(uint64_t address) const
 {    
-    return this->_symbols[address];
+    return this->_symbols.at(address);
 }
 
 void DisassemblerDatabase::save()
