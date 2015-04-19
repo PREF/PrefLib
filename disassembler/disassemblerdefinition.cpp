@@ -41,6 +41,39 @@ void DisassemblerDefinition::finalize()
     lua_pop(this->_thread, 1);
 }
 
+bool DisassemblerDefinition::validate(IO::DataBuffer* databuffer, char** msg)
+{
+    bool result = true;
+    Format::FormatTree* formattree = nullptr;
+
+    try
+    {
+        formattree = this->format()->build(databuffer); // Test Format
+        delete formattree;
+    }
+    catch(std::exception& e)
+    {
+        if(msg)
+        {
+            size_t len = strlen(e.what());
+            *msg = new char[len + 1];
+            strcpy(*msg, e.what());
+        }
+
+        result = false;
+    }
+
+    if(formattree)
+    {
+        delete formattree;
+        formattree = nullptr;
+    }
+    else
+        return false;
+
+    return result;
+}
+
 void DisassemblerDefinition::map(DisassemblerListing *listing)
 {
     if(!this->hasField("map"))
