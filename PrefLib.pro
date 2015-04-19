@@ -76,7 +76,8 @@ SOURCES += \
     core/containers/cachedmap.cpp \
     format/categorycontext.cpp \
     core/lua/luathread.cpp \
-    support/algorithm.cpp
+    support/algorithm.cpp \
+    support/pointer.cpp
 
 HEADERS += \
     prefcontext.h \
@@ -147,7 +148,8 @@ HEADERS += \
     core/containers/cachedmap.h \
     format/categorycontext.h \
     core/lua/luathread.h \
-    support/algorithm.h
+    support/algorithm.h \
+    support/pointer.h
 
 INCLUDEPATH += $$PWD/include/capstone \
                $$PWD/include/lua

@@ -4,6 +4,7 @@
 #include "../core/lua/luax.h"
 #include "../io/databuffer.h"
 #include "byteelaborator.h"
+#include "pointer.h"
 #include "math.h"
 
 namespace PrefLib {
@@ -28,6 +29,7 @@ class Algorithm
     lua_api:
         static int luaEntropy(lua_State* l);
         static int luaRebase(lua_State* l);
+        static int luaPointer(lua_State* l);
 };
 
 } // namespace Support

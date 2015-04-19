@@ -22,6 +22,9 @@ void Algorithm::push(lua_State *l)
 
     lua_pushcfunction(l, &Algorithm::luaRebase);
     lua_setfield(l, -2, "rebase");
+
+    lua_pushcfunction(l, &Algorithm::luaPointer);
+    lua_setfield(l, -2, "pointer");
 }
 
 uint64_t Algorithm::rebase(uint64_t address, uint64_t oldbaseaddress, uint64_t newbaseaddress)
@@ -81,6 +84,16 @@ int Algorithm::luaRebase(lua_State *l)
     luaX_expectminargc(l, argc, 3);
 
     lua_pushinteger(l, Algorithm::rebase(luaL_checkinteger(l, 1), luaL_checkinteger(l, 2), luaL_checkinteger(l, 3)));
+    return 1;
+}
+
+int Algorithm::luaPointer(lua_State *l)
+{
+    int argc = lua_gettop(l);
+    luaX_expectminargc(l, argc, 3);
+
+    Pointer pointer(luaL_checkinteger(l, 1), static_cast<DataType::Type>(luaL_checkinteger(l, 2)), reinterpret_cast<IO::DataBuffer*>(LuaTable::checkThis(l, 3)), l);
+    pointer.push();
     return 1;
 }
 
