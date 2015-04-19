@@ -3,7 +3,7 @@
 
 #include "abstractmap.h"
 #include "../support/bytecolors.h"
-#include "../support/math.h"
+#include "../support/algorithm.h"
 
 namespace PrefLib {
 namespace Map {

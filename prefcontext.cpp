@@ -69,8 +69,11 @@ int PrefContext::luaopen_preflib(lua_State* l)
     DataType::pushTable(l);
     lua_setfield(l, -2, "datatype");
 
-    Support::Math::pushTable(l);
+    Support::Math::push(l);
     lua_setfield(l, -2, "math");
+
+    Support::Algorithm::push(l);
+    lua_setfield(l, -2, "algorithm");
 
     instance->_exporterctx->push();
     lua_setfield(l, -2, "exporter");

@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "abstractchart.h"
-#include "../support/math.h"
+#include "../support/algorithm.h"
 
 namespace PrefLib {
 namespace Chart {

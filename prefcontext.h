@@ -5,6 +5,7 @@
 #include "core/capstone/luacapstone.h"
 #include "core/lua/luastate.h"
 #include "support/math.h"
+#include "support/algorithm.h"
 #include "exporter/exportercontext.h"
 #include "format/formatcontext.h"
 #include "disassembler/disassemblercontext.h"

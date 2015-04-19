@@ -75,7 +75,8 @@ SOURCES += \
     disassembler/database/disassemblerdatabase.cpp \
     core/containers/cachedmap.cpp \
     format/categorycontext.cpp \
-    core/lua/luathread.cpp
+    core/lua/luathread.cpp \
+    support/algorithm.cpp
 
 HEADERS += \
     prefcontext.h \
@@ -145,7 +146,8 @@ HEADERS += \
     disassembler/database/disassemblerdatabase.h \
     core/containers/cachedmap.h \
     format/categorycontext.h \
-    core/lua/luathread.h
+    core/lua/luathread.h \
+    support/algorithm.h
 
 INCLUDEPATH += $$PWD/include/capstone \
                $$PWD/include/lua

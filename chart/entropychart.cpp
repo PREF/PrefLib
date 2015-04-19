@@ -61,7 +61,7 @@ void EntropyChart::elaborate(IO::DataBuffer *databuffer, uint64_t startoffset, u
         if(cancontinue && !(*cancontinue))
             break;
 
-        double e = Math::entropy(databuffer, i, blocksize, cancontinue);
+        double e = Algorithm::entropy(databuffer, i, blocksize, cancontinue);
         this->_points.push_back({ static_cast<double>(i), e });
     }
 }
