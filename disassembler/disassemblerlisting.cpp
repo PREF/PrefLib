@@ -108,29 +108,72 @@ LuaContainer &DisassemblerListing::instructions()
     return this->_instructions.ByIndex;
 }
 
-const DisassemblerListing::Listing &DisassemblerListing::listing()
+const DisassemblerListing::Listing &DisassemblerListing::blocks()
 {
     return this->_listing;
 }
 
+Instruction *DisassemblerListing::findInstruction(uint64_t address)
+{    
+    if(this->_instructions.ByAddress.hasField(address))
+        return dynamic_cast<Instruction*>(this->_instructions.ByAddress.getI<LuaTable*>(address));
+
+    lua_Integer idx = this->_instructions.ByIndex.binarySearch<uint64_t, LuaTable*, DisassemblerListing::BlockComparator>(address);
+
+    if(idx == -1)
+        return nullptr;
+
+    return dynamic_cast<Instruction*>(this->_instructions.ByIndex.getI<LuaTable*>(idx));
+}
+
+Function *DisassemblerListing::findFunction(uint64_t address)
+{
+    if(this->_functions.ByAddress.hasField(address))
+        return dynamic_cast<Function*>(this->_functions.ByAddress.getI<LuaTable*>(address));
+
+    lua_Integer idx = this->_functions.ByIndex.binarySearch<uint64_t, LuaTable*, DisassemblerListing::BlockComparator>(address);
+
+    if(idx == -1)
+        return nullptr;
+
+    return dynamic_cast<Function*>(this->_functions.ByIndex.getI<LuaTable*>(idx));
+}
+
 Segment *DisassemblerListing::findSegment(uint64_t address)
 {
-    for(size_t i = 0; i < this->_segments.ByIndex.length(); i++)
-    {
-        Segment* segment = dynamic_cast<Segment*>(this->_segments.ByIndex.getI<LuaTable*>(i));
+    if(this->_segments.ByAddress.hasField(address))
+        return dynamic_cast<Segment*>(this->_functions.ByAddress.getI<LuaTable*>(address));
 
-        if(segment->contains(address))
-            return segment;
-    }
+    lua_Integer idx = this->_segments.ByIndex.binarySearch<uint64_t, LuaTable*, DisassemblerListing::BlockComparator>(address);
 
-    return nullptr;
+    if(idx == -1)
+        return nullptr;
+
+    return dynamic_cast<Segment*>(this->_segments.ByIndex.getI<LuaTable*>(idx));
+}
+
+Block *DisassemblerListing::findBlock(uint64_t address)
+{
+    Block* block = nullptr;
+
+    block = this->findInstruction(address);
+
+    if(block)
+        return block;
+
+    block = this->findFunction(address);
+
+    if(block)
+        return block;
+
+    return this->findSegment(address);
 }
 
 void DisassemblerListing::createSegment(const char *name, Segment::Type segmenttype, uint64_t startaddress, uint64_t size, uint64_t baseoffset)
 {
     Segment* segment = new Segment(name, segmenttype, startaddress, size, baseoffset);
 
-    this->_segments.ByIndex.append(segment);
+    this->_segments.ByIndex.binaryInsert<LuaTable*, DisassemblerListing::BlockInsertor>(segment);
     this->_segments.ByAddress[startaddress] = segment;
 
     this->_listing.push_back(segment);
@@ -140,12 +183,12 @@ void DisassemblerListing::createFunction(const char *name, Function::Type functi
 {
     Function* function = new Function(functiontype, address);
 
-    this->_functions.ByIndex.append(function);
+    this->_functions.ByIndex.binaryInsert<LuaTable*, DisassemblerListing::BlockInsertor>(function);
     this->_functions.ByAddress[address] = function;
 
     if(functiontype & Function::EntryPointBlock)
     {
-        this->_entrypoints.ByIndex.append(function);
+        this->_entrypoints.ByIndex.binaryInsert<LuaTable*, DisassemblerListing::BlockInsertor>(function);
         this->_entrypoints.ByAddress[address] = function;
     }
 
@@ -160,14 +203,14 @@ void DisassemblerListing::createEntryPoint(const char *name, uint64_t address)
 
 void DisassemblerListing::createInstruction(Instruction *instruction)
 {
-    this->_instructions.ByIndex.append(instruction);
+    this->_instructions.ByIndex.binaryInsert<LuaTable*, DisassemblerListing::BlockInsertor>(instruction);
     this->_instructions.ByAddress[instruction->address()] = instruction;
     this->_listing.push_back(instruction);
 }
 
 void DisassemblerListing::createInstruction(CapstoneInstruction* csinstruction)
 {
-    this->_instructions.ByIndex.append(csinstruction);
+    this->_instructions.ByIndex.binaryInsert<LuaTable*, DisassemblerListing::BlockInsertor>(csinstruction);
     this->_instructions.ByAddress[csinstruction->address()] = csinstruction;
     this->_listing.push_back(csinstruction);
 }

@@ -1,7 +1,7 @@
 #ifndef PREFLIB_DISASSEMBLER_DISASSEMBLERLISTING_H
 #define PREFLIB_DISASSEMBLER_DISASSEMBLERLISTING_H
 
-#include <list>
+#include <deque>
 #include <capstone.h>
 #include "../core/lua/luax.h"
 #include "../core/lua/luatable.h"
@@ -24,7 +24,7 @@ class DisassemblerListing: public LuaTable
         class MemoryBuffer: public LuaTable
         {
             private:
-                MemoryBuffer(DisassemblerListing* listing, IO::DataBuffer* databuffer, lua_State* thread = nullptr);
+                MemoryBuffer(DisassemblerListing* blocks, IO::DataBuffer* databuffer, lua_State* thread = nullptr);
 
             public:
                 int read(uint64_t address, unsigned char* data, uint64_t len);
@@ -40,7 +40,37 @@ class DisassemblerListing: public LuaTable
         };
 
     public:
-        typedef std::list<Block*> Listing;
+        struct BlockInsertor
+        {
+            bool operator()(const LuaTable* t1, const LuaTable* t2)
+            {
+                const Block* b1 = dynamic_cast<const Block*>(t1);
+                const Block* b2 = dynamic_cast<const Block*>(t2);
+
+                if(b1->address() == b2->address())
+                    throw std::runtime_error("Trying to insert blocks with the same address");
+
+                return b1->endAddress() < b2->startAddress();
+            }
+        };
+
+        struct BlockComparator
+        {
+            bool operator()(uint64_t val, const LuaTable* t)
+            {
+                const Block* b = dynamic_cast<const Block*>(t);
+
+                if(val > b->endAddress())
+                    return 1;
+
+                if(val < b->startAddress())
+                    return -1;
+
+                return 0;
+            }
+        };
+
+        typedef std::deque<Block*> Listing;
 
     private:
         struct BlockContainer { LuaContainer ByIndex; LuaContainer ByAddress; };
@@ -59,8 +89,11 @@ class DisassemblerListing: public LuaTable
         LuaContainer& functions();
         LuaContainer& entryPoints();
         LuaContainer& instructions();
-        const Listing& listing();
+        const Listing& blocks();
+        Instruction* findInstruction(uint64_t address);
+        Function* findFunction(uint64_t address);
         Segment* findSegment(uint64_t address);
+        Block* findBlock(uint64_t address);
         void createSegment(const char* name, Segment::Type segmenttype, uint64_t startaddress, uint64_t size, uint64_t offset);
         void createFunction(const char* name, Function::Type functiontype, uint64_t address);
         void createEntryPoint(const char* name, uint64_t address);

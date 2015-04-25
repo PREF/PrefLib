@@ -33,7 +33,7 @@ void DisassemblerEngine::disassemble(DisassemblerListing *listing)
             break;
     }
 
-    listing->_listing.sort(&DisassemblerEngine::sortBlocks);
+    std::sort(listing->_listing.begin(), listing->_listing.end(), &DisassemblerEngine::sortBlocks);
 }
 
 bool DisassemblerEngine::sortBlocks(Block *b1, Block *b2)
