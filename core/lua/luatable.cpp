@@ -219,7 +219,7 @@ lua_CFunction LuaTable::getFunction(const char *k) const
     return res;
 }
 
-template<> bool LuaTable::getI<bool>(int i) const
+template<> bool LuaTable::getI<bool>(lua_Integer i) const
 {
     this->push();
     lua_rawgeti(this->_thread, -1, i + 1);
@@ -229,7 +229,7 @@ template<> bool LuaTable::getI<bool>(int i) const
     return res;
 }
 
-template<> const char* LuaTable::getI<const char*>(int i) const
+template<> const char* LuaTable::getI<const char*>(lua_Integer i) const
 {
     this->push();
     lua_rawgeti(this->_thread, -1, i + 1);
@@ -239,7 +239,7 @@ template<> const char* LuaTable::getI<const char*>(int i) const
     return res;
 }
 
-template<> lua_Integer LuaTable::getI<lua_Integer>(int i) const
+template<> lua_Integer LuaTable::getI<lua_Integer>(lua_Integer i) const
 {
     this->push();
     lua_rawgeti(this->_thread, -1, i + 1);
@@ -249,7 +249,7 @@ template<> lua_Integer LuaTable::getI<lua_Integer>(int i) const
     return res;
 }
 
-template<> LuaTable* LuaTable::getI<LuaTable*>(int i) const
+template<> LuaTable* LuaTable::getI<LuaTable*>(lua_Integer i) const
 {
     this->push();
     lua_rawgeti(this->_thread, -1, i + 1);
@@ -259,7 +259,7 @@ template<> LuaTable* LuaTable::getI<LuaTable*>(int i) const
     return res;
 }
 
-template<> lua_CFunction LuaTable::getI<lua_CFunction>(int i) const
+template<> lua_CFunction LuaTable::getI<lua_CFunction>(lua_Integer i) const
 {
     this->push();
     lua_rawgeti(this->_thread, -1, i + 1);

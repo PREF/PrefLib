@@ -36,7 +36,7 @@ class LuaTable: public LuaReference
         bool getBoolean(const char* k) const;
         LuaTable* getTable(const char* k) const;
         lua_CFunction getFunction(const char* k) const;
-        template<typename T> T getI(int i) const;
+        template<typename T> T getI(lua_Integer i) const;
         void setValue(const char* k, int validx);
         void setString(const char* k, const char* s);
         void setInteger(const char* k, lua_Integer n);
@@ -50,7 +50,7 @@ class LuaTable: public LuaReference
         void setI(int i, const LuaTable *t);
 };
 
-template<typename T> T LuaTable::getI(int) const
+template<typename T> T LuaTable::getI(lua_Integer) const
 {
     throw std::runtime_error("LuaTable::getI(): Unsupported Type");
 }
