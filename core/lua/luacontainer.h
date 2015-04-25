@@ -1,6 +1,7 @@
 #ifndef PREFLIB_CORE_LUACONTAINER_H
 #define PREFLIB_CORE_LUACONTAINER_H
 
+#include <cmath>
 #include "luatable.h"
 
 namespace PrefLib {
@@ -36,9 +37,26 @@ class LuaContainer: public LuaTable
                 union { lua_Integer Index; const char* Key; } _tablekey;
         };
 
+        template<typename K, typename T> struct BinaryComparator
+        {
+            lua_Integer operator()(const K& k, const T& t)
+            {
+                if(k > t)
+                    return 1;
+
+                if(k < t)
+                    return -1;
+
+                return 0;
+            }
+        };
+
     public:
         LuaContainer(lua_State* thread = nullptr);
         ~LuaContainer();
+
+    private:
+        void pushMethod(const char* method);
 
     public:
         void append(bool val);
@@ -46,9 +64,64 @@ class LuaContainer: public LuaTable
         void append(lua_Integer val);
         void append(lua_CFunction val);
         void append(LuaTable* val);
+        void insert(lua_Integer idx, bool val);
+        void insert(lua_Integer idx, const char* val);
+        void insert(lua_Integer idx, lua_Integer val);
+        void insert(lua_Integer idx, lua_CFunction val);
+        void insert(lua_Integer idx, LuaTable* val);
+        void remove(lua_Integer idx);
         LuaContainer::Entry operator[](lua_Integer idx);
         LuaContainer::Entry operator[](const char* key);
+
+    public:
+        template<typename T, typename C = std::less<T> > void binaryInsert(const T& t);
+        template<typename K, typename T = K, typename C = BinaryComparator<K, T> > lua_Integer binarySearch(const K& k);
 };
+
+template<typename T, typename C> void LuaContainer::binaryInsert(const T& t)
+{
+    lua_Integer start = 1, end = this->length(), mid = 1, state = 0;
+    C comparator = C();
+
+    while(start <= end)
+    {
+        mid = std::floor((start + end) / 2);
+
+        if(comparator(t, this->getI<T>(mid)))
+        {
+            end = mid - 1;
+            state = 0;
+        }
+        else
+        {
+            start = mid + 1;
+            state = 1;
+        }
+    }
+
+    this->insert((mid + state) - 1, t); // -1 is needed because we are calling from C++ world
+}
+
+template<typename K, typename T, typename C> lua_Integer LuaContainer::binarySearch(const K& k)
+{
+    lua_Integer start = 1, end = this->length(), mid = 1;
+    C comparator = C();
+
+    while(start <= end)
+    {
+        mid = std::floor((start + end) / 2);
+        lua_Integer comp = comparator(k, this->getI<T>(mid));
+
+        if(comp > 0)
+            start = mid + 1;
+        else if(comp < 0)
+            end = mid - 1;
+        else
+            return mid - 1; // -1 is needed because we are calling from C++ world
+    }
+
+    return -1;
+}
 
 } // namespace Lua
 } // namespace Core
