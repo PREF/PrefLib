@@ -114,14 +114,36 @@ void LuaContainer::remove(lua_Integer idx)
     lua_call(this->_thread, 2, 0);
 }
 
-LuaContainer::Entry LuaContainer::operator[](lua_Integer idx)
+void LuaContainer::removeKey(const char *key)
 {
-    return Entry(*this, idx);
+    this->push();
+
+    lua_pushstring(this->_thread, key);
+    lua_pushnil(this->_thread);
+    lua_rawset(this->_thread, -3);
+
+    lua_pop(this->_thread, 1);
+}
+
+void LuaContainer::removeKey(lua_Integer key)
+{
+    this->push();
+
+    lua_pushinteger(this->_thread, key);
+    lua_pushnil(this->_thread);
+    lua_rawset(this->_thread, -3);
+
+    lua_pop(this->_thread, 1);
 }
 
 LuaContainer::Entry LuaContainer::operator[](const char *key)
 {
     return Entry(*this, key);
+}
+
+LuaContainer::Entry LuaContainer::operator[](lua_Integer idx)
+{
+    return Entry(*this, idx);
 }
 
 } // namespace Lua

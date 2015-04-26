@@ -70,8 +70,10 @@ class LuaContainer: public LuaTable
         void insert(lua_Integer idx, lua_CFunction val);
         void insert(lua_Integer idx, LuaTable* val);
         void remove(lua_Integer idx);
-        LuaContainer::Entry operator[](lua_Integer idx);
+        void removeKey(const char* key);
+        void removeKey(lua_Integer key);
         LuaContainer::Entry operator[](const char* key);
+        LuaContainer::Entry operator[](lua_Integer idx);
 
     public:
         template<typename T, typename C = std::less<T> > void binaryInsert(const T& t);
