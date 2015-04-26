@@ -72,6 +72,7 @@ class LuaContainer: public LuaTable
         void remove(lua_Integer idx);
         void removeKey(const char* key);
         void removeKey(lua_Integer key);
+        bool isEmpty() const;
         LuaContainer::Entry operator[](const char* key);
         LuaContainer::Entry operator[](lua_Integer idx);
 

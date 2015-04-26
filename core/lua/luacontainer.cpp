@@ -136,6 +136,11 @@ void LuaContainer::removeKey(lua_Integer key)
     lua_pop(this->_thread, 1);
 }
 
+bool LuaContainer::isEmpty() const
+{
+    return this->length() == 0;
+}
+
 LuaContainer::Entry LuaContainer::operator[](const char *key)
 {
     return Entry(*this, key);
