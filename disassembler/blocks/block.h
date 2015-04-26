@@ -27,6 +27,7 @@ class Block : public LuaTable
         bool isEmpty() const;
         bool isCommented() const;
         bool isBookmarked() const;
+        bool isRerefenced() const;
         bool contains(uint64_t address);
         uint64_t address() const; /* Syntactic sugar */
         uint64_t startAddress() const;
@@ -35,6 +36,7 @@ class Block : public LuaTable
         uint8_t weight() const;
         const char* comment() const;
         void setBookmarked(bool b);
+        void setReferenced(bool b);
         void setComment(const char* s);
 
     protected:
@@ -48,6 +50,7 @@ class Block : public LuaTable
 
     private:
         bool _bookmarked;
+        bool _referenced;
 };
 
 } // namespace Disassembler

@@ -11,6 +11,7 @@
 #include "blocks/function.h"
 #include "blocks/instruction.h"
 #include "blocks/capstoneinstruction.h"
+#include "blocks/label.h"
 #include "database/disassemblerdatabase.h"
 
 namespace PrefLib {
@@ -54,7 +55,7 @@ class DisassemblerListing: public LuaTable
             }
         };
 
-        struct BlockComparator
+        struct AddressBlockComparator
         {
             bool operator()(uint64_t val, const LuaTable* t)
             {
@@ -100,26 +101,38 @@ class DisassemblerListing: public LuaTable
         void createEntryPoint(const char* name, uint64_t address);
         void createInstruction(Instruction* instruction);
         void createInstruction(CapstoneInstruction *csinstruction);
+        void createLabel(uint64_t address, uint64_t sourceaddress);
+        void createLabel(uint64_t address, uint64_t refaddress, const char* name);
+        void createReference(uint64_t address, uint64_t referencedby);
+        //void removeReference(uint64_t address, uint64_t referencedby);
         void createBookmark(Block* block, const char* description);
         void removeBookmark(Block* block);
         const char* getBookmark(Block* block);
+        const LuaContainer* getReferences(Block* block);
+
+    private:
+        Block* guessBlock(uint64_t address);
 
     lua_api:
         static int luaCreateSegment(lua_State* l);
         static int luaCreateFunction(lua_State* l);
         static int luaCreateEntryPoint(lua_State* l);
         static int luaCreateInstruction(lua_State* l);
+        static int luaCreateLabel(lua_State* l);
+        static int luaCreateReference(lua_State* l);
 
     private:
         IO::DataBuffer* _databuffer;
         MemoryBuffer* _memorybuffer;
         DisassemblerDatabase _database;
         Listing _listing;
+        LuaContainer _references;
         BlockContainer _bookmarks;
         BlockContainer _segments;
         BlockContainer _functions;
         BlockContainer _entrypoints;
         BlockContainer _instructions;
+        BlockContainer _labels;
 
     friend class DisassemblerEngine;
 };

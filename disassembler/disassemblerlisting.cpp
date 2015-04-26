@@ -47,10 +47,12 @@ DisassemblerListing::DisassemblerListing(IO::DataBuffer *databuffer, lua_State *
     this->setTable("functionmap", &this->_functions.ByAddress);
     this->setTable("entrypoints", &this->_entrypoints.ByIndex);
     this->setTable("entrypointmap", &this->_entrypoints.ByAddress);
-    this->setFunction("createsegment", &DisassemblerListing::luaCreateSegment);
-    this->setFunction("createfunction", &DisassemblerListing::luaCreateFunction);
-    this->setFunction("createentrypoint", &DisassemblerListing::luaCreateEntryPoint);
-    this->setFunction("createinstruction", &DisassemblerListing::luaCreateInstruction);
+    this->setFunction("createSegment", &DisassemblerListing::luaCreateSegment);
+    this->setFunction("createFunction", &DisassemblerListing::luaCreateFunction);
+    this->setFunction("createEntryPoint", &DisassemblerListing::luaCreateEntryPoint);
+    this->setFunction("createInstruction", &DisassemblerListing::luaCreateInstruction);
+    this->setFunction("createLabel", &DisassemblerListing::luaCreateLabel);
+    this->setFunction("createReference", &DisassemblerListing::luaCreateReference);
     lua_pop(this->_thread, 1);
 }
 
@@ -123,7 +125,7 @@ Instruction *DisassemblerListing::findInstruction(uint64_t address)
     if(this->_instructions.ByAddress.hasField(address))
         return dynamic_cast<Instruction*>(this->_instructions.ByAddress.getI<LuaTable*>(address));
 
-    lua_Integer idx = this->_instructions.ByIndex.binarySearch<uint64_t, LuaTable*, DisassemblerListing::BlockComparator>(address);
+    lua_Integer idx = this->_instructions.ByIndex.binarySearch<uint64_t, LuaTable*, DisassemblerListing::AddressBlockComparator>(address);
 
     if(idx == -1)
         return nullptr;
@@ -136,7 +138,7 @@ Function *DisassemblerListing::findFunction(uint64_t address)
     if(this->_functions.ByAddress.hasField(address))
         return dynamic_cast<Function*>(this->_functions.ByAddress.getI<LuaTable*>(address));
 
-    lua_Integer idx = this->_functions.ByIndex.binarySearch<uint64_t, LuaTable*, DisassemblerListing::BlockComparator>(address);
+    lua_Integer idx = this->_functions.ByIndex.binarySearch<uint64_t, LuaTable*, DisassemblerListing::AddressBlockComparator>(address);
 
     if(idx == -1)
         return nullptr;
@@ -149,7 +151,7 @@ Segment *DisassemblerListing::findSegment(uint64_t address)
     if(this->_segments.ByAddress.hasField(address))
         return dynamic_cast<Segment*>(this->_functions.ByAddress.getI<LuaTable*>(address));
 
-    lua_Integer idx = this->_segments.ByIndex.binarySearch<uint64_t, LuaTable*, DisassemblerListing::BlockComparator>(address);
+    lua_Integer idx = this->_segments.ByIndex.binarySearch<uint64_t, LuaTable*, DisassemblerListing::AddressBlockComparator>(address);
 
     if(idx == -1)
         return nullptr;
@@ -220,6 +222,78 @@ void DisassemblerListing::createInstruction(CapstoneInstruction* csinstruction)
     this->_listing.push_back(csinstruction);
 }
 
+void DisassemblerListing::createReference(uint64_t address, uint64_t referencedby)
+{
+    Block* destinationblock = this->guessBlock(address);
+    Block* referenceblock = dynamic_cast<Block*>(static_cast<LuaTable*>(this->_instructions.ByAddress[referencedby]));
+
+    if(!destinationblock)
+        return;
+
+    LuaContainer* references = nullptr;
+    destinationblock->setReferenced(true);
+
+    if(!this->_references.hasField(address))
+    {
+        references = new LuaContainer();
+        this->_references[address] = references;
+    }
+    else
+        references = dynamic_cast<LuaContainer*>(static_cast<LuaTable*>(this->_references[address])); // TODO: Improvement Needed
+
+    references->binaryInsert<LuaTable*, DisassemblerListing::BlockInsertor>(referenceblock);
+}
+
+/*
+void DisassemblerListing::removeReference(uint64_t address, uint64_t referencedby)
+{
+    if(!this->_references.hasField(address))
+        return;
+
+    // TODO: Improvement Needed
+    LuaContainer* references = dynamic_cast<LuaContainer*>(static_cast<LuaTable*>(this->_references[address]));
+    int idx = references->binarySearch<uint64_t, LuaTable*, DisassemblerListing::AddressBlockComparator>(referencedby);
+
+    if(idx == -1)
+        return;
+
+    references->remove(idx);
+
+    if(references->isEmpty())
+    {
+        Block* referenceblock = dynamic_cast<Block*>(static_cast<LuaTable*>(this->_instructions.ByAddress[referencedby]));
+        referenceblock->setReferenced(false);
+
+        this->_references.removeKey(address);
+        delete references;
+    }
+}
+*/
+
+void DisassemblerListing::createLabel(uint64_t address, uint64_t sourceaddress)
+{
+    this->createLabel(address, sourceaddress, nullptr);
+}
+
+void DisassemblerListing::createLabel(uint64_t address, uint64_t referencedby, const char *name)
+{
+    Label* label = nullptr;
+
+    if(!this->_labels.ByAddress.hasField(address))
+    {
+        label = new Label(address);
+
+        this->_labels.ByIndex.binaryInsert<LuaTable*, DisassemblerListing::BlockInsertor>(label);
+        this->_labels.ByAddress[label->address()] = label;
+        this->_listing.push_back(label);
+    }
+    else
+        label = dynamic_cast<Label*>(static_cast<LuaTable*>(this->_labels.ByAddress[address])); //TODO: Improvement Needed
+
+    this->_database.set(address, name);
+    this->createReference(address, referencedby);
+}
+
 void DisassemblerListing::createBookmark(Block *block, const char *description)
 {
     block->setBookmarked(true);
@@ -250,6 +324,29 @@ const char *DisassemblerListing::getBookmark(Block *block)
         return nullptr;
 
     return this->_bookmarks.ByAddress[block->address()];
+}
+
+const LuaContainer *DisassemblerListing::getReferences(Block *block)
+{
+    if(!block->isRerefenced())
+        return nullptr;
+
+    //TODO: Improvement Needed
+    return dynamic_cast<const LuaContainer*>(static_cast<LuaTable*>(this->_references[block->address()]));
+}
+
+Block *DisassemblerListing::guessBlock(uint64_t address)
+{
+    if(this->_segments.ByAddress.hasField(address)) // Is Start of Segment?
+        return dynamic_cast<Block*>(static_cast<LuaTable*>(this->_segments.ByAddress[address]));
+    else if(this->_functions.ByAddress.hasField(address))  // Is Start of Function?
+        return dynamic_cast<Block*>(static_cast<LuaTable*>(this->_functions.ByAddress[address]));
+    else if(this->_labels.ByAddress.hasField(address))  // Is a Label (Jump/Call)
+        return dynamic_cast<Block*>(static_cast<LuaTable*>(this->_labels.ByAddress[address]));
+    else if(this->_instructions.ByAddress.hasField(address))  // Is an Instruction?
+        return dynamic_cast<Block*>(static_cast<LuaTable*>(this->_instructions.ByAddress[address]));
+
+    return nullptr; // Is nothing known
 }
 
 int DisassemblerListing::luaCreateSegment(lua_State *l)
@@ -300,6 +397,26 @@ int DisassemblerListing::luaCreateInstruction(lua_State *l)
     }
 
     thethis->createInstruction(reinterpret_cast<Instruction*>(checkThis(l, 3)));
+    return 0;
+}
+
+int DisassemblerListing::luaCreateLabel(lua_State *l)
+{
+    int argc = lua_gettop(l);
+    luaX_expectminargc(l, argc, 3);
+
+    DisassemblerListing* thethis = reinterpret_cast<DisassemblerListing*>(checkThis(l, 1));
+    thethis->createLabel(luaL_checkinteger(l, 2), luaL_checkinteger(l, 3), luaL_optstring(l, 4, nullptr));
+    return 0;
+}
+
+int DisassemblerListing::luaCreateReference(lua_State *l)
+{
+    int argc = lua_gettop(l);
+    luaX_expectargc(l, argc, 3);
+
+    DisassemblerListing* thethis = reinterpret_cast<DisassemblerListing*>(checkThis(l, 1));
+    thethis->createReference(luaL_checkinteger(l, 2), luaL_checkinteger(l, 3));
     return 0;
 }
 

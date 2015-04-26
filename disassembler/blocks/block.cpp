@@ -3,7 +3,7 @@
 namespace PrefLib {
 namespace Disassembler {
 
-Block::Block(uint64_t startaddress, uint64_t size, lua_State *thread): LuaTable(thread), _bookmarked(false)
+Block::Block(uint64_t startaddress, uint64_t size, lua_State *thread): LuaTable(thread), _bookmarked(false), _referenced(false)
 {
     this->setInteger("startaddress", startaddress);
     this->setInteger("size", size);
@@ -63,6 +63,11 @@ bool Block::isBookmarked() const
     return this->_bookmarked;
 }
 
+bool Block::isRerefenced() const
+{
+
+}
+
 bool Block::contains(uint64_t address)
 {
     return (address >= this->startAddress()) && (address < this->endAddress());
@@ -101,6 +106,11 @@ const char *Block::comment() const
 void Block::setBookmarked(bool b)
 {
     this->_bookmarked = b;
+}
+
+void Block::setReferenced(bool b)
+{
+    this->_referenced = b;
 }
 
 void Block::setComment(const char *s)
