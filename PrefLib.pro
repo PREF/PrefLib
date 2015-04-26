@@ -77,7 +77,8 @@ SOURCES += \
     format/categorycontext.cpp \
     core/lua/luathread.cpp \
     support/algorithm.cpp \
-    support/pointer.cpp
+    support/pointer.cpp \
+    disassembler/blocks/label.cpp
 
 HEADERS += \
     prefcontext.h \
@@ -149,7 +150,8 @@ HEADERS += \
     format/categorycontext.h \
     core/lua/luathread.h \
     support/algorithm.h \
-    support/pointer.h
+    support/pointer.h \
+    disassembler/blocks/label.h
 
 INCLUDEPATH += $$PWD/include/capstone \
                $$PWD/include/lua
