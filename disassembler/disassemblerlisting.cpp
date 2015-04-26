@@ -108,6 +108,11 @@ LuaContainer &DisassemblerListing::instructions()
     return this->_instructions.ByIndex;
 }
 
+LuaContainer &DisassemblerListing::bookmarks()
+{
+    return this->_bookmarks.ByIndex;
+}
+
 const DisassemblerListing::Listing &DisassemblerListing::blocks()
 {
     return this->_listing;
@@ -213,6 +218,38 @@ void DisassemblerListing::createInstruction(CapstoneInstruction* csinstruction)
     this->_instructions.ByIndex.binaryInsert<LuaTable*, DisassemblerListing::BlockInsertor>(csinstruction);
     this->_instructions.ByAddress[csinstruction->address()] = csinstruction;
     this->_listing.push_back(csinstruction);
+}
+
+void DisassemblerListing::createBookmark(Block *block, const char *description)
+{
+    block->setBookmarked(true);
+
+    this->_bookmarks.ByIndex.append(block);
+    this->_bookmarks.ByAddress[block->address()] = description;
+}
+
+void DisassemblerListing::removeBookmark(Block *block)
+{
+    block->setBookmarked(false);
+
+    for(size_t i = 0; i < this->_bookmarks.ByIndex.length(); i++)
+    {
+        if(block == this->_bookmarks.ByIndex.getI<LuaTable*>(i))
+        {
+            this->_bookmarks.ByIndex.remove(i);
+            break;
+        }
+    }
+
+    this->_bookmarks.ByAddress.removeKey(block->address());
+}
+
+const char *DisassemblerListing::getBookmark(Block *block)
+{
+    if(!block->isBookmarked())
+        return nullptr;
+
+    return this->_bookmarks.ByAddress[block->address()];
 }
 
 int DisassemblerListing::luaCreateSegment(lua_State *l)

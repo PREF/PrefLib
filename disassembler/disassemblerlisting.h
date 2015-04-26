@@ -89,6 +89,7 @@ class DisassemblerListing: public LuaTable
         LuaContainer& functions();
         LuaContainer& entryPoints();
         LuaContainer& instructions();
+        LuaContainer& bookmarks();
         const Listing& blocks();
         Instruction* findInstruction(uint64_t address);
         Function* findFunction(uint64_t address);
@@ -99,6 +100,9 @@ class DisassemblerListing: public LuaTable
         void createEntryPoint(const char* name, uint64_t address);
         void createInstruction(Instruction* instruction);
         void createInstruction(CapstoneInstruction *csinstruction);
+        void createBookmark(Block* block, const char* description);
+        void removeBookmark(Block* block);
+        const char* getBookmark(Block* block);
 
     lua_api:
         static int luaCreateSegment(lua_State* l);
@@ -111,6 +115,7 @@ class DisassemblerListing: public LuaTable
         MemoryBuffer* _memorybuffer;
         DisassemblerDatabase _database;
         Listing _listing;
+        BlockContainer _bookmarks;
         BlockContainer _segments;
         BlockContainer _functions;
         BlockContainer _entrypoints;
