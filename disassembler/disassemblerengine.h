@@ -13,7 +13,7 @@ namespace Disassembler {
 class DisassemblerEngine: public LuaTable
 {
     public:
-        typedef void (*ProgressCallback)(const DataValue& address, void* param);
+        typedef void (*ProgressCallback)(DataValue& address, void* param);
 
     public:
         DisassemblerEngine(DisassemblerDefinition* definition, lua_State* thread = nullptr);
