@@ -10,13 +10,14 @@ DisassemblerDatabase::DisassemblerDatabase()
 
 DisassemblerDatabase::~DisassemblerDatabase()
 {
-    std::list<const char*>::iterator it = this->_symbollist.begin();
+    SymbolMap::iterator it = this->_symbols.begin();
 
-    for(; it != this->_symbollist.end(); it++)
-        delete[] *it;
+    for(; it != this->_symbols.end(); it++)
+        delete[] it->second->Name; // Free allocated strings
 
-    this->_symbollist.clear();
     this->_symbols.clear();
+    this->_variables.clear();
+    this->_strings.clear();
 }
 
 bool DisassemblerDatabase::contains(uint64_t address) const
@@ -26,26 +27,52 @@ bool DisassemblerDatabase::contains(uint64_t address) const
 
 void DisassemblerDatabase::set(uint64_t address, const char *name)
 {
-    char* copiedname = strdup(name); // Keep an internal copy
+    Symbol* symbol = nullptr;
 
-    this->_symbols[address] = copiedname;
-    this->_symbollist.push_back(copiedname);
+    if(this->contains(address))
+    {
+        symbol = this->_symbols[address];
+        delete[] symbol->Name;
+    }
+    else
+    {
+        symbol = new Symbol();
+        symbol->Address = address;
+        symbol->Type = DataType::Invalid;
+        symbol->IsVariable = false;
+        symbol->IsString = false;
+
+        this->_symbols[address] = symbol;
+    }
+
+    symbol->Name = strdup(name);
 }
 
 void DisassemblerDatabase::setVariable(uint64_t address, DataType::Type type, const char *name)
 {
-    if(!this->contains(address))
-        this->_variables.push_back(Variable(address, type));
-
     this->set(address, name);
+    Symbol* symbol = this->_symbols[address];
+
+    if(symbol->IsVariable)
+        return;
+
+    symbol->Type = type;
+    symbol->IsVariable = true;
+    this->_variables.push_back(symbol);
 }
 
 void DisassemblerDatabase::setString(uint64_t address)
 {
+    Symbol* symbol = this->_symbols[address];
+
+    if(symbol->IsString)
+        return;
+
+    symbol->IsString = true;
     this->_strings.push_back(address);
 }
 
-const char *DisassemblerDatabase::get(uint64_t address) const
+const DisassemblerDatabase::Symbol *DisassemblerDatabase::get(uint64_t address) const
 {    
     return this->_symbols.at(address);
 }

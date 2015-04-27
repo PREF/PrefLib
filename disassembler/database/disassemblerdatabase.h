@@ -15,11 +15,18 @@ namespace Disassembler {
 class DisassemblerDatabase
 {
     public:
-        typedef std::pair<uint64_t, DataType::Type> Variable;
+        struct Symbol
+        {
+            uint64_t Address;
+            const char* Name;
+            DataType::Type Type;
+            bool IsVariable;
+            bool IsString;
+        };
 
     public:
-        typedef std::map<uint64_t, const char*> SymbolMap;
-        typedef std::deque<Variable> VariableList;
+        typedef std::map<uint64_t, Symbol*> SymbolMap;
+        typedef std::deque<Symbol*> VariableList;
         typedef std::deque<uint64_t> StringList;
 
     public:
@@ -29,7 +36,7 @@ class DisassemblerDatabase
         void set(uint64_t address, const char* name);
         void setVariable(uint64_t address, DataType::Type type, const char* name);
         void setString(uint64_t address);
-        const char* get(uint64_t address) const;
+        const Symbol* get(uint64_t address) const;
         const VariableList& variables() const;
         const StringList& strings() const;
 
@@ -40,7 +47,6 @@ class DisassemblerDatabase
         SymbolMap _symbols;
         VariableList _variables;
         StringList _strings;
-        std::list<const char*> _symbollist;
 };
 
 } // namespace Disassembler
