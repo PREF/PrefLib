@@ -108,8 +108,8 @@ class DisassemblerListing: public LuaTable
         //void removeReference(uint64_t address, uint64_t referencedby);
         void createBookmark(Block* block, const char* description);
         void removeBookmark(Block* block);
-        const char* getBookmark(Block* block);
-        const LuaContainer* getReferences(Block* block);
+        const char* getBookmark(const Block* block);
+        const LuaContainer* getReferences(const Block* block);
 
     private:
         Block* guessBlock(uint64_t address);

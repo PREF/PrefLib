@@ -336,7 +336,7 @@ void DisassemblerListing::removeBookmark(Block *block)
     this->_bookmarks.ByAddress.removeKey(block->address());
 }
 
-const char *DisassemblerListing::getBookmark(Block *block)
+const char *DisassemblerListing::getBookmark(const Block *block)
 {
     if(!block->isBookmarked())
         return nullptr;
@@ -344,7 +344,7 @@ const char *DisassemblerListing::getBookmark(Block *block)
     return this->_bookmarks.ByAddress[block->address()];
 }
 
-const LuaContainer *DisassemblerListing::getReferences(Block *block)
+const LuaContainer *DisassemblerListing::getReferences(const Block *block)
 {
     if(!block->isRerefenced())
         return nullptr;
