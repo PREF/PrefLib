@@ -77,9 +77,21 @@ class LuaContainer: public LuaTable
         LuaContainer::Entry operator[](lua_Integer idx);
 
     public:
+        template<typename T> T first() const;
+        template<typename T> T last() const;
         template<typename T, typename C = std::less<T> > void binaryInsert(const T& t);
         template<typename K, typename T = K, typename C = BinaryComparator<K, T> > lua_Integer binarySearch(const K& k);
 };
+
+template<typename T> T LuaContainer::first() const
+{
+    return this->getI<T>(0);
+}
+
+template<typename T> T LuaContainer::last() const
+{
+    return this->getI<T>(this->length() - 1);
+}
 
 template<typename T, typename C> void LuaContainer::binaryInsert(const T& t)
 {
