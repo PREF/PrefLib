@@ -2,6 +2,7 @@
 #define PREFLIB_DISASSEMBLER_DISASSEMBLERLISTING_H
 
 #include <deque>
+#include <algorithm>
 #include <capstone.h>
 #include "../core/lua/luax.h"
 #include "../core/lua/luatable.h"
@@ -55,6 +56,14 @@ class DisassemblerListing: public LuaTable
             }
         };
 
+        struct BlockComparator
+        {
+            bool operator()(const Block* b1, const Block* b2)
+            {
+                return b1->endAddress() < b2->startAddress();
+            }
+        };
+
         struct AddressBlockComparator
         {
             bool operator()(uint64_t val, const LuaTable* t)
@@ -96,6 +105,7 @@ class DisassemblerListing: public LuaTable
         Function* findFunction(uint64_t address);
         Segment* findSegment(uint64_t address);
         Block* findBlock(uint64_t address);
+        int64_t indexOf(const Block* block);
         void createSegment(const char* name, Segment::Type segmenttype, uint64_t startaddress, uint64_t size, uint64_t offset);
         void createFunction(uint64_t address);
         void createFunction(const char* name, Function::Type functiontype, uint64_t address);

@@ -176,6 +176,17 @@ Block *DisassemblerListing::findBlock(uint64_t address)
     return this->findSegment(address);
 }
 
+int64_t DisassemblerListing::indexOf(const Block *block)
+{
+    Listing::iterator it = std::lower_bound(this->_listing.begin(), this->_listing.end(), block, BlockComparator());
+
+    if(it == this->_listing.end() || !(block->endAddress() < (*it)->startAddress()))
+        return -1;
+
+    Listing::iterator resit = it + (static_cast<int64_t>(block->weight()) - static_cast<int64_t>((*it)->weight()));
+    return resit - this->_listing.begin();
+}
+
 void DisassemblerListing::createSegment(const char *name, Segment::Type segmenttype, uint64_t startaddress, uint64_t size, uint64_t baseoffset)
 {
     Segment* segment = new Segment(name, segmenttype, startaddress, size, baseoffset);
