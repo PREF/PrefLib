@@ -92,7 +92,8 @@ class DisassemblerListing: public LuaTable
         ~DisassemblerListing();
 
     public:
-        bool isDisassembled(DataValue& address);
+        bool isDisassembled(DataValue& address) const;
+        bool isAddress(uint64_t address) const;
         uint64_t baseAddress() const;
         MemoryBuffer* memoryBuffer() const;
         DisassemblerDatabase& database();

@@ -93,9 +93,22 @@ DisassemblerListing::~DisassemblerListing()
     }
 }
 
-bool DisassemblerListing::isDisassembled(DataValue& address)
+bool DisassemblerListing::isDisassembled(DataValue& address) const
 {
     return this->_instructions.ByAddress.hasField(static_cast<uint64_t>(address));
+}
+
+bool DisassemblerListing::isAddress(uint64_t address) const
+{
+    for(size_t i = 0; i < this->_segments.ByIndex.length(); i++)
+    {
+        Segment* segment = dynamic_cast<Segment*>(this->_segments.ByIndex.getI<LuaTable*>(i));
+
+        if(segment->contains(address))
+            return true;
+    }
+
+    return false;
 }
 
 uint64_t DisassemblerListing::baseAddress() const
