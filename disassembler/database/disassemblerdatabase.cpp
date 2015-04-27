@@ -13,7 +13,10 @@ DisassemblerDatabase::~DisassemblerDatabase()
     SymbolMap::iterator it = this->_symbols.begin();
 
     for(; it != this->_symbols.end(); it++)
-        delete[] it->second->Name; // Free allocated strings
+    {
+        delete[] it->second->Name; // Free allocated string
+        delete it->second; // Free Symbol
+    }
 
     this->_symbols.clear();
     this->_variables.clear();
