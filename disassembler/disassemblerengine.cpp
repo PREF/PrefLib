@@ -3,7 +3,7 @@
 namespace PrefLib {
 namespace Disassembler {
 
-DisassemblerEngine::DisassemblerEngine(DisassemblerDefinition *definition, lua_State *thread): LuaTable(thread), _definition(definition)
+DisassemblerEngine::DisassemblerEngine(DisassemblerDefinition *definition, lua_State *thread): LuaTable(thread), _definition(definition), _callback(nullptr), _param(nullptr)
 {
     this->setFunction("next", &DisassemblerEngine::luaNext);
     this->setFunction("enqueue", &DisassemblerEngine::luaEnqueue);
@@ -13,6 +13,12 @@ DisassemblerEngine::DisassemblerEngine(DisassemblerDefinition *definition, lua_S
 DisassemblerEngine::~DisassemblerEngine()
 {
     this->_definition->finalize();
+}
+
+void DisassemblerEngine::setProgressCallback(DisassemblerEngine::ProgressCallback callback, void *param)
+{
+    this->_callback = callback;
+    this->_param = param;
 }
 
 void DisassemblerEngine::disassemble(DisassemblerListing *listing)
@@ -28,6 +34,9 @@ void DisassemblerEngine::disassemble(DisassemblerListing *listing)
 
         if(listing->isDisassembled(dv))
             continue;
+
+        if(this->_callback)
+            this->_callback(dv, this->_param);
 
         if(!this->_definition->disassemble(this, listing, dv))
             break;

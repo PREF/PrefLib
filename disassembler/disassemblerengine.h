@@ -13,8 +13,12 @@ namespace Disassembler {
 class DisassemblerEngine: public LuaTable
 {
     public:
+        typedef void (*ProgressCallback)(const DataValue& address, void* param);
+
+    public:
         DisassemblerEngine(DisassemblerDefinition* definition, lua_State* thread = nullptr);
         ~DisassemblerEngine();
+        void setProgressCallback(ProgressCallback callback, void* param = nullptr);
         void disassemble(DisassemblerListing* listing);
 
     private:
@@ -28,6 +32,8 @@ class DisassemblerEngine: public LuaTable
     private:
         DisassemblerDefinition* _definition;
         std::deque<DataValue> _queue;
+        ProgressCallback _callback;
+        void* _param;
 };
 
 } // namespace Disassembler
