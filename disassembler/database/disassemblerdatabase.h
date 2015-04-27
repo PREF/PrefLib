@@ -4,6 +4,7 @@
 #define DATABASE_EXTENSION "db"
 
 #include <map>
+#include <list>
 #include <cstring>
 
 namespace PrefLib {
@@ -26,6 +27,7 @@ class DisassemblerDatabase
 
     private:
         SymbolMap _symbols;
+        std::list<const char*> _symbollist;
 };
 
 } // namespace Disassembler
