@@ -30,9 +30,11 @@ class DisassemblerListing: public LuaTable
 
             public:
                 int read(uint64_t address, unsigned char* data, uint64_t len);
+                bool pointsToString(uint64_t address) const;
 
             lua_api:
                 static int luaRead(lua_State* l);
+                static int luaPointsToString(lua_State* l);
 
             private:
                 DisassemblerListing* _listing;
@@ -114,6 +116,8 @@ class DisassemblerListing: public LuaTable
         void createInstruction(CapstoneInstruction *csinstruction);
         void createLabel(uint64_t address, uint64_t sourceaddress);
         void createLabel(uint64_t address, uint64_t refaddress, const char* name);
+        void createVariable(uint64_t address, DataType::Type type);
+        void createVariable(uint64_t address, DataType::Type type, const char* name);
         void createReference(uint64_t address, uint64_t referencedby);
         //void removeReference(uint64_t address, uint64_t referencedby);
         void createBookmark(Block* block, const char* description);
@@ -130,6 +134,7 @@ class DisassemblerListing: public LuaTable
         static int luaCreateEntryPoint(lua_State* l);
         static int luaCreateInstruction(lua_State* l);
         static int luaCreateLabel(lua_State* l);
+        static int luaCreateVariable(lua_State* l);
         static int luaCreateReference(lua_State* l);
 
     private:

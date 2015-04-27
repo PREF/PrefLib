@@ -32,9 +32,32 @@ void DisassemblerDatabase::set(uint64_t address, const char *name)
     this->_symbollist.push_back(copiedname);
 }
 
+void DisassemblerDatabase::setVariable(uint64_t address, DataType::Type type, const char *name)
+{
+    if(!this->contains(address))
+        this->_variables.push_back(Variable(address, type));
+
+    this->set(address, name);
+}
+
+void DisassemblerDatabase::setString(uint64_t address)
+{
+    this->_strings.push_back(address);
+}
+
 const char *DisassemblerDatabase::get(uint64_t address) const
 {    
     return this->_symbols.at(address);
+}
+
+const DisassemblerDatabase::VariableList &DisassemblerDatabase::variables() const
+{
+    return this->_variables;
+}
+
+const DisassemblerDatabase::StringList &DisassemblerDatabase::strings() const
+{
+    return this->_strings;
 }
 
 void DisassemblerDatabase::save()

@@ -19,6 +19,21 @@ int DisassemblerListing::MemoryBuffer::read(uint64_t address, unsigned char *dat
     return this->_databuffer->read(offset, data, len);
 }
 
+bool DisassemblerListing::MemoryBuffer::pointsToString(uint64_t address) const
+{
+    Segment* segment = this->_listing->findSegment(address);
+
+    if(!segment)
+        return false;
+
+    char* data = nullptr;
+    uint64_t offset = segment->calculateOffset(address);
+    uint64_t len = this->_databuffer->readString(offset, &data, 3);
+    delete[] data;
+
+    return len == 3;
+}
+
 int DisassemblerListing::MemoryBuffer::luaRead(lua_State *l)
 {
     int argc = lua_gettop(l);
@@ -31,6 +46,18 @@ int DisassemblerListing::MemoryBuffer::luaRead(lua_State *l)
     Buffer buffer(len);
     thethis->read(address, &buffer, len);
     buffer.push();
+    return 1;
+}
+
+int DisassemblerListing::MemoryBuffer::luaPointsToString(lua_State *l)
+{
+    int argc = lua_gettop(l);
+    luaX_expectargc(l, argc, 2);
+
+    MemoryBuffer* thethis = reinterpret_cast<MemoryBuffer*>(checkThis(l, 1));
+    bool b = thethis->pointsToString(luaL_checkinteger(l, 2));
+
+    lua_pushboolean(l, b);
     return 1;
 }
 
@@ -52,6 +79,7 @@ DisassemblerListing::DisassemblerListing(IO::DataBuffer *databuffer, lua_State *
     this->setFunction("createEntryPoint", &DisassemblerListing::luaCreateEntryPoint);
     this->setFunction("createInstruction", &DisassemblerListing::luaCreateInstruction);
     this->setFunction("createLabel", &DisassemblerListing::luaCreateLabel);
+    this->setFunction("createVariable", &DisassemblerListing::luaCreateVariable);
     this->setFunction("createReference", &DisassemblerListing::luaCreateReference);
     lua_pop(this->_thread, 1);
 }
@@ -323,6 +351,33 @@ void DisassemblerListing::createLabel(uint64_t address, uint64_t referencedby, c
     this->createReference(address, referencedby);
 }
 
+void DisassemblerListing::createVariable(uint64_t address, DataType::Type type)
+{
+    this->createVariable(address, type, nullptr);
+}
+
+void DisassemblerListing::createVariable(uint64_t address, DataType::Type type, const char *name)
+{
+    if(!name)
+    {
+        size_t sz = sizeof(uint64_t) + 5; // +5: "data_"
+        char* s = new char[sz + 1];
+
+        s[sz] = '\0';
+        std::snprintf(s, sz + 1, "data_%" PRIX64, address);
+
+        this->_database.setVariable(address, type, s);
+
+        delete[] s;
+        return;
+    }
+    else
+        this->_database.setVariable(address, type, name);
+
+    if(this->_memorybuffer->pointsToString(address))
+        this->_database.setString(address);
+}
+
 void DisassemblerListing::createBookmark(Block *block, const char *description)
 {
     block->setBookmarked(true);
@@ -436,6 +491,16 @@ int DisassemblerListing::luaCreateLabel(lua_State *l)
 
     DisassemblerListing* thethis = reinterpret_cast<DisassemblerListing*>(checkThis(l, 1));
     thethis->createLabel(luaL_checkinteger(l, 2), luaL_checkinteger(l, 3), luaL_optstring(l, 4, nullptr));
+    return 0;
+}
+
+int DisassemblerListing::luaCreateVariable(lua_State *l)
+{
+    int argc = lua_gettop(l);
+    luaX_expectminargc(l, argc, 3);
+
+    DisassemblerListing* thethis = reinterpret_cast<DisassemblerListing*>(checkThis(l, 1));
+    thethis->createVariable(luaL_checkinteger(l, 2), static_cast<DataType::Type>(luaL_checkinteger(l, 3)), luaL_optstring(l, 4, nullptr));
     return 0;
 }
 
