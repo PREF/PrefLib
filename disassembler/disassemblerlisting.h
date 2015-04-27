@@ -97,6 +97,7 @@ class DisassemblerListing: public LuaTable
         Segment* findSegment(uint64_t address);
         Block* findBlock(uint64_t address);
         void createSegment(const char* name, Segment::Type segmenttype, uint64_t startaddress, uint64_t size, uint64_t offset);
+        void createFunction(uint64_t address);
         void createFunction(const char* name, Function::Type functiontype, uint64_t address);
         void createEntryPoint(const char* name, uint64_t address);
         void createInstruction(Instruction* instruction);

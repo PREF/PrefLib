@@ -186,6 +186,11 @@ void DisassemblerListing::createSegment(const char *name, Segment::Type segmentt
     this->_listing.push_back(segment);
 }
 
+void DisassemblerListing::createFunction(uint64_t address)
+{
+    this->createFunction(nullptr, Function::FunctionBlock, address);
+}
+
 void DisassemblerListing::createFunction(const char *name, Function::Type functiontype, uint64_t address)
 {
     Function* function = new Function(functiontype, address);
@@ -199,7 +204,20 @@ void DisassemblerListing::createFunction(const char *name, Function::Type functi
         this->_entrypoints.ByAddress[address] = function;
     }
 
-    this->_database.set(address, name);
+    if(!name)
+    {
+        size_t sz = sizeof(uint64_t) + 4; // +4: "sub_"
+        char* s = new char[sz + 1];
+
+        s[sz] = '\0';
+        snprintf(s, sz + 1, "sub_%" PRIX64, address);
+
+        this->_database.set(address, s);
+        delete[] s;
+    }
+    else
+        this->_database.set(address, name);
+
     this->_listing.push_back(function);
 }
 
