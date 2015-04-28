@@ -14,6 +14,7 @@ class FormatTree: public LuaTable
 {
     public:
         FormatTree(IO::DataBuffer* databuffer, uint64_t baseoffset, lua_State* thread = nullptr);
+        void ownsDataBuffer(bool b);
         ~FormatTree();
 
     public:
@@ -29,6 +30,9 @@ class FormatTree: public LuaTable
 
     lua_api:
         static int luaAddStructure(lua_State* l);
+
+    private:
+        bool _ownsdatabuffer;
 };
 
 } // namespace Format

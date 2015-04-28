@@ -49,7 +49,7 @@ bool DisassemblerDefinition::validate(IO::DataBuffer* databuffer, char** msg)
     try
     {
         formattree = this->format()->build(databuffer); // Test Format
-        delete formattree;
+        formattree->ownsDataBuffer(false); // Keep DataBuffer alive
     }
     catch(std::exception& e)
     {
@@ -63,14 +63,11 @@ bool DisassemblerDefinition::validate(IO::DataBuffer* databuffer, char** msg)
         result = false;
     }
 
-    if(formattree)
-    {
-        delete formattree;
-        formattree = nullptr;
-    }
-    else
+    if(!formattree)
         return false;
 
+    delete formattree;
+    formattree = nullptr;
     return result;
 }
 

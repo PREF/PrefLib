@@ -3,11 +3,16 @@
 namespace PrefLib {
 namespace Format {
 
-FormatTree::FormatTree(IO::DataBuffer *databuffer, uint64_t baseoffset, lua_State *thread): LuaTable(thread)
+FormatTree::FormatTree(IO::DataBuffer *databuffer, uint64_t baseoffset, lua_State *thread): LuaTable(thread), _ownsdatabuffer(true)
 {
     this->setInteger("baseoffset", baseoffset);
     this->setTable("buffer", databuffer);
     this->setFunction("addStructure", &FormatTree::luaAddStructure);
+}
+
+void FormatTree::ownsDataBuffer(bool b)
+{
+    this->_ownsdatabuffer = b;
 }
 
 FormatTree::~FormatTree()
@@ -16,7 +21,9 @@ FormatTree::~FormatTree()
 
     if(databuffer)
     {
-        delete databuffer;
+        if(this->_ownsdatabuffer)
+            delete databuffer;
+
         this->setTable("buffer", nullptr);
     }
 
