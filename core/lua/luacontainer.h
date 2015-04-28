@@ -80,7 +80,7 @@ class LuaContainer: public LuaTable
         template<typename T> T first() const;
         template<typename T> T last() const;
         template<typename T, typename C = std::less<T> > void binaryInsert(const T& t);
-        template<typename K, typename T = K, typename C = BinaryComparator<K, T> > lua_Integer binarySearch(const K& k);
+        template<typename K, typename T = K, typename C = BinaryComparator<K, T> > lua_Integer binarySearch(const K& k, bool reversed = false);
 };
 
 template<typename T> T LuaContainer::first() const
@@ -95,7 +95,7 @@ template<typename T> T LuaContainer::last() const
 
 template<typename T, typename C> void LuaContainer::binaryInsert(const T& t)
 {
-    lua_Integer start = 1, end = this->length(), mid = 1, state = 0;
+    lua_Integer start = 0, end = this->length() - 1, mid = 0, state = 0;
     C comparator = C();
 
     while(start <= end)
@@ -114,12 +114,12 @@ template<typename T, typename C> void LuaContainer::binaryInsert(const T& t)
         }
     }
 
-    this->insert((mid + state) - 1, t); // -1 is needed because we are calling from C++ world
+    this->insert(mid + state, t);
 }
 
-template<typename K, typename T, typename C> lua_Integer LuaContainer::binarySearch(const K& k)
+template<typename K, typename T, typename C> lua_Integer LuaContainer::binarySearch(const K& k, bool reversed)
 {
-    lua_Integer start = 1, end = this->length(), mid = 1;
+    lua_Integer start = 0, end = this->length() - 1, mid = 0;
     C comparator = C();
 
     while(start <= end)
@@ -128,11 +128,21 @@ template<typename K, typename T, typename C> lua_Integer LuaContainer::binarySea
         lua_Integer comp = comparator(k, this->getI<T>(mid));
 
         if(comp > 0)
-            start = mid + 1;
+        {
+            if(reversed)
+                end = mid - 1;
+            else
+                start = mid + 1;
+        }
         else if(comp < 0)
-            end = mid - 1;
+        {
+            if(reversed)
+                start = mid + 1;
+            else
+                end = mid - 1;
+        }
         else
-            return mid - 1; // -1 is needed because we are calling from C++ world
+            return mid;
     }
 
     return -1;
