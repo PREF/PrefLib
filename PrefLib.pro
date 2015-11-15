@@ -41,44 +41,12 @@ SOURCES += \
     map/dotplotmap.cpp \
     map/pixelviewmap.cpp \
     map/binarymap.cpp \
-    disassembler/disassemblercontext.cpp \
-    disassembler/disassemblerdefinition.cpp \
-    disassembler/disassemblerlisting.cpp \
-    disassembler/blocks/block.cpp \
-    disassembler/blocks/segment.cpp \
-    core/lua/luacontainer.cpp \
-    core/capstone/luacapstone.cpp \
-    core/capstone/metadata.cpp \
-    core/capstone/arch/arm.cpp \
-    core/capstone/arch/arm64.cpp \
-    core/capstone/arch/mips.cpp \
-    core/capstone/arch/ppc.cpp \
-    core/capstone/arch/sparc.cpp \
-    core/capstone/arch/sysz.cpp \
-    core/capstone/arch/x86.cpp \
-    core/capstone/arch/xcore.cpp \
-    core/capstone/tables/arm_const.cpp \
-    core/capstone/tables/arm64_const.cpp \
-    core/capstone/tables/capstone_const.cpp \
-    core/capstone/tables/mips_const.cpp \
-    core/capstone/tables/ppc_const.cpp \
-    core/capstone/tables/sparc_const.cpp \
-    core/capstone/tables/sysz_const.cpp \
-    core/capstone/tables/x86_const.cpp \
-    core/capstone/tables/xcore_const.cpp \
-    disassembler/blocks/function.cpp \
-    disassembler/blocks/instruction.cpp \
     types/buffer.cpp \
-    disassembler/blocks/capstoneinstruction.cpp \
-    disassembler/disassemblerengine.cpp \
-    disassembler/listingprinter.cpp \
-    disassembler/database/disassemblerdatabase.cpp \
     core/containers/cachedmap.cpp \
     format/categorycontext.cpp \
     core/lua/luathread.cpp \
     support/algorithm.cpp \
     support/pointer.cpp \
-    disassembler/blocks/label.cpp
 
 HEADERS += \
     prefcontext.h \
@@ -112,47 +80,12 @@ HEADERS += \
     map/dotplotmap.h \
     map/pixelviewmap.h \
     map/binarymap.h \
-    disassembler/disassemblercontext.h \
-    disassembler/disassemblerdefinition.h \
-    disassembler/disassemblerlisting.h \
-    disassembler/blocks/block.h \
-    disassembler/blocks/segment.h \
-    core/lua/luacontainer.h \
-    core/capstone/luacapstone.h \
-    core/capstone/luacapstonemacros.h \
-    core/capstone/metadata.h \
-    core/capstone/reflection.h \
-    core/capstone/arch/arm.h \
-    core/capstone/arch/arm64.h \
-    core/capstone/arch/mips.h \
-    core/capstone/arch/ppc.h \
-    core/capstone/arch/sparc.h \
-    core/capstone/arch/sysz.h \
-    core/capstone/arch/x86.h \
-    core/capstone/arch/xcore.h \
-    core/capstone/tables/arm_const.h \
-    core/capstone/tables/arm64_const.h \
-    core/capstone/tables/capstone_const.h \
-    core/capstone/tables/mips_const.h \
-    core/capstone/tables/ppc_const.h \
-    core/capstone/tables/sparc_const.h \
-    core/capstone/tables/sysz_const.h \
-    core/capstone/tables/x86_const.h \
-    core/capstone/tables/xcore_const.h \
-    disassembler/blocks/function.h \
-    disassembler/blocks/instruction.h \
     types/buffer.h \
-    disassembler/blocks/capstoneinstruction.h \
-    disassembler/disassemblerengine.h \
-    disassembler/listingprinter.h \
-    disassembler/database/disassemblerdatabase.h \
     core/containers/cachedmap.h \
     format/categorycontext.h \
     core/lua/luathread.h \
     support/algorithm.h \
     support/pointer.h \
-    disassembler/blocks/label.h
 
-INCLUDEPATH += $$PWD/include/capstone \
-               $$PWD/include/lua
+INCLUDEPATH += $$PWD/include/lua
 

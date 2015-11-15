@@ -2,18 +2,15 @@
 #define PREFLIB_PREFCONTEXT_H
 
 #include <iostream>
-#include "core/capstone/luacapstone.h"
 #include "core/lua/luastate.h"
 #include "support/math.h"
 #include "support/algorithm.h"
 #include "exporter/exportercontext.h"
 #include "format/formatcontext.h"
-#include "disassembler/disassemblercontext.h"
 
 namespace PrefLib {
 
 using namespace Core::Lua;
-using namespace Core::Capstone;
 
 class PrefContext
 {
@@ -39,7 +36,6 @@ class PrefContext
         const LuaState& state() const;
         Exporter::ExporterContext* exporters() const;
         Format::FormatContext* formats() const;
-        Disassembler::DisassemblerContext* disassemblers() const;
         void addSearchPath(const char* path);
         void executeScript(const char* script);
         void setLogger(LogCallback logger, void* userdata = nullptr);
@@ -55,7 +51,6 @@ class PrefContext
         lua_State* _state;
         Exporter::ExporterContext* _exporterctx;
         Format::FormatContext* _formatctx;
-        Disassembler::DisassemblerContext* _disassemblerctx;
         LogCallback _logger;
         void* _loguserdata;
 };

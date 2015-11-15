@@ -89,7 +89,7 @@ void LuaTable::bindTable(const char *name, LuaTable *t)
 {
     this->push();
     this->setTable(name, t); // Allow self.foo
-    this->setI(lua_rawlen(this->_thread, -1) + 1, t); // Allow self[i]
+    //FIXME: this->setI(lua_rawlen(this->_thread, -1) + 1, t); // Allow self[i]
     lua_pop(this->_thread, 1);
 }
 
@@ -175,11 +175,31 @@ const char *LuaTable::getString(const char *k) const
     return res;
 }
 
+const char *LuaTable::getString(lua_Integer k) const
+{
+    this->push();
+    lua_rawgeti(this->_thread, -1, k);
+
+    const char* res = luaL_checkstring(this->_thread, -1);
+    lua_pop(this->_thread, 2);
+    return res;
+}
+
 lua_Integer LuaTable::getInteger(const char *k) const
 {
     this->push();
     lua_pushstring(this->_thread, k);
     lua_rawget(this->_thread, -2);
+
+    lua_Integer res = luaL_checkinteger(this->_thread, -1);
+    lua_pop(this->_thread, 2);
+    return res;
+}
+
+lua_Integer LuaTable::getInteger(lua_Integer k) const
+{
+    this->push();
+    lua_rawgeti(this->_thread, -1, k);
 
     lua_Integer res = luaL_checkinteger(this->_thread, -1);
     lua_pop(this->_thread, 2);
@@ -197,11 +217,31 @@ bool LuaTable::getBoolean(const char *k) const
     return res;
 }
 
+bool LuaTable::getBoolean(lua_Integer k) const
+{
+    this->push();
+    lua_rawgeti(this->_thread, -1, k);
+
+    bool res = lua_toboolean(this->_thread, -1) != 0;
+    lua_pop(this->_thread, 2);
+    return res;
+}
+
 LuaTable *LuaTable::getTable(const char *k) const
 {
     this->push();
     lua_pushstring(this->_thread, k);
     lua_rawget(this->_thread, -2);
+
+    LuaTable* res = reinterpret_cast<LuaTable*>(checkThis(this->_thread, -1));
+    lua_pop(this->_thread, 2);
+    return res;
+}
+
+LuaTable *LuaTable::getTable(lua_Integer k) const
+{
+    this->push();
+    lua_rawgeti(this->_thread, -1, k);
 
     LuaTable* res = reinterpret_cast<LuaTable*>(checkThis(this->_thread, -1));
     lua_pop(this->_thread, 2);
@@ -219,50 +259,10 @@ lua_CFunction LuaTable::getFunction(const char *k) const
     return res;
 }
 
-template<> bool LuaTable::getI<bool>(lua_Integer i) const
+lua_CFunction LuaTable::getFunction(lua_Integer k) const
 {
     this->push();
-    lua_rawgeti(this->_thread, -1, i + 1);
-
-    bool res = lua_toboolean(this->_thread, -1) == true;
-    lua_pop(this->_thread, 2);
-    return res;
-}
-
-template<> const char* LuaTable::getI<const char*>(lua_Integer i) const
-{
-    this->push();
-    lua_rawgeti(this->_thread, -1, i + 1);
-
-    const char* res = luaL_checkstring(this->_thread, -1);
-    lua_pop(this->_thread, 2);
-    return res;
-}
-
-template<> lua_Integer LuaTable::getI<lua_Integer>(lua_Integer i) const
-{
-    this->push();
-    lua_rawgeti(this->_thread, -1, i + 1);
-
-    lua_Integer res = luaL_checkinteger(this->_thread, -1);
-    lua_pop(this->_thread, 2);
-    return res;
-}
-
-template<> LuaTable* LuaTable::getI<LuaTable*>(lua_Integer i) const
-{
-    this->push();
-    lua_rawgeti(this->_thread, -1, i + 1);
-
-    LuaTable* res = reinterpret_cast<LuaTable*>(checkThis(this->_thread, -1));
-    lua_pop(this->_thread, 2);
-    return res;
-}
-
-template<> lua_CFunction LuaTable::getI<lua_CFunction>(lua_Integer i) const
-{
-    this->push();
-    lua_rawgeti(this->_thread, -1, i + 1);
+    lua_rawgeti(this->_thread, -1, k);
 
     lua_CFunction res = lua_tocfunction(this->_thread, -1);
     lua_pop(this->_thread, 2);
@@ -272,8 +272,18 @@ template<> lua_CFunction LuaTable::getI<lua_CFunction>(lua_Integer i) const
 void LuaTable::setValue(const char *k, int validx)
 {
     this->push();
+    lua_pushstring(this->_thread, k);
     lua_pushvalue(this->_thread, validx);
-    lua_setfield(this->_thread, -2, k);
+    lua_rawset(this->_thread, -3);
+    lua_pop(this->_thread, 1);
+}
+
+void LuaTable::setValue(lua_Integer k, int validx)
+{
+    this->push();
+    lua_pushinteger(this->_thread, k);
+    lua_pushvalue(this->_thread, validx);
+    lua_rawset(this->_thread, -3);
     lua_pop(this->_thread, 1);
 }
 
@@ -281,6 +291,15 @@ void LuaTable::setString(const char *k, const char *s)
 {
     this->push();
     lua_pushstring(this->_thread, k);
+    lua_pushstring(this->_thread, s);
+    lua_rawset(this->_thread, -3);
+    lua_pop(this->_thread, 1);
+}
+
+void LuaTable::setString(lua_Integer k, const char *s)
+{
+    this->push();
+    lua_pushinteger(this->_thread, k);
     lua_pushstring(this->_thread, s);
     lua_rawset(this->_thread, -3);
     lua_pop(this->_thread, 1);
@@ -295,10 +314,28 @@ void LuaTable::setInteger(const char *k, lua_Integer n)
     lua_pop(this->_thread, 1);
 }
 
+void LuaTable::setInteger(lua_Integer k, lua_Integer n)
+{
+    this->push();
+    lua_pushinteger(this->_thread, k);
+    lua_pushinteger(this->_thread, n);
+    lua_rawset(this->_thread, -3);
+    lua_pop(this->_thread, 1);
+}
+
 void LuaTable::setBoolean(const char *k, bool b)
 {
     this->push();
     lua_pushstring(this->_thread, k);
+    lua_pushboolean(this->_thread, b);
+    lua_rawset(this->_thread, -3);
+    lua_pop(this->_thread, 1);
+}
+
+void LuaTable::setBoolean(lua_Integer k, bool b)
+{
+    this->push();
+    lua_pushinteger(this->_thread, k);
     lua_pushboolean(this->_thread, b);
     lua_rawset(this->_thread, -3);
     lua_pop(this->_thread, 1);
@@ -315,6 +352,17 @@ void LuaTable::setTable(const char *k, LuaTable *t)
     lua_pop(this->_thread, 1);
 }
 
+void LuaTable::setTable(lua_Integer k, LuaTable *t)
+{
+    this->push();
+    lua_pushinteger(this->_thread, k);
+
+    t ? t->push() : lua_pushnil(this->_thread);
+
+    lua_rawset(this->_thread, -3);
+    lua_pop(this->_thread, 1);
+}
+
 void LuaTable::setFunction(const char *k, lua_CFunction f)
 {
     this->push();
@@ -324,43 +372,12 @@ void LuaTable::setFunction(const char *k, lua_CFunction f)
     lua_pop(this->_thread, 1);
 }
 
-void LuaTable::setI(int i, bool b)
+void LuaTable::setFunction(lua_Integer k, lua_CFunction f)
 {
     this->push();
-    lua_pushboolean(this->_thread, b);
-    lua_rawseti(this->_thread, -2, i);
-    lua_pop(this->_thread, 1);
-}
-
-void LuaTable::setI(int i, const char *s)
-{
-    this->push();
-    lua_pushstring(this->_thread, s);
-    lua_rawseti(this->_thread, -2, i);
-    lua_pop(this->_thread, 1);
-}
-
-void LuaTable::setI(int i, lua_Integer in)
-{
-    this->push();
-    lua_pushinteger(this->_thread, in);
-    lua_rawseti(this->_thread, -2, i);
-    lua_pop(this->_thread, 1);
-}
-
-void LuaTable::setI(int i, lua_CFunction f)
-{
-    this->push();
+    lua_pushinteger(this->_thread, k);
     lua_pushcfunction(this->_thread, f);
-    lua_rawseti(this->_thread, -2, i);
-    lua_pop(this->_thread, 1);
-}
-
-void LuaTable::setI(int i, const LuaTable *t)
-{
-    this->push();
-    t->push();
-    lua_rawseti(this->_thread, -2, i);
+    lua_rawset(this->_thread, -3);
     lua_pop(this->_thread, 1);
 }
 

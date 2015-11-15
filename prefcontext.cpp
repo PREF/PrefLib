@@ -13,11 +13,9 @@ luaL_Reg PrefContext::_functions[] = { { "log", &PrefContext::luaLog },
 PrefContext::PrefContext(): _logger(&PrefContext::defaultLogger), _loguserdata(nullptr)
 {
     luaL_openlibs(LuaState::instance());
-    luaopen_capstone(LuaState::instance());
 
     this->_exporterctx = new Exporter::ExporterContext();
     this->_formatctx = new Format::FormatContext();
-    this->_disassemblerctx = new Disassembler::DisassemblerContext();
 }
 
 void PrefContext::logger(PrefContext::LogLevel level, lua_State *l)
@@ -81,9 +79,6 @@ int PrefContext::luaopen_preflib(lua_State* l)
     instance->_formatctx->push();
     lua_setfield(l, -2, "format");
 
-    instance->_disassemblerctx->push();
-    lua_setfield(l, -2, "disassembler");
-
     return 1;
 }
 
@@ -142,11 +137,6 @@ const LuaState &PrefContext::state() const
 Format::FormatContext *PrefContext::formats() const
 {
     return this->_formatctx;
-}
-
-Disassembler::DisassemblerContext *PrefContext::disassemblers() const
-{
-    return this->_disassemblerctx;
 }
 
 Exporter::ExporterContext *PrefContext::exporters() const

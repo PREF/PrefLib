@@ -32,28 +32,29 @@ class LuaTable: public LuaReference
         bool hasField(const char* k) const;
         bool hasField(lua_Integer i) const;
         const char* getString(const char* k) const;
+        const char* getString(lua_Integer k) const;
         lua_Integer getInteger(const char* k) const;
+        lua_Integer getInteger(lua_Integer k) const;
         bool getBoolean(const char* k) const;
+        bool getBoolean(lua_Integer k) const;
         LuaTable* getTable(const char* k) const;
+        LuaTable* getTable(lua_Integer k) const;
         lua_CFunction getFunction(const char* k) const;
+        lua_CFunction getFunction(lua_Integer k) const;
         template<typename T> T getI(lua_Integer i) const;
         void setValue(const char* k, int validx);
+        void setValue(lua_Integer k, int validx);
         void setString(const char* k, const char* s);
+        void setString(lua_Integer k, const char* s);
         void setInteger(const char* k, lua_Integer n);
+        void setInteger(lua_Integer k, lua_Integer n);
         void setBoolean(const char* k, bool b);
+        void setBoolean(lua_Integer k, bool b);
         void setTable(const char* k, LuaTable* t);
+        void setTable(lua_Integer k, LuaTable* t);
         void setFunction(const char* k, lua_CFunction f);
-        void setI(int i, bool b);
-        void setI(int i, const char *s);
-        void setI(int i, lua_Integer in);
-        void setI(int i, lua_CFunction f);
-        void setI(int i, const LuaTable *t);
+        void setFunction(lua_Integer k, lua_CFunction f);
 };
-
-template<typename T> T LuaTable::getI(lua_Integer) const
-{
-    throw std::runtime_error("LuaTable::getI(): Unsupported Type");
-}
 
 } // namespace Lua
 } // namespace Core
