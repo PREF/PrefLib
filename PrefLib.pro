@@ -10,6 +10,8 @@ TARGET = PrefLib
 TEMPLATE = lib
 CONFIG += staticlib c++11
 
+include(BT.pri)
+
 SOURCES += \
     prefcontext.cpp \
     format/formattree.cpp \
