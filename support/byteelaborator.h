@@ -8,8 +8,6 @@
 namespace PrefLib {
 namespace Support {
 
-using namespace Core;
-
 class ByteElaborator
 {
     public: // ByteElaborator::countBytes()
