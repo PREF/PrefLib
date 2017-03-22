@@ -1,8 +1,7 @@
 #ifndef PREFLIB_PREFCONTEXT_H
 #define PREFLIB_PREFCONTEXT_H
 
-#include <iostream>
-#include "support/algorithm.h"
+#include "io/databuffer.h"
 
 namespace PrefLib {
 
@@ -19,6 +18,7 @@ class PrefContext
     public:
         ~PrefContext();
         void setLogger(LogCallback logger, void* userdata = nullptr);
+        BTEntryList executeFormat(IO::DataBuffer* databuffer, const std::string& file);
 
     public:
         static PrefContext* instance();

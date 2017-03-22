@@ -15,7 +15,7 @@ AbstractChart::~AbstractChart()
 
 void AbstractChart::elaborate(IO::DataBuffer *databuffer, uint64_t startoffset, volatile bool* cancontinue)
 {
-    this->elaborate(databuffer, startoffset, databuffer->length(), cancontinue);
+    this->elaborate(databuffer, startoffset, databuffer->size(), cancontinue);
 }
 
 void AbstractChart::elaborate(IO::DataBuffer *databuffer, volatile bool *cancontinue)

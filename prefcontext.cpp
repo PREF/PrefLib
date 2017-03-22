@@ -1,4 +1,6 @@
 #include "prefcontext.h"
+#include "bt/btvm.h"
+#include <iostream>
 
 namespace PrefLib {
 
@@ -37,6 +39,13 @@ PrefContext::~PrefContext()
 void PrefContext::setLogger(PrefContext::LogCallback logger, void *userdata)
 {
     this->_logger = logger;
+}
+
+BTEntryList PrefContext::executeFormat(IO::DataBuffer *databuffer, const std::string &file)
+{
+    BTVM btvm(databuffer);
+    btvm.execute(file);
+    return btvm.format();
 }
 
 PrefContext *PrefContext::instance()

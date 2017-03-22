@@ -22,7 +22,7 @@ void DotPlotMap::doElaborate()
 
     for(uint64_t i = 0; i < size; i++)
     {
-        if((start + i) > databuffer->length())
+        if((start + i) > databuffer->size())
             break;
 
         uint64_t ioffset = start + i;
@@ -32,7 +32,7 @@ void DotPlotMap::doElaborate()
         {
             uint64_t joffset = start + j;
 
-            if(joffset > databuffer->length())
+            if(joffset > databuffer->size())
                 break;
 
             uint8_t jb = databuffer->at(joffset);
@@ -59,7 +59,7 @@ uint64_t DotPlotMap::length() const
     if(!this->_databuffer)
         return 0;
 
-    return this->_databuffer->length();
+    return this->_databuffer->size();
 }
 
 uint64_t DotPlotMap::offset(const AbstractMap::Point &p) const
@@ -80,7 +80,7 @@ uint64_t DotPlotMap::offset(const AbstractMap::Point &p) const
 
 void DotPlotMap::elaborate(IO::DataBuffer *databuffer, uint64_t startoffset)
 {
-    AbstractMap::elaborate(databuffer, startoffset, databuffer->length(), std::min(500ul, databuffer->length() - startoffset));
+    AbstractMap::elaborate(databuffer, startoffset, databuffer->size(), std::min(500ul, databuffer->size() - startoffset));
 }
 
 } // namespace Map

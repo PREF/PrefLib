@@ -53,7 +53,7 @@ double Algorithm::entropy(IO::DataBuffer *databuffer, uint64_t size, volatile bo
 
 double Algorithm::entropy(IO::DataBuffer *databuffer, volatile bool *cancontinue)
 {
-    return Algorithm::entropy(databuffer, databuffer->length(), cancontinue);
+    return Algorithm::entropy(databuffer, databuffer->size(), cancontinue);
 }
 
 } // namespace Support

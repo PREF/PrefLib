@@ -24,7 +24,7 @@ SOURCES += \
     map/dotplotmap.cpp \
     map/pixelviewmap.cpp \
     map/binarymap.cpp \
-    support/algorithm.cpp \
+    support/algorithm.cpp
 
 HEADERS += \
     prefcontext.h \
@@ -39,7 +39,4 @@ HEADERS += \
     map/dotplotmap.h \
     map/pixelviewmap.h \
     map/binarymap.h \
-    support/algorithm.h \
-
-INCLUDEPATH += $$PWD/include/lua
-
+    support/algorithm.h

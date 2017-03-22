@@ -4,11 +4,12 @@
 #include <algorithm>
 #include <cstdint>
 #include <cctype>
+#include "bt/btvm.h"
 
 namespace PrefLib {
 namespace IO {
 
-class DataBuffer
+class DataBuffer: public BTVMIO
 {
     public:
         enum OpenMode { Read = 1, Write = 2, ReadWrite = Read | Write };
@@ -18,19 +19,13 @@ class DataBuffer
         ~DataBuffer();
         bool isReadable() const;
         bool isWritable() const;
+        uint8_t at(uint64_t offset);
 
     public:
-        unsigned char at(uint64_t offset);
-        int64_t indexOf(const char* s, uint64_t startoffset = 0);
-        uint64_t readString(uint64_t offset, char** data, uint64_t maxlen = 0);
-        uint64_t readLine(uint64_t offset, char** data);
-        //FIXME: DataValue readType(uint64_t offset, DataType::Type datatype);
-        void copyTo(DataBuffer* destbuffer, uint64_t startoffset = 0, uint64_t endoffset = 0);
+        virtual uint64_t size() const = 0;
 
-    public: /* Abstract Methods */
-        virtual uint64_t length() const = 0;
-        virtual uint64_t read(uint64_t offset, unsigned char* data, uint64_t len) = 0;
-        virtual uint64_t write(uint64_t offset, const unsigned char* data, uint64_t len) = 0;
+    protected:
+        virtual uint64_t read(uint8_t *buffer, uint64_t size) = 0;
 
     private:
         int _openmode;
