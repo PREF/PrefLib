@@ -30,7 +30,7 @@ uint8_t DataBuffer::at(uint64_t offset)
     uint8_t b = 0;
 
     this->seek(offset);
-    this->read(&b, 1);
+    this->readData(&b, 1);
     return b;
 }
 

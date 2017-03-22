@@ -24,9 +24,6 @@ class DataBuffer: public BTVMIO
     public:
         virtual uint64_t size() const = 0;
 
-    protected:
-        virtual uint64_t read(uint8_t *buffer, uint64_t size) = 0;
-
     private:
         int _openmode;
 };
