@@ -49,13 +49,17 @@ BTEntryList PrefContext::executeFormat(IO::DataBuffer *databuffer, const std::st
     return btvm.format();
 }
 
-BTEntryList PrefContext::inspect(IO::DataBuffer *databuffer)
+VMValuePtr PrefContext::inspect(IO::DataBuffer *databuffer)
 {
     BTVM btvm(databuffer);
     btvm.evaluate(DATA_INSPECTOR_CODE);
 
     BTEntryList format = btvm.format();
-    return format.front()->children;
+
+    if(!format.empty())
+        return format.front()->value;
+
+    return VMValuePtr();
 }
 
 PrefContext *PrefContext::instance()
