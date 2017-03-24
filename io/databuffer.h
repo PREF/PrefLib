@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <cctype>
-#include "bt/btvm.h"
+#include "../bt/btvm/btvmio.h"
 
 namespace PrefLib {
 namespace IO {

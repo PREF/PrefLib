@@ -1,5 +1,5 @@
 #include "prefcontext.h"
-#include "bt/btvm.h"
+#include "bt/btvm/btvm.h"
 #include "support/datainspector.h"
 #include <iostream>
 
