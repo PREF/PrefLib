@@ -39,4 +39,5 @@ HEADERS += \
     map/dotplotmap.h \
     map/pixelviewmap.h \
     map/binarymap.h \
-    support/algorithm.h
+    support/algorithm.h \
+    support/datainspector.h

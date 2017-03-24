@@ -1,5 +1,6 @@
 #include "prefcontext.h"
 #include "bt/btvm.h"
+#include "support/datainspector.h"
 #include <iostream>
 
 namespace PrefLib {
@@ -46,6 +47,15 @@ BTEntryList PrefContext::executeFormat(IO::DataBuffer *databuffer, const std::st
     BTVM btvm(databuffer);
     btvm.execute(file);
     return btvm.format();
+}
+
+BTEntryList PrefContext::inspect(IO::DataBuffer *databuffer)
+{
+    BTVM btvm(databuffer);
+    btvm.evaluate(DATA_INSPECTOR_CODE);
+
+    BTEntryList format = btvm.format();
+    return format.front()->children;
 }
 
 PrefContext *PrefContext::instance()

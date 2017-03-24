@@ -19,6 +19,7 @@ class PrefContext
         ~PrefContext();
         void setLogger(LogCallback logger, void* userdata = nullptr);
         BTEntryList executeFormat(IO::DataBuffer* databuffer, const std::string& file);
+        BTEntryList inspect(IO::DataBuffer* databuffer);
 
     public:
         static PrefContext* instance();
