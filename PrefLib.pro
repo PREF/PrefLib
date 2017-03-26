@@ -13,7 +13,6 @@ CONFIG += staticlib c++11
 include(BT.pri)
 
 SOURCES += \
-    prefcontext.cpp \
     io/databuffer.cpp \
     chart/histogramchart.cpp \
     chart/abstractchart.cpp \
@@ -27,7 +26,6 @@ SOURCES += \
     support/algorithm.cpp
 
 HEADERS += \
-    prefcontext.h \
     preflib.h \
     io/databuffer.h \
     chart/histogramchart.h \

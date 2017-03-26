@@ -6,6 +6,7 @@
 #define PREFLIB_VESION_MINOR    0
 #define PREFLIB_VESION_REVISION 0
 
-#include "prefcontext.h"
+#include <io/databuffer.h>
+#include <bt/btvm/btvm.h>
 
 #endif // PREFLIB_H
