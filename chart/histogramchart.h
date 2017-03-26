@@ -14,7 +14,7 @@ class HistogramChart: public virtual AbstractChart
 {
     public:
         HistogramChart();
-        ~HistogramChart();
+        virtual ~HistogramChart();
         const ByteElaborator::CountResult& result() const;
 
     public:
