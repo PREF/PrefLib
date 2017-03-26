@@ -18,7 +18,7 @@ class PrefContext
     public:
         ~PrefContext();
         void setLogger(LogCallback logger, void* userdata = nullptr);
-        BTEntryList executeFormat(IO::DataBuffer* databuffer, const std::string& file);
+        BTEntryList executeTemplate(IO::DataBuffer* databuffer, const std::string& file);
         VMValuePtr inspect(IO::DataBuffer* databuffer);
 
     public:

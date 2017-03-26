@@ -42,7 +42,7 @@ void PrefContext::setLogger(PrefContext::LogCallback logger, void *userdata)
     this->_logger = logger;
 }
 
-BTEntryList PrefContext::executeFormat(IO::DataBuffer *databuffer, const std::string &file)
+BTEntryList PrefContext::executeTemplate(IO::DataBuffer *databuffer, const std::string &file)
 {
     BTVM btvm(databuffer);
     btvm.execute(file);
