@@ -16,7 +16,7 @@ class DataBuffer: public BTVMIO
 
     public:
         DataBuffer(OpenMode openmode);
-        ~DataBuffer();
+        virtual ~DataBuffer();
         bool isReadable() const;
         bool isWritable() const;
         uint8_t at(uint64_t offset);

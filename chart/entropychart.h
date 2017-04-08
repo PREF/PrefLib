@@ -18,7 +18,7 @@ class EntropyChart : public AbstractChart
 
     public:
         EntropyChart();
-        ~EntropyChart();
+        virtual ~EntropyChart();
         const EntropyPoints& points() const;
 
     private:
