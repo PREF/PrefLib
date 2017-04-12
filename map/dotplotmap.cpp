@@ -65,7 +65,7 @@ uint64_t DotPlotMap::length() const
 uint64_t DotPlotMap::offset(const AbstractMap::Point &p) const
 {
     uint64_t l = this->length();
-    uint64_t s = std::min(500ul, l);
+    uint64_t s = std::min(uint64_t(500), l);
 
     if(p.x > s || p.y > s)
         return -1;
