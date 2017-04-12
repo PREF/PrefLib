@@ -23,7 +23,7 @@ uint64_t Algorithm::rebase(uint64_t address, uint64_t oldbaseaddress, uint64_t n
 double Algorithm::entropy(const ByteElaborator::CountResult& cr, uint64_t size)
 {
     double e = 0.0;
-    uint64_t base = std::min(size, 256ul);
+    uint64_t base = std::min(size, uint64_t(256));
 
     for(uint64_t i = 0; i < cr.Counts.size(); i++)
     {
