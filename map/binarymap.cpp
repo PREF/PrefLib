@@ -27,7 +27,7 @@ void BinaryMap::doElaborate()
         if(this->_mode == MapMode::Class)
             bd.Category = info.Category;
         else // if(this->_mode == MapMode::Entropy)
-            bd.Entropy = Support::Algorithm::entropy(databuffer, offset, std::min(32ul, len));
+            bd.Entropy = Support::Algorithm::entropy(databuffer, offset, std::min(uint64_t(32), len));
     }
 }
 
