@@ -18,4 +18,3 @@ HEADERS +=  $$PWD/bt/bt_parser.h \
             $$PWD/bt/btvm/vm/ast.h \
             $$PWD/bt/btvm/btvm_types.h \
             $$PWD/bt/btvm/btvmio.h
-

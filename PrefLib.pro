@@ -10,7 +10,7 @@ TARGET = PrefLib
 TEMPLATE = lib
 CONFIG += staticlib c++11
 
-include(BT.pri)
+include($$PWD/BT.pri)
 
 SOURCES += \
     io/databuffer.cpp \
