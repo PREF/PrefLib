@@ -1,4 +1,5 @@
 #include "bytecolors.h"
+#include <cmath>
 
 namespace PrefLib {
 namespace Support {

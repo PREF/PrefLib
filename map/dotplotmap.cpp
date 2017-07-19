@@ -1,4 +1,5 @@
 #include "dotplotmap.h"
+#include <cmath>
 
 namespace PrefLib {
 namespace Map {
